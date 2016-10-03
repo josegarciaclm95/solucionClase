@@ -14,7 +14,6 @@ function Nivel(num){
     this.nivel = num;
 }
 
-
 function Usuario(nombre){
     this.nombre = nombre;
 }
