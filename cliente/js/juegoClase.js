@@ -2,7 +2,7 @@
 // Third parameter - Phaser.CANVAS, Phaser.WEBGL, or Phaser.AUTO. When AUTO is set, Phaser checks if the device supports WebGL.
 // Else, it use Phaser.CANVAS
 // Fourth parameter - id of DOM element
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(800, 600, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
 
 //Game has a Loader object which allows us to insert resources in our game.
 //load methods (load.image, load.audio...) inserts this key-value in queue of elements that will be loaded on create
