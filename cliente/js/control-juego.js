@@ -28,5 +28,6 @@ function crearUsuario(nombre) {
     $.getJSON('/crearUsuario/'+nombre, function(datos){
         //datos contiene la respuesta
         //mostrar los datos del usuario
+        
     });
 }
