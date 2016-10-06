@@ -12,24 +12,53 @@
 </head>
 
 <body>
-    <script type="text/javascript" src="js/juegoClase.js"></script>
-
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+                    aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+                <a class="navbar-brand" href="#">Conquista Niveles</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Inicio <span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">Reiniciar</a></li>
+                    <li><a href="#">Resultados</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+    </div>
+    
     <div class="container-fluid">
-        <h1>Conquista niveles</h1>
         <div class="row">
             <div class="col-sm-3">
-                <p>Control del juego</p>
+                <div id="control">
+                    <h1>Panel de control</h1>
+                </div>
             </div>
             <div class="col-sm-9">
-                <div id="juegoId">
-
-                </div>
+                <div id="juegoId"></div>
             </div>
         </div>
     </div>
     <!--
 <script type="text/javascript" src="js/juego.js"></script></body>
 -->
+    <script type="text/javascript" src="js/juegoClase.js"></script>
+    <script type="text/javascript" src="js/control-juego.js"></script>
+    <script type="text/javascript">
+        inicio();
+    </script>
 </body>
 
 </html>

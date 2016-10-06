@@ -4,6 +4,7 @@ var config=JSON.parse(fs.readFileSync("config.json"));
 var host=config.host;
 var port=config.port;
 var exp=require("express");
+var modelo = require("./servidor/modelo.js");
 var app=exp(); 
 
 
@@ -16,7 +17,12 @@ app.get("/",function(request,response){
 	response.send(contenido);
 });
 
+app.get("/crearUsuario/:nombre", function(request, response){
+	//Crear el usuario con el nombre recibido
+	var usuario = new modelo.Usuario(request.params.nombre);
+	console.log("Nombre: " + request.params.nombre);
+});
+
 console.log("Servidor escuchando en el puerto "+port);
 app.listen(port,host);
-
 

@@ -17,3 +17,7 @@ function Nivel(num){
 function Usuario(nombre){
     this.nombre = nombre;
 }
+
+module.exports.Juego = Juego;
+module.exports.Usuario = Usuario;
+module.exports.Nivel = Nivel;

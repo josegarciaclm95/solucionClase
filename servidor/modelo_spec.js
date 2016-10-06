@@ -1,7 +1,9 @@
+var modelo = require("./modelo");
+
 describe("El juego tiene inicialmente...", function() {
     var juego;
     beforeEach(function(){
-        juego = new Juego();
+        juego = new modelo.Juego();
     });
     it("Una colección de niveles y usuarios vacia", function() {
         expect(juego.niveles.length).toEqual(0);
@@ -9,12 +11,12 @@ describe("El juego tiene inicialmente...", function() {
     });
     //xit para que se ignore un test a medias
     it("Agregar niveles", function(){
-        juego.agregarNivel(new Nivel(2));
+        juego.agregarNivel(new modelo.Nivel(2));
         expect(juego.niveles.length).toEqual(1);
         expect(juego.niveles[0].nivel).toEqual(2);
     });
     it("Agregar usuarios", function(){
-        var us = new Usuario("Jose")
+        var us = new modelo.Usuario("Jose")
         juego.agregarUsuario(us);
         expect(juego.usuarios.length).toEqual(1);
         expect(juego.usuarios[0]).toEqual(us);
