@@ -16,7 +16,12 @@ function Nivel(num){
 
 function Usuario(nombre){
     this.nombre = nombre;
+    this.puntuacion = 0;
+    this.incrementarPuntuacion = function(puntos){
+        this.puntuacion += puntos;
+    }
 }
+
 
 module.exports.Juego = Juego;
 module.exports.Usuario = Usuario;

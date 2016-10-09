@@ -2,7 +2,22 @@
 // Third parameter - Phaser.CANVAS, Phaser.WEBGL, or Phaser.AUTO. When AUTO is set, Phaser checks if the device supports WebGL.
 // Else, it use Phaser.CANVAS
 // Fourth parameter - id of DOM element
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
+var game;
+var juego;
+var jugador;
+function crearJuego(){
+     game = new Phaser.Game(800, 600, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
+}
+
+
+
+var player;
+var platforms;
+var cursors;
+
+var stars;
+var score = 0;
+var scoreText;
 
 //Game has a Loader object which allows us to insert resources in our game.
 //load methods (load.image, load.audio...) inserts this key-value in queue of elements that will be loaded on create
@@ -14,14 +29,6 @@ function preload() {
     //this last funcion takes also the size we want the sprite to be.
 
 }
-
-var player;
-var platforms;
-var cursors;
-
-var stars;
-var score = 0;
-var scoreText;
 
 function create() {
 
@@ -149,6 +156,7 @@ function collectStar(player, star) {
 
     //  Add and update the score
     score += 10;
+    
     scoreText.text = 'Score: ' + score;
 
 }
