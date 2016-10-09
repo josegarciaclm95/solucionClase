@@ -4,20 +4,18 @@
 // Fourth parameter - id of DOM element
 var game;
 var juego;
-var jugador;
-function crearJuego(){
-     game = new Phaser.Game(800, 600, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
-}
-
-
-
 var player;
 var platforms;
 var cursors;
-
 var stars;
 var score = 0;
 var scoreText;
+
+function crearJuego(){
+    game = new Phaser.Game(800, 600, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
+    salvarPuntuacion(0);
+}
+
 
 //Game has a Loader object which allows us to insert resources in our game.
 //load methods (load.image, load.audio...) inserts this key-value in queue of elements that will be loaded on create
@@ -126,13 +124,13 @@ function update() {
 
     if (cursors.left.isDown) {
         //  Move to the left
-        player.body.velocity.x = -150;
+        player.body.velocity.x = -180;
 
         player.animations.play('left');
     }
     else if (cursors.right.isDown) {
         //  Move to the right
-        player.body.velocity.x = 150;
+        player.body.velocity.x = 180;
 
         player.animations.play('right');
     }
@@ -158,5 +156,7 @@ function collectStar(player, star) {
     score += 10;
     
     scoreText.text = 'Score: ' + score;
-
+    if(score == 120){
+        salvarPuntuacion(score);
+    }
 }

@@ -25,6 +25,35 @@ app.get("/crearUsuario/:nombre", function(request, response){
 	response.send(juego);
 });
 
+app.get("/puntuaciones/:nombre/:puntos", function(request, response){
+	//Crear el usuario con el nombre recibido
+	console.log("Nombre recibido por parametros " + request.params.nombre);
+	var user = juego.buscarUsuario(request.params.nombre);
+	console.log(user);
+	user.puntuacion = parseInt(request.params.puntos);
+	console.log(user.puntuacion);
+	var file = fs.readFileSync("./juego.json");
+	var data = JSON.parse(file);
+	console.log(typeof(data[user.nombre]));
+	if(typeof(data[user.nombre]) == "undefined"){
+		console.log("Creo nuevo registro");
+		data[user.nombre] = user.puntuacion;
+	} else {
+		console.log("Actualizo registro");
+		data[user.nombre] = user.puntuacion > data[user.nombre] ?  user.puntuacion : data[user.nombre]
+	}
+	console.log(data);
+	fs.writeFile("./juego.json", JSON.stringify(data), function(err) {
+		if(err) {
+			return console.log(err);
+		}
+    	console.log("The file was saved!");
+	}); 
+	console.log("Usuario actualizado");
+	response.send(juego);
+});
+
+
 console.log("Servidor escuchando en el puerto "+port);
 app.listen(port,host);
 

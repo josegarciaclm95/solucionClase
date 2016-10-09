@@ -29,7 +29,14 @@ function crearUsuario(nombre) {
     $.getJSON('/crearUsuario/'+nombre, function(datos){
         console.log("Datos recibidos en getJSON");
         juego = datos;
-        jugador = juego.usuarios[0];
         crearJuego();
         });
-    }
+}
+
+function salvarPuntuacion(puntos){
+    alert('/'+juego.usuarios[juego.usuarios.length -1].nombre+'/'+puntos);
+    $.getJSON('/puntuaciones/'+juego.usuarios[juego.usuarios.length -1].nombre+'/'+puntos,function(datos){
+        juego.usuarios = datos.usuarios;
+        console.log("Puntuacion guardada");
+    });
+}
