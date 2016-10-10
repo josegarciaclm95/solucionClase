@@ -1,0 +1,28 @@
+{
+  "name": "conquistaniveles",
+  "version": "1.0.0",
+  "description": "Juego hecho en Phaser para Procesos",
+  "main": "node-express.js",
+  "dependencies": {
+    "express": "^4.9.6",
+    "fs": "^0.0.2",
+    "mongodb": "^2.1.18",
+    "ntwitter": "^0.5.0",
+    "underscore": "^1.7.0",
+    "jasmine-node": "^1.14.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/josegarciaclm95/solucionClase.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/josegarciaclm95/solucionClase/issues"
+  },
+  "homepage": "https://github.com/josegarciaclm95/solucionClase#readme"
+}
