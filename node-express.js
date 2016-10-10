@@ -1,8 +1,8 @@
 
 var fs=require("fs");
 var config=JSON.parse(fs.readFileSync("config.json"));
-var host=config.host;
-var port=config.port;
+//var host=config.host;
+//var port=config.port;
 var exp=require("express");
 var modelo = require("./servidor/modelo.js");
 var app=exp(); 
@@ -54,6 +54,6 @@ app.get("/puntuaciones/:nombre/:puntos", function(request, response){
 });
 
 
-console.log("Servidor escuchando en el puerto "+port);
-app.listen(port,host);
+console.log("Servidor escuchando en el puerto "+process.env.PORT );
+app.listen(process.env.PORT || 1338);
 
