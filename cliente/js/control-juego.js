@@ -102,3 +102,27 @@ function salvarPuntuacion(puntos){
         console.log("Puntuacion guardada");
     });
 }
+
+function mostrarResultados(){
+    var resultadosJuego = undefined;
+    var resultJuegoHtml = "Hola mundo";
+    $.ajax({
+        url: '/resultados/',
+        dataType: 'json',
+        async: false,
+        success: function(data) {
+            resultadosJuego = data;
+        }
+    });
+    /*$.getJSON('/resultados/', function(datos){
+        console.log("Datos recibidos en getJSON");
+        console.log(datos);
+        resultadosJuego = datos;
+    });*/
+    for (var key in resultadosJuego) {
+        if (resultadosJuego.hasOwnProperty(key)) {
+            resultJuegoHtml += key + " - " + resultadosJuego[key] + "<br/>";
+        }
+    }
+    $("#resultadosContainer").append(resultJuegoHtml);
+}

@@ -25,6 +25,14 @@ app.get("/crearUsuario/:nombre", function(request, response){
 	response.send(juego);
 });
 
+app.get("/resultados/", function(request, response){
+	//Crear el usuario con el nombre recibido
+	var file = fs.readFileSync("./juego.json");
+	var data = JSON.parse(file);
+	console.log(data);
+	response.send(data);
+});
+
 app.get("/puntuaciones/:nombre/:puntos", function(request, response){
 	//Crear el usuario con el nombre recibido
 	console.log("Nombre recibido por parametros " + request.params.nombre);
