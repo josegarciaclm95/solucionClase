@@ -1,8 +1,8 @@
 
 var fs=require("fs");
 var config=JSON.parse(fs.readFileSync("config.json"));
-//var host=config.host;
-//var port=config.port;
+var host=config.host;
+var port=config.port;
 var exp=require("express");
 var modelo = require("./servidor/modelo.js");
 var app=exp(); 
@@ -35,13 +35,13 @@ app.get("/puntuaciones/:nombre/:puntos", function(request, response){
 	var file = fs.readFileSync("./juego.json");
 	var data = JSON.parse(file);
 	console.log(typeof(data[user.nombre]));
-	if(typeof(data[user.nombre]) == "undefined"){
+	/*if(typeof(data[user.nombre]) == "undefined"){
 		console.log("Creo nuevo registro");
 		data[user.nombre] = user.puntuacion;
-	} else {
-		console.log("Actualizo registro");
-		data[user.nombre] = user.puntuacion > data[user.nombre] ?  user.puntuacion : data[user.nombre]
-	}
+	} else {*/
+	console.log("Actualizo registro");
+	data[user.nombre] = user.puntuacion > data[user.nombre] ?  user.puntuacion : data[user.nombre]
+	//}
 	console.log(data);
 	fs.writeFile("./juego.json", JSON.stringify(data), function(err) {
 		if(err) {
@@ -54,6 +54,7 @@ app.get("/puntuaciones/:nombre/:puntos", function(request, response){
 });
 
 
-console.log("Servidor escuchando en el puerto "+process.env.PORT );
-app.listen(process.env.PORT || 1338);
-
+//console.log("Servidor escuchando en el puerto "+process.env.PORT );
+//app.listen(process.env.PORT || 1338);
+console.log("Servidor escuchando en el puerto "+ port );
+app.listen(port,host);

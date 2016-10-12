@@ -5,6 +5,7 @@
 var game;
 var juego;
 var player;
+var badguy;
 var platforms;
 var cursors;
 var stars;
@@ -13,7 +14,7 @@ var scoreText;
 
 function crearJuego(){
     game = new Phaser.Game(800, 600, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
-    salvarPuntuacion(0);
+    //salvarPuntuacion(0);
 }
 
 
@@ -24,6 +25,9 @@ function preload() {
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
     game.load.spritesheet('dude', 'assets/sora.png', 60, 56);
+    //game.load.spritesheet('badguy','assets/baddie.png',33,33)
+    //game.load.spritesheet('dude', 'assets/kirby.png', 56, 51);
+
     //this last funcion takes also the size we want the sprite to be.
 
 }
@@ -69,20 +73,35 @@ function create() {
     //If we set the player under the ground, it won't be able to jump
     //112 = 64 (point where the ground starts) + 62 (height of the player)
     player = game.add.sprite(38, game.world.height - 150, 'dude');
+    //badguy = game.add.sprite(50, game.world.height - 150, 'badguy');
 
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
-
+   // game.physics.arcade.enable(badguy);
     //  Player physics properties. Give the little guy a slight bounce.
     // We do this after enable some Physics 
     player.body.bounce.y = 0.2; //Bouncing of the sprite when jumping. 1 = keeps bouncing a lot. 0.2 = jump is more natural
     player.body.gravity.y = 350; //It sets the gravity that will affect the body (the height it can reach)
     player.body.collideWorldBounds = true; //Can the sprite go beyond the game borders? If it can, it CAN'T come back.
-
+    /*
+    badguy.body.bounce.y = 0.2; //Bouncing of the sprite when jumping. 1 = keeps bouncing a lot. 0.2 = jump is more natural
+    badguy.body.gravity.y = 350; //It sets the gravity that will affect the body (the height it can reach)
+    badguy.body.collideWorldBounds = true; //Can the sprite go beyond the game borders? If it can, it CAN'T come back.
+    */
     //  Our two animations, walking left and right.
-    player.animations.add('left', [3, 5, 3, 5], 8, true);
+    player.animations.add('left', [3, 5],10, true);
+    player.animations.add('right', [6, 8],10, true);
+
+    //badguy.animations.add('left', [0, 1],10, true);
+    //badguy.animations.add('right', [2, 3],10, true);
+
+    //player.animations.add('left', [4,5,6,7,8,9,10,11,12,13], 10, true);
     // Name of the animation - frames it use - time to play - use in loop (yes/no)
-    player.animations.add('right', [6, 8, 6, 8], 8, true);
+    //player.animations.add('right', [14,15,16,17,18,19,20,21,22,23], 10, true);
+
+    //player.animations.add("jumpUp",[24,25,26,27,28,29,30,31,32,33],10,true);
+    //player.animations.add("fall",[34,35,36,37,38,39,40,41,42,43],10,true);
+    //player.animations.add("stayStill",[0,1,2,3],10,true);
 
     //  Finally some stars to collect
     stars = game.add.group();
@@ -99,11 +118,11 @@ function create() {
         star.body.gravity.y = 300;
 
         //  This just gives each star a slightly random bounce value
-        star.body.bounce.y = 0.7 + Math.random() * 0.2;
+        star.body.bounce.y = 0.8 + Math.random() * 0.2;
     }
 
     //  The score
-    scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    //scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
@@ -115,13 +134,16 @@ function update() {
     //  Collide the player and the stars with the platforms
     game.physics.arcade.collide(player, platforms);
     game.physics.arcade.collide(stars, platforms);
+    //game.physics.arcade.collide(player, badguy);
+    //game.physics.arcade.collide(badguy, platforms);
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
     game.physics.arcade.overlap(player, stars, collectStar, null, this);
-
+    //game.physics.arcade.overlap(player, badguy, reduceHealth, null, this);
     //  Reset the players velocity (movement)
     player.body.velocity.x = 0;
-
+    //badguy.body.velocity.x = -180;
+    //badguy.animations.play('left');
     if (cursors.left.isDown) {
         //  Move to the left
         player.body.velocity.x = -180;
@@ -137,14 +159,18 @@ function update() {
     else {
         //  Stand still
         player.animations.stop();
+        //player.animations.play("stayStill");
         player.frame = 1;
     }
 
     //  Allow the player to jump if they are touching the ground.
     if (cursors.up.isDown && player.body.touching.down) {
         player.body.velocity.y = -350;
+        //player.animations.play("jumpUp");
     }
-
+    if (player.body.velocity.y <= 0){
+        //player.animations.play("fall");
+    }
 }
 
 function collectStar(player, star) {
@@ -154,9 +180,15 @@ function collectStar(player, star) {
 
     //  Add and update the score
     score += 10;
-    
-    scoreText.text = 'Score: ' + score;
+    actualizarPuntuacion(score);
+    //scoreText.text = 'Score: ' + score;
     if(score == 120){
         salvarPuntuacion(score);
     }
 }
+function reduceHealth(player, badguy){
+    //badguy.body.velocity.x = -(badguy.body.velocity.x);
+    actualizarVida(-1);
+}
+
+
