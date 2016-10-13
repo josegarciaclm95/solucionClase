@@ -1,4 +1,5 @@
 var fs=require("fs");
+var _ = require("underscore");
 
 function Juego(){
     this.nombre = "Niveles";
@@ -15,6 +16,11 @@ function Juego(){
             return actual_element.nombre == nombre_us;
         })[0];
     }
+    this.buscarUsuarioById = function(id){
+        return _.find(this.usuarios,function(usu){
+			return usu.id==id
+		});
+    }
 }
     
 function Nivel(num){
@@ -25,6 +31,8 @@ function Usuario(nombre){
     this.nombre = nombre;
     this.puntuacion = 0;
     this.vidas = 5;
+    this.id = new Date().valueOf();
+    this.nivel = 1;
     var file = fs.readFileSync("./juego.json");
 	var data = JSON.parse(file);
 	if(typeof(data[this.nombre]) == "undefined"){

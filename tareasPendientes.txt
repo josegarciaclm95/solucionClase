@@ -1,11 +1,7 @@
-Proyecto base
-    Llevar el modelo al servidor
-        Mover los ficheros modelo.js y modeloSpec.js al servidor. Se exportan las funciones del modulo y se importan
-        en el modelo_spec - hecho
-    Hacer test
-    Pedir jugador
-    Mostrar información
-    Revisar (código, modelos, diseños, carpetas, etc.)
-
+Usar cookies para que un jugador, hasta que no termine la sesion, entre sin que se le pida otra vez el nombre
+Añadirle un id al usuario con una marca temporal, aunque luego de eso se encargue la base de datos
+Libreria underscore para busquedas
+Hacer adaptaciones para usar cookies 
+Las estrellas tienen que quitar vidas
     --Si hacemos alguna tarea de personalización, añadirlo como tarea
 

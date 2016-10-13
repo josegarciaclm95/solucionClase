@@ -1,0 +1,27 @@
+.infoPersonaje {
+    font-family: 'Raleway',sans-serif; 
+    font-size: 30px; 
+    font-weight: 800; 
+    line-height: 72px; 
+    margin-left: 15px;
+    text-transform: uppercase; 
+}
+ul {
+    display: block;
+    list-style-type: disc;
+}
+li {
+    list-style: none;
+}
+li .normal{
+    font-family: 'Raleway',sans-serif; 
+    font-size: 30px; 
+    line-height: 10px; 
+    margin-left: 15px;
+}
+ul .vidas {
+    list-style-type: none;
+}
+ul.vidas li {
+    display: inline;
+}

@@ -61,8 +61,18 @@ app.get("/puntuaciones/:nombre/:puntos", function(request, response){
 	response.send(juego);
 });
 
+ app.get('/comprobarUsuario/:id', function(request, response){
+	 var id = request.params.id;
+	 var usuario = juego.buscarUsuarioById(id);
+	 if (usuario == undefined) {
+		 response.send({'nivel':-1});
+	 } else {
+		 response.send({'nivel':usuario.nivel, 'vidas':5});
+	 }
+
+ });
 
 //console.log("Servidor escuchando en el puerto "+process.env.PORT );
-app.listen(process.env.PORT || port);
-console.log("Servidor escuchando en el puerto "+ process.env.PORT );
-//app.listen(port,host);
+//app.listen(process.env.PORT || port);
+console.log("Servidor escuchando en el puerto "+ port );
+app.listen(port,host);

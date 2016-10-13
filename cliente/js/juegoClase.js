@@ -7,13 +7,28 @@ var juego;
 var player;
 var badguy;
 var platforms;
+var cielo;
 var cursors;
 var stars;
 var score = 0;
 var scoreText;
 
+
+function crearNivel(nivel){
+    switch(nivel){
+        case '1':
+             game = new Phaser.Game(800, 600, Phaser.AUTO, 'juegoId', { preload: preload, create: create0, update: update });
+        break;
+        case '2':
+
+        break;
+        default:
+            noHayNiveles();
+        break;
+    }
+}
 function crearJuego(){
-    game = new Phaser.Game(800, 600, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
+    game = new Phaser.Game(800, 600, Phaser.AUTO, 'juegoId', { preload: preload, create: create0, update: update });
     //salvarPuntuacion(0);
 }
 
@@ -22,7 +37,9 @@ function crearJuego(){
 //load methods (load.image, load.audio...) inserts this key-value in queue of elements that will be loaded on create
 function preload() {
     game.load.image('sky', 'assets/sky.png');
+    game.load.image('heaven', 'assets/heaven.png');
     game.load.image('ground', 'assets/platform.png');
+    game.load.image('ground2', 'assets/platform2.png');
     game.load.image('star', 'assets/star.png');
     game.load.spritesheet('dude', 'assets/sora.png', 60, 56);
     //game.load.spritesheet('badguy','assets/baddie.png',33,33)
@@ -32,7 +49,7 @@ function preload() {
 
 }
 
-function create() {
+function create0() {
 
     //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -44,24 +61,24 @@ function create() {
     // A group is a container. Putting stuff in groups allows us to apply some changes to every child in the group
     // with a single command. The call return us the group to work with it.
     platforms = game.add.group();
-
+    cielo = game.add.group();
     //  We will enable physics for any object that is created in this group. If we set it after inserting the sprites, it
     // won't have effect. SET BEFORE ADDING ANYTHING.
     platforms.enableBody = true;
-
+    cielo.enableBody = true;
     // Here we create the ground.
     // Create works like the add method used before
     // World property from game is a space that conteins the whole game (sprites, images) and properties
     var ground = platforms.create(0, game.world.height - 64, 'ground');
-
+    var heav = cielo.create(0, -25, 'heaven');
     //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
     // scale is a ScaleManager to set the size.
     // setTo does xSize * FirstParameter, ySize * Second
     ground.scale.setTo(2, 2);
-
+    heav.scale.setTo(3,1);
     //  This stops it from falling away when you jump on it
     ground.body.immovable = true;
-
+    heav.body.immovable = true;
     //  Now let's create two ledges
     var ledge = platforms.create(400, 400, 'ground');
     ledge.body.immovable = true;
@@ -69,6 +86,8 @@ function create() {
     ledge = platforms.create(-150, 250, 'ground');
     ledge.body.immovable = true;
 
+    ledge = platforms.create(300, 150, 'ground2');
+    ledge.body.immovable = true;
     // The player and its settings
     //If we set the player under the ground, it won't be able to jump
     //112 = 64 (point where the ground starts) + 62 (height of the player)
@@ -110,9 +129,9 @@ function create() {
     stars.enableBody = true;
 
     //  Here we'll create 12 of them evenly spaced apart
-    for (var i = 0; i < 12; i++) {
+    for (var i = 0; i <20; i++) {
         //  Create a star inside of the 'stars' group
-        var star = stars.create(i * 70, 0, 'star');
+        var star = stars.create((i * 40) % 600, 0, 'star');
 
         //  Let gravity do its thing
         star.body.gravity.y = 300;
@@ -134,11 +153,14 @@ function update() {
     //  Collide the player and the stars with the platforms
     game.physics.arcade.collide(player, platforms);
     game.physics.arcade.collide(stars, platforms);
+    game.physics.arcade.collide(stars, cielo);
+    //game.physics.arcade.collide(player, cielo);
     //game.physics.arcade.collide(player, badguy);
     //game.physics.arcade.collide(badguy, platforms);
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
     game.physics.arcade.overlap(player, stars, collectStar, null, this);
+    game.physics.arcade.overlap(player, cielo, nextLevel, null, this);
     //game.physics.arcade.overlap(player, badguy, reduceHealth, null, this);
     //  Reset the players velocity (movement)
     player.body.velocity.x = 0;
@@ -191,4 +213,10 @@ function reduceHealth(player, badguy){
     actualizarVida(-1);
 }
 
+function nextLevel(player, heaven){
+    console.log("Nivel completado");
+    $("#juegoId").remove();
+    alert("Has ganado!!!");
+    game = null;
+}
 
