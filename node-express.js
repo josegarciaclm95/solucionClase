@@ -1,4 +1,12 @@
-
+/**********************************************************************
+ * "/" - Se responde con el index
+ * "/crearUsuario/nombre" - Crea el usuario y devuelve el juego junto con sus datos. Dentro de agregarUsuario() se crea
+ * su registro en el fichero juego.json, con miras a ahorrar comprobaciones cuando se guarde su score
+ * "/resultados/" - Lee el contenido de juego.json
+ *
+ * *
+ *
+ **********************************************************************/
 var fs=require("fs");
 var config=JSON.parse(fs.readFileSync("config.json"));
 var host=config.host;
@@ -22,7 +30,7 @@ app.get("/crearUsuario/:nombre", function(request, response){
 	var usuario = new modelo.Usuario(request.params.nombre);
 	juego.agregarUsuario(usuario);
 	console.log("Nombre: " + request.params.nombre);
-	response.send(juego);
+	response.send(usuario);
 });
 
 app.get("/resultados/", function(request, response){
@@ -43,10 +51,7 @@ app.get("/puntuaciones/:nombre/:puntos", function(request, response){
 	var file = fs.readFileSync("./juego.json");
 	var data = JSON.parse(file);
 	console.log(typeof(data[user.nombre]));
-	/*if(typeof(data[user.nombre]) == "undefined"){
-		console.log("Creo nuevo registro");
-		data[user.nombre] = user.puntuacion;
-	} else {*/
+
 	console.log("Actualizo registro");
 	data[user.nombre] = user.puntuacion > data[user.nombre] ?  user.puntuacion : data[user.nombre]
 	//}
@@ -58,7 +63,7 @@ app.get("/puntuaciones/:nombre/:puntos", function(request, response){
     	console.log("The file was saved!");
 	}); 
 	console.log("Usuario actualizado");
-	response.send(juego);
+	response.send(user);
 });
 
  app.get('/comprobarUsuario/:id', function(request, response){
@@ -67,7 +72,7 @@ app.get("/puntuaciones/:nombre/:puntos", function(request, response){
 	 if (usuario == undefined) {
 		 response.send({'nivel':-1});
 	 } else {
-		 response.send({'nivel':usuario.nivel, 'vidas':5});
+		 response.send({'nivel':usuario.nivel, 'vidas':usuario.vidas});
 	 }
 
  });

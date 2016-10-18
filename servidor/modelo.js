@@ -32,12 +32,12 @@ function Usuario(nombre){
     this.puntuacion = 0;
     this.vidas = 5;
     this.id = new Date().valueOf();
-    this.nivel = 1;
+    this.nivel = 0;
     var file = fs.readFileSync("./juego.json");
 	var data = JSON.parse(file);
 	if(typeof(data[this.nombre]) == "undefined"){
         data[this.nombre] = 0;
-        this.record = 0;
+        this.puntuacion = 0;
 	} else {
 		this.puntuacion = data[this.nombre];
 	}
