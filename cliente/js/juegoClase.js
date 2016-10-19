@@ -16,7 +16,7 @@ var stars;
 var score = 0;
 var scoreText;
 var lastKeyPress = undefined;
-
+var explosions;
 
 function crearNivel(nivel){
     switch(nivel){
@@ -44,6 +44,7 @@ function preload() {
     game.load.image('ground2', 'assets/platform2.png');
     game.load.image('star', 'assets/star.png');
     game.load.spritesheet('dude', 'assets/sora.png', 60, 56);
+    game.load.spritesheet('boom','assets/explosion.png',102,100);
 }
 
 function create0() {
@@ -88,15 +89,24 @@ function create0() {
         star.body.gravity.y = 300;
         star.body.bounce.y = 0.8 + Math.random() * 0.2;
     }
+    explosions = game.add.group();
+    explosions.createMultiple(30, 'boom');
+    explosions.forEach(setupExplosions, this);
+
     cursors = game.input.keyboard.createCursorKeys();
+}
+
+function setupExplosions(expl){
+    expl.animations.add("boom");
 }
 
 function update() {
 
     game.physics.arcade.collide(player, platforms);
-    game.physics.arcade.collide(stars, platforms);
+    //game.physics.arcade.collide(stars, platforms);
     game.physics.arcade.collide(stars, cielo);
 
+    game.physics.arcade.overlap(stars,platforms,killStar,null,this);
     game.physics.arcade.overlap(player, stars, collectStar, null, this);
     game.physics.arcade.overlap(player, cielo, nextLevel, null, this);
 
@@ -118,6 +128,20 @@ function update() {
     if (cursors.up.isDown && player.body.touching.down) {
         player.body.velocity.y = -350;
     }
+}
+
+function killStar(star,platform){
+    star.kill();
+    var explosion = explosions.getFirstExists(false);
+    explosion.reset(star.body.x, star.body.y-50);
+    explosion.play('boom', 30, false, true);
+    crearNuevaEstrella();
+}
+
+function crearNuevaEstrella(){
+    var x=Math.floor(Math.random()*765+1);
+    var strella = stars.create(x, 0, 'star');
+    strella.body.gravity.y = 50;
 }
 
 function collectStar(player, star) {
