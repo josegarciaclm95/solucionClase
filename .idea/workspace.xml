@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="62562fad-b1c4-4a67-ab81-633356338eaa" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cliente/js/juegoClase.js" afterPath="$PROJECT_DIR$/cliente/js/juegoClase.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/juego.json" afterPath="$PROJECT_DIR$/juego.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node-express.js" afterPath="$PROJECT_DIR$/node-express.js" />
     </list>
     <ignored path="Solucion.iws" />
@@ -25,11 +27,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="node-express.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="node-express.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/node-express.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="487">
-              <caret line="82" column="2" selection-start-line="82" selection-start-column="2" selection-end-line="82" selection-end-column="2" />
+            <state relative-caret-position="1360">
+              <caret line="80" column="2" selection-start-line="80" selection-start-column="2" selection-end-line="80" selection-end-column="2" />
               <folding />
             </state>
           </provider>
@@ -71,11 +73,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="juegoClase.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="juegoClase.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cliente/js/juegoClase.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="254">
-              <caret line="135" column="47" selection-start-line="135" selection-start-column="47" selection-end-line="135" selection-end-column="47" />
+            <state relative-caret-position="425">
+              <caret line="46" column="59" selection-start-line="46" selection-start-column="59" selection-end-line="46" selection-end-column="59" />
               <folding>
                 <element signature="e#45#87#0" expanded="false" />
               </folding>
@@ -136,8 +138,8 @@
         <option value="$PROJECT_DIR$/cliente/index.html" />
         <option value="$PROJECT_DIR$/cliente/js/control-juego.js" />
         <option value="$PROJECT_DIR$/cliente/js/juego-json.js" />
-        <option value="$PROJECT_DIR$/cliente/js/juegoClase.js" />
         <option value="$PROJECT_DIR$/node-express.js" />
+        <option value="$PROJECT_DIR$/cliente/js/juegoClase.js" />
       </list>
     </option>
   </component>
@@ -333,12 +335,12 @@
       <workItem from="1476554175653" duration="8000" />
       <workItem from="1476561189522" duration="6813000" />
       <workItem from="1476606311015" duration="1188000" />
-      <workItem from="1476895732464" duration="1312000" />
+      <workItem from="1476895732464" duration="2658000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="15225000" />
+    <option name="totallyTimeSpent" value="16571000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -673,16 +675,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cliente/js/juegoClase.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
-          <caret line="135" column="47" selection-start-line="135" selection-start-column="47" selection-end-line="135" selection-end-column="47" />
-          <folding>
-            <element signature="e#45#87#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/cliente/js/builder-json.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -711,9 +703,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/node-express.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="487">
-          <caret line="82" column="2" selection-start-line="82" selection-start-column="2" selection-end-line="82" selection-end-column="2" />
+        <state relative-caret-position="1360">
+          <caret line="80" column="2" selection-start-line="80" selection-start-column="2" selection-end-line="80" selection-end-column="2" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cliente/js/juegoClase.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="46" column="59" selection-start-line="46" selection-start-column="59" selection-end-line="46" selection-end-column="59" />
+          <folding>
+            <element signature="e#45#87#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

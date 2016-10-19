@@ -44,7 +44,8 @@ function preload() {
     game.load.image('ground2', 'assets/platform2.png');
     game.load.image('star', 'assets/star.png');
     game.load.spritesheet('dude', 'assets/sora.png', 60, 56);
-    game.load.spritesheet('boom','assets/explosion.png',102,100);
+    game.load.spritesheet('boom','assets/explosion.png',100,100);
+    //game.load.spritesheet('boom','assets/explosion2.png',269,264);
 }
 
 function create0() {
