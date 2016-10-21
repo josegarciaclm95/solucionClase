@@ -14,7 +14,10 @@ var cielo;
 var cursors;
 var stars;
 var score = 0;
+var vidasText;
+var tiempoText;
 var scoreText;
+var timer;
 var lastKeyPress = undefined;
 var explosions;
 
@@ -73,6 +76,7 @@ function create0() {
     ledge.body.immovable = true;
 
     player = game.add.sprite(38, game.world.height - 150, 'dude');
+    player.vidas = 5;
     game.physics.arcade.enable(player);
 
     player.body.bounce.y = 0.2; //Bouncing of the sprite when jumping. 1 = keeps bouncing a lot. 0.2 = jump is more natural
@@ -86,8 +90,8 @@ function create0() {
     stars.enableBody = true;
 
     for (var i = 0; i <20; i++) {
-        var star = stars.create((i * 40) % 600, 0, 'star');
-        star.body.gravity.y = 300;
+        var star = stars.create((i * 60) % 600, 0, 'star');
+        star.body.gravity.y = 50;
         star.body.bounce.y = 0.8 + Math.random() * 0.2;
     }
     explosions = game.add.group();
@@ -95,6 +99,11 @@ function create0() {
     explosions.forEach(setupExplosions, this);
 
     cursors = game.input.keyboard.createCursorKeys();
+    scoreText = game.add.text(16, 22, 'Vidas: 5', { fontSize: '32px', fill: '#000' });
+
+    tiempoText = game.add.text(game.world.width-170,22,'Tiempo:0',{ fontSize: '32px', fill: '#000' });
+    tiempo = 0;
+    timer = game.time.events.loop(Phaser.Timer.SECOND,updateTiempo,this);
 }
 
 function setupExplosions(expl){
@@ -105,7 +114,7 @@ function update() {
 
     game.physics.arcade.collide(player, platforms);
     //game.physics.arcade.collide(stars, platforms);
-    game.physics.arcade.collide(stars, cielo);
+    //game.physics.arcade.collide(stars, cielo);
 
     game.physics.arcade.overlap(stars,platforms,killStar,null,this);
     game.physics.arcade.overlap(player, stars, collectStar, null, this);
@@ -147,8 +156,15 @@ function crearNuevaEstrella(){
 
 function collectStar(player, star) {
     star.kill();
+    player.vidas -= 1;
+    actualizarVida(-1);
     score += 10;
     actualizarPuntuacion(score);
+    scoreText.text = 'Vidas: ' + player.vidas;
+    if (player.vidas==0){
+        player.kill();
+        game.time.events.remove(timer);
+    }
     if(score == 120){
         salvarPuntuacion(score);
     }
@@ -157,11 +173,19 @@ function reduceHealth(player, badguy){
     actualizarVida(-1);
 }
 
+function updateTiempo(){
+    tiempo++;
+    tiempoText.setText('Tiempo: '+tiempo);
+}
+
 function nextLevel(player, heaven){
     console.log("Nivel completado");
     $("#juegoId").remove();
     $("#juegoContainer").append('<span class="infoPersonaje">¡¡¡HAS GANADO!!!</span>');
     //alert("Has ganado!!!");
     game = null;
+    player.kill();
+    game.time.events.remove(timer);
+    nivelCompletado(tiempo);
 }
 

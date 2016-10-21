@@ -1,0 +1,27 @@
+{
+"nivel1":{
+    "platforms":[{
+        "asset":"ground",
+        "x":400,
+        "y":400
+        }, {
+        "asset":"ground",
+        "x":-150,
+        "y":250
+        }, {
+        "asset":"ground",
+        "x":300,
+        "y":150
+        }
+    ],
+    "dude":{
+
+    }
+},
+"nivel2": {
+"platforms": [],
+"dude": {
+
+    }
+  }
+}

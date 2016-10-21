@@ -15,11 +15,27 @@ var exp=require("express");
 var modelo = require("./servidor/modelo.js");
 var app=exp(); 
 var juego = new modelo.Juego();
+var usuariosCol;
+var MongoClient = require('mongodb');
 
 //app.use(app.router);
 app.use(exp.static(__dirname +"/cliente/"));
 
+app.get("/mierdaPrueba/",function(request,response){
+	var jsa = JSON.parse(fs.readFileSync("./cliente/js/juego-json.json"));
+	response.send(jsa);
+});
+
+app.get("/datosJuego/:nivel",function(request,response){
+	var jsa = JSON.parse(fs.readFileSync("./cliente/js/juego-json.json"));
+	response.send(jsa[request.params.nivel]);
+});
 app.get("/",function(request,response){
+	//var jsa = JSON.parse(fs.readFileSync("./cliente/js/juego-json.json"));
+	console.log("Inicio de página");
+	//console.log(jsa.nivel1);
+	//console.log(jsa.nivel1.platforms);
+    //insertar({nombre:"Pepe",email:"pe@pe.com",clave:"pepe"});
 	var contenido=fs.readFileSync("./cliente/index.html");
 	response.setHeader("Content-type","text/html");
 	response.send(contenido);
@@ -81,3 +97,32 @@ app.get("/puntuaciones/:nombre/:puntos", function(request, response){
 //app.listen(process.env.PORT || port);
 console.log("Servidor escuchando en el puerto "+ port );
 app.listen(port,host);
+
+
+assert = require('assert');
+// Connection URL
+var urlM = 'mongodb://localhost:27017/';
+/*
+var db = new MongoClient.Db("usuarioscn", new MongoClient.Server("127.0.0.1","27017",{}));
+
+db.open(function(err){
+   console.log("Conectando a Mongo: usuarioscn");
+    db.collection("usuarios",function (err,col) {
+        console.log("Tenemos la colección");
+        usuariosCol = col;
+    });
+});
+
+
+//insertar({nombre:"Pepe",email:"pe@pe.com",clave:"pepe"});
+
+function insertar(usu){
+    usuariosCol.insert(usu, function (err){
+        if(err){
+            console.log(err);
+        } else {
+            console.log("Nuevo usuario creado");
+        }
+    })
+}
+*/
