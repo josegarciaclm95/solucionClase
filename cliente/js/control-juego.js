@@ -1,7 +1,8 @@
 //Funciones que modifican el index
-var sora = undefined;
-var maxVida = undefined;
+var vidas = undefined;
+var maxVidas = undefined;
 var usuarioDevuelto = undefined;
+
 //var url = "https://juegoprocesos.herokuapp.com/";
 //var url = "http://localhost:1338/";
 /**
@@ -73,34 +74,11 @@ function SetGame() {
 }
 
 /**
- * Pedimos info de jugador al servidor y la presentamos en el Panel de control usando jQuery
- * @param jugador
- */
-/*
-function mostrarInfoJuego(jugador){
-    sora = jugador;
-    maxVida = sora.vidas;
-    var infoJuegoHtml = '';
-    infoJuegoHtml += '<ul><li><span class="infoPersonaje">Nombre</span></li>';
-    infoJuegoHtml += '<li id="nombreJug"><span class="normal">' + sora.nombre + '</span></li>';
-    infoJuegoHtml += '<li><span class="infoPersonaje">Vidas</span></li>';
-    infoJuegoHtml += '<ul class="vidas" id="vidasJug">';
-    for(var i = 0; i <sora.vidas ; i++){
-        infoJuegoHtml += '<li><img style="height:40px; width:40px" src="./assets/live.png"></li>';
-    }
-    infoJuegoHtml += '</ul>';
-    infoJuegoHtml += '<li><span class="infoPersonaje">Puntuación</span></li>';
-    infoJuegoHtml += '<li id="puntosJug"><span class="normal">0</span></li>';
-    infoJuegoHtml += '</ul>';
-    $('#infoJuego').append(infoJuegoHtml);
-}
-*/
-
-/**
  * Haciendo uso de una cookie previa, presentamos la info del jugador (tras haber actualizado la cookie)
  */
 function mostrarInfoJuego2() {
     maxVida = $.cookie("vidas");
+    vidas = $.cookie("vidas");
     var infoJuegoHtml = '';
     infoJuegoHtml += '<ul><li><span class="infoPersonaje">Nombre</span></li>';
     infoJuegoHtml += '<li id="nombreJug"><span class="normal">' + $.cookie("nombre") + '</span></li>';
@@ -131,44 +109,53 @@ function siguienteNivel() {
         crearNivel($.cookie("nivel"));
     });
 }
+
 /**
  * Modifica la info de juego de la página
  * @param score
- */
+ 
 function actualizarPuntuacion(score) {
     $("#puntosJug").contents().text(score);
 }
+*/
 
 /**
  * Elimina o añade corazones según el usuario ha cogido vida
  * @param vida
- */
+
 function actualizarVida(vida) {
-    console.log(vida + " , " + sora.vidas + " , " + maxVida);
+    console.log(vida + " , " + vidas + " , " + maxVidas);
     if (vida > 0) {
-        for (var i = 0; i < vida && i <= maxVida; i++) {
+        for (var i = 0; i < vida && i <= maxVidas; i++) {
             $('#vidasJug').append('<img style="height:40px; width:40px" src="./assets/live.png">');
-            //sora.vidas += 1;
         }
     } else {
         if (vida < 0) {
             console.log("Vida negativa");
-            for (var i = 0; i < -vida && sora.vidas >= 0; i++) {
+            for (var i = 0; i < -vida && vidas >= 0; i++) {
                 $("#vidasJug li").first().remove();
                 console.log("Eliminado corazon");
-                sora.vidas -= 1;
             }
         }
     }
 
 }
+ */
 
 function nivelCompletado(tiempo) {
     //game.destroy();
     game.destroy();
     $('#juegoId').append("<h2 id='enh'>Enhorabuena!</h2>");
-    //comunicarNivelCompletado(tiempo);
+    comunicarNivelCompletado(tiempo);
     //obtenerResultados();
+}
+
+function comunicarNivelCompletado(tiempo){
+	var id=$.cookie("id");
+	$.getJSON('/nivelCompletado/'+id+"/"+tiempo,function(datos){
+			$.cookie("nivel",datos.nivel);
+			mostrarInfoJugador2();
+	});	
 }
 
 //Funciones de comunicación
@@ -238,7 +225,7 @@ function comprobarUsuario() {
     var id = $.cookie("id");
     console.log("Comprobando un usuario");
     $.getJSON('/comprobarUsuario/' + id, function (datos) {
-        if (datos.nivel < 0) {
+        if (datos.nivel < 1) {
             console.log("El usuario no existe");
             borrarCookies();
             mostrarCabecera();
