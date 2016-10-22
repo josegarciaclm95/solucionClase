@@ -79,20 +79,18 @@ function SetGame() {
 function mostrarInfoJuego2() {
     maxVida = $.cookie("vidas");
     vidas = $.cookie("vidas");
-    var infoJuegoHtml = '';
-    infoJuegoHtml += '<ul><li><span class="infoPersonaje">Nombre</span></li>';
-    infoJuegoHtml += '<li id="nombreJug"><span class="normal">' + $.cookie("nombre") + '</span></li>';
-    infoJuegoHtml += '<li><span class="infoPersonaje">Vidas</span></li>';
-    infoJuegoHtml += '<ul class="vidas" id="vidasJug">';
-    for (var i = 0; i < maxVida; i++) {
-        infoJuegoHtml += '<li><img style="height:40px; width:40px" src="./assets/live.png"></li>';
-    }
-    infoJuegoHtml += '</ul>';
-    infoJuegoHtml += '<li><span class="infoPersonaje">Puntuación</span></li>';
-    infoJuegoHtml += '<li id="puntosJug"><span class="normal">0</span></li>';
-    infoJuegoHtml += '</ul>';
-    $('#infoJuego').append(infoJuegoHtml);
-    siguienteNivel();
+    var nombre=$.cookie("nombre");
+	var id=$.cookie("id");
+	var nivel=$.cookie("nivel");
+	var percen=Math.floor((nivel/3)*100);
+	$('#datos').remove();
+	$('#cabeceraP').remove();
+	$('#cabecera').remove();
+	$('#prog').remove();
+	$('#control').append('<div id="cabecera"><h2>Panel</h2></div>')
+	$('#control').append('<div id="datos"><h4>Nombre: '+nombre+'<br />Nivel: '+nivel+'</h4></div>');
+	$('#control').append('<div class="progress" id="prog"><div class="progress-bar" aria-valuemin="0" aria-valuemax="100" style="width:'+percen+'%">'+percen+'%</div></div>');
+	siguienteNivel();
 }
 
 /**
@@ -105,57 +103,49 @@ function siguienteNivel() {
         $(this).remove();
         $("#juegoId").remove();
         $("#enh").remove();
+		$('#res').remove();
+  		$('#resultados').remove();
         $("#juegoContainer").append('<div id="juegoId"></div>');
         crearNivel($.cookie("nivel"));
     });
 }
-
-/**
- * Modifica la info de juego de la página
- * @param score
- 
-function actualizarPuntuacion(score) {
-    $("#puntosJug").contents().text(score);
-}
-*/
-
-/**
- * Elimina o añade corazones según el usuario ha cogido vida
- * @param vida
-
-function actualizarVida(vida) {
-    console.log(vida + " , " + vidas + " , " + maxVidas);
-    if (vida > 0) {
-        for (var i = 0; i < vida && i <= maxVidas; i++) {
-            $('#vidasJug').append('<img style="height:40px; width:40px" src="./assets/live.png">');
-        }
-    } else {
-        if (vida < 0) {
-            console.log("Vida negativa");
-            for (var i = 0; i < -vida && vidas >= 0; i++) {
-                $("#vidasJug li").first().remove();
-                console.log("Eliminado corazon");
-            }
-        }
-    }
-
-}
- */
 
 function nivelCompletado(tiempo) {
     //game.destroy();
     game.destroy();
     $('#juegoId').append("<h2 id='enh'>Enhorabuena!</h2>");
     comunicarNivelCompletado(tiempo);
-    //obtenerResultados();
+    obtenerResultados();
 }
 
 function comunicarNivelCompletado(tiempo){
 	var id=$.cookie("id");
 	$.getJSON('/nivelCompletado/'+id+"/"+tiempo,function(datos){
 			$.cookie("nivel",datos.nivel);
-			mostrarInfoJugador2();
+			mostrarInfoJuego2();
 	});	
+}
+
+function obtenerResultados(){
+	var id=$.cookie("id");
+	$.getJSON('/obtenerResultados/'+id,function(datos){
+			//$.cookie("nivel",datos.nivel);
+			mostrarResultados(datos);
+	});
+}
+
+function mostrarResultados(datos){
+  //eliminarGame();
+  //eliminarCabeceras();
+  $('#res').remove();
+  $('#resultados').remove();
+  $('#juegoId').append('<h3 id="res">Resultados</h3>');
+  var cadena="<table id='resultados' class='table table-bordered table-condensed'><tr><th>Nombre</th><th>Nivel</th><th>Tiempo</th></tr>";
+    for(var i=0;i<datos.length;i++){
+      cadena=cadena+"<tr><td>"+datos[i].nombre+"</td><td> "+datos[i].nivel+"</td>"+"</td><td> "+datos[i].tiempo+"</td></tr>";      
+    }
+    cadena=cadena+"</table>";
+    $('#juegoId').append(cadena);
 }
 
 //Funciones de comunicación
@@ -172,7 +162,7 @@ function crearUsuario(nombre) {
         console.log("Datos recibidos en getJSON");
         //juego = datos;
         usuarioDevuelto = datos;
-        crearJuego();
+        //crearJuego();
         console.log(datos);
         $.cookie('nombre', datos.nombre);
         $.cookie('id', datos.id);
@@ -246,4 +236,18 @@ function borrarCookies() {
     $.removeCookie('id');
     $.removeCookie('nivel');
     $.removeCookie('vidas');
+}
+
+function noHayNiveles(){
+	$('#juegoId').append("<h2 id='enh'>Lo siento, no tenemos más niveles</h2>");
+	$('#control').append('<button type="button" id="siguienteBtn" class="btn btn-primary btn-md">Volver a empezar</button>')
+	$('#siguienteBtn').on('click',function(){
+		$('#siguienteBtn').remove();
+		reset();
+	});
+}
+
+function reset(){
+	borrarCookies();
+	mostrarCabecera();
 }
