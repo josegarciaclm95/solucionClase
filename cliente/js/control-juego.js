@@ -20,13 +20,13 @@ function inicio() {
 }
 
 function mierdaPrueba() {
-    $.getJSON('/mierdaPrueba/', function (datos) {
-        console.log(datos);
-        a = "nivel1";
-	    console.log(datos.nivel1.platforms);
-        datos.nivel1.platforms.push(1);
-        for (p in datos[a].platforms){
-            console.log(datos.nivel1.platforms[p]);
+    $.getJSON('/resultados/', function (datos) {
+        console.log(JSON.stringify(datos));
+        //a = "nivel1";
+	    //console.log(datos.nivel1.platforms);
+        //datos.nivel1.platforms.push(1);
+        for (p in datos){
+            console.log(datos[p].user);
         }
         
     });
@@ -192,7 +192,7 @@ function salvarPuntuacion(puntos) {
  */
 function mostrarResultados() {
     var resultadosJuego = undefined;
-    var resultJuegoHtml = "Hola mundo";
+    var resultJuegoHtml = "";
     //Prueba con otro método
     $.ajax({
         url: '/resultados/',
@@ -203,9 +203,7 @@ function mostrarResultados() {
         }
     });
     for (var key in resultadosJuego) {
-        if (resultadosJuego.hasOwnProperty(key)) {
-            resultJuegoHtml += key + " - " + resultadosJuego[key] + "<br/>";
-        }
+        resultJuegoHtml += resultadosJuego[key].user + " - " + resultadosJuego[key].score + "<br/>";
     }
     $("#resultadosContainer").append(resultJuegoHtml);
 }

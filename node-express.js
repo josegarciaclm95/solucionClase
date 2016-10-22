@@ -27,8 +27,9 @@ app.get("/mierdaPrueba/", function (request, response) {
 });
 
 app.get("/datosJuego/:nivel", function (request, response) {
+	console.log("Llamada a /datosJuego/" + request.params.nivel);
 	var jsa = JSON.parse(fs.readFileSync("./cliente/js/juego-json.json"));
-	console.log(jsa[request.params.nivel]);
+	console.log("Respuesta es -> " + jsa[request.params.nivel]);
 	console.log(request.params.nivel);
 	response.send(jsa[request.params.nivel]);
 });
@@ -54,8 +55,8 @@ app.get("/crearUsuario/:nombre", function (request, response) {
 app.get("/resultados/", function (request, response) {
 	var file = fs.readFileSync("./juego.json");
 	var data = JSON.parse(file);
-	console.log(data);
-	response.send(data);
+	console.log(data.puntuaciones);
+	response.send(data.puntuaciones);
 });
 
 /*
@@ -107,13 +108,9 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 		result.user = usuario.nombre;
 		result.score = usuario.tiempo;
 		var data = JSON.parse(fs.readFileSync("./juego.json"));
-		//data.puntuaciones.push(1);
-		console.log("Contenido de fichero ->\n" + data);
-		console.log("Puntuaciones guardadas ->\n" + data.puntuaciones);
 		var userRecord = data.puntuaciones.filter(function(jsonEl){
 			return jsonEl.user == usuario.nombre;
 		});
-		console.log(userRecord);
 		if(userRecord.length == 0){
 			data.puntuaciones.push(result);
 			console.log("Puntuaciones guardadas tras push ->\n" + data.puntuaciones);
@@ -122,7 +119,6 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 				userRecord[0].score = tiempo;
 			} 
 		}
-		console.log(data);
 		fs.writeFile("./juego.json", JSON.stringify(data), function (err) {
 			if (err) {
 				return console.log(err);

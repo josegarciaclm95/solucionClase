@@ -25,3 +25,7 @@ ul .vidas {
 ul.vidas li {
     display: inline;
 }
+
+#resultadosContainer {
+    font-size: 20px;
+}
