@@ -28,6 +28,8 @@ app.get("/mierdaPrueba/", function (request, response) {
 
 app.get("/datosJuego/:nivel", function (request, response) {
 	var jsa = JSON.parse(fs.readFileSync("./cliente/js/juego-json.json"));
+	console.log(jsa[request.params.nivel]);
+	console.log(request.params.nivel);
 	response.send(jsa[request.params.nivel]);
 });
 app.get("/", function (request, response) {
@@ -90,29 +92,34 @@ app.get('/comprobarUsuario/:id', function (request, response) {
 	} else {
 		response.send({ 'nivel': usuario.nivel, 'vidas': usuario.vidas });
 	}
-
 });
 
 app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 	var id = request.params.id;
 	var tiempo = request.params.tiempo;
 	var usuario = juego.buscarUsuarioById(id);
+	console.log(id + " - " + tiempo + " - " + usuario);
 	usuario.nivel += 1;
+	console.log(usuario.nivel);
 	usuario.tiempo = tiempo;
 	if (usuario != undefined) {
 		var result = {}
 		result.user = usuario.nombre;
-		result.score = usuario.tiempo = tiempo;
-		var file = fs.readFileSync("./juego.json");
-		var data = JSON.parse(file);
+		result.score = usuario.tiempo;
+		var data = JSON.parse(fs.readFileSync("./juego.json"));
+		//data.puntuaciones.push(1);
+		console.log("Contenido de fichero ->\n" + data);
+		console.log("Puntuaciones guardadas ->\n" + data.puntuaciones);
 		var userRecord = data.puntuaciones.filter(function(jsonEl){
-			return jsonEl.user == usuario.nombre
+			return jsonEl.user == usuario.nombre;
 		});
-		if(userRecord == undefined){
+		console.log(userRecord);
+		if(userRecord.length == 0){
 			data.puntuaciones.push(result);
+			console.log("Puntuaciones guardadas tras push ->\n" + data.puntuaciones);
 		} else {
-			if (userRecord.score > tiempo){
-				userRecord.score = tiempo;
+			if (userRecord[0].score > tiempo){
+				userRecord[0].score = tiempo;
 			} 
 		}
 		console.log(data);
@@ -123,6 +130,7 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 			console.log("The file was saved!");
 		});
 	}
+	console.log("Nuevo nivel es ->" + usuario.nivel);
 	response.send({'nivel':usuario.nivel});
 });
 

@@ -24,9 +24,11 @@ function mierdaPrueba() {
         console.log(datos);
         a = "nivel1";
 	    console.log(datos.nivel1.platforms);
+        datos.nivel1.platforms.push(1);
         for (p in datos[a].platforms){
             console.log(datos.nivel1.platforms[p]);
         }
+        
     });
 }
 
@@ -82,14 +84,14 @@ function mostrarInfoJuego2() {
     var nombre=$.cookie("nombre");
 	var id=$.cookie("id");
 	var nivel=$.cookie("nivel");
-	var percen=Math.floor((nivel/3)*100);
+	var percen=Math.floor(((nivel-1)/3)*100);
 	$('#datos').remove();
 	$('#cabeceraP').remove();
 	$('#cabecera').remove();
 	$('#prog').remove();
 	$('#control').append('<div id="cabecera"><h2>Panel</h2></div>')
 	$('#control').append('<div id="datos"><h4>Nombre: '+nombre+'<br />Nivel: '+nivel+'</h4></div>');
-	$('#control').append('<div class="progress" id="prog"><div class="progress-bar" aria-valuemin="0" aria-valuemax="100" style="width:'+percen+'%">'+percen+'%</div></div>');
+	$('#control').append('<div class="progress" id="prog"><div class="progress-bar progress-bar-success progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width:'+percen+'%">'+percen+'%</div></div>');
 	siguienteNivel();
 }
 
@@ -106,6 +108,7 @@ function siguienteNivel() {
 		$('#res').remove();
   		$('#resultados').remove();
         $("#juegoContainer").append('<div id="juegoId"></div>');
+        console.log("Nivel de cookie es ->" + $.cookie("nivel"));
         crearNivel($.cookie("nivel"));
     });
 }
@@ -217,8 +220,7 @@ function comprobarUsuario() {
     $.getJSON('/comprobarUsuario/' + id, function (datos) {
         if (datos.nivel < 1) {
             console.log("El usuario no existe");
-            borrarCookies();
-            mostrarCabecera();
+            reset();
         } else {
             console.log("Actualizamos nivel de cookie");
             $.cookie("nivel", datos.nivel);

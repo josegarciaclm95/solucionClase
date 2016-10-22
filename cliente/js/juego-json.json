@@ -1,31 +1,69 @@
 {
-"nivel1":{
-    "platforms":[{
-        "asset":"ground",
-        "x":400,
-        "y":400
-        }, {
-        "asset":"ground",
-        "x":-150,
-        "y":250
-        }, {
-        "asset":"ground2",
-        "x":300,
-        "y":150
-        }
-    ],
-    "dude":{
-
+    "nivel1": {
+        "platforms": [
+            {
+                "asset": "ground",
+                "x": 400,
+                "y": 400
+            },
+            {
+                "asset": "ground",
+                "x": -150,
+                "y": 250
+            },
+            {
+                "asset": "ground2",
+                "x": 300,
+                "y": 150
+            }
+        ]
+    },
+    "nivel2": {
+        "platforms": [
+            {
+                "asset": "ground2",
+                "x": 750,
+                "y": 450
+            },
+            {
+                "asset": "ground2",
+                "x": 600,
+                "y": 350
+            },
+            {
+                "asset": "ground2",
+                "x": 700,
+                "y": 250
+            },
+            {
+                "asset": "ground2",
+                "x": 600,
+                "y": 150
+            }
+        ]
+    },
+    "nivel3": {
+        "platforms": [
+            {
+                "asset": "ground",
+                "x": 200,
+                "y": 450
+            },
+            {
+                "asset": "ground",
+                "x": 100,
+                "y": 350
+            },
+            {
+                "asset": "ground",
+                "x": 0,
+                "y": 250
+            },
+            {
+                "asset": "ground",
+                "x": 200,
+                "y": 150
+            }
+        ]
     }
-},
-"nivel2": {
-"platforms": [],
-"dude": {
-
-    }
-  }
 }
-
-    coordenadas[0]=[new Punto(200,450),new Punto(100,350),new Punto(0,250),new Punto(200,150)];
-    coordenadas[1]=[new Punto(700,450),new Punto(600,350),new Punto(700,250),new Punto(600,150)];
-    coordenadas[2]=[new Punto(200,450),new Punto(100,350),new Punto(0,250),new Punto(200,150)];
