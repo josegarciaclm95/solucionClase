@@ -28,13 +28,18 @@ function mostrarLogin(){
     form += '<div id="registerGroup" class="form-group" style="margin-bottom:0px"><label for="register">¿Eres nuevo? Regístrate</label><br/>';
     form += '<button type="button" id="registrBtn" class="btn btn-primary btn-md">Registrar</button></div></form>';
     $("#control").append(form);
+    
     $("#nombreL").on("keyup", function (e) {
         if (e.keyCode == 13) {
-            comprobarUsuarioMongo($("#nombreL").val());
+            comprobarUsuarioMongo($("#nombreL").val(),$("#claveL").val());
         }
     });
+    $("#nombreL").on("focus", function (e) {
+        $(this).removeAttr("style");
+        $("#claveL").removeAttr("style");
+    });
     $("#loginBtn").on("click",function(e){
-        comprobarUsuarioMongo($("#nombreL").val());
+        comprobarUsuarioMongo($("#nombreL").val(),$("#claveL").val());
     });
     $("#registrBtn").on("click",function(e){
         mostrarFormularioRegistro();
@@ -132,7 +137,8 @@ function mostrarInfoJuego2() {
 	//$('#control').append('<div id="cabecera"><h2>Panel</h2></div>')
 	$('#control').append('<div id="datos"><h4>Nombre: '+nombre+'<br />Nivel: '+nivel+'</h4></div>');
 	$('#control').append('<div class="progress" id="prog"><div class="progress-bar progress-bar-success progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width:'+percen+'%">'+percen+'%</div></div>');
-	siguienteNivel();
+	$("#registerGroup").remove();
+    siguienteNivel();
 }
 
 /**
@@ -266,12 +272,15 @@ function comprobarUsuario() {
     });
 }
 
-function comprobarUsuarioMongo(nombre){
+/*
+function comprobarUsuarioMongo(nombre,pass){
     console.log("Comprobando un usuario en Mongo");
     $.getJSON('/comprobarUsuarioMongo/' + nombre, function (datos) {
         if (datos.nivel < 1) {
             console.log("El usuario no existe");
             //reset();
+            $('#nombreL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
+            $('#claveL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
             $("#nombreL").val('');
             $("#claveL").val('');
         } else {
@@ -282,6 +291,32 @@ function comprobarUsuarioMongo(nombre){
             $.cookie('id', datos.id);
             borrarLogin();
             mostrarInfoJuego2();
+        }
+    });
+}
+*/
+
+function comprobarUsuarioMongo(nombre,pass){
+    console.log(nombre);
+    $.ajax({
+        type:"POST",
+        contentType:"application/json",
+        url:"/login/",
+        data:JSON.stringify({email:nombre,password:pass}),
+        success:function(data){
+            if(data.nivel == -1){
+                $('#nombreL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
+                $('#claveL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
+                $("#nombreL").val('');
+                $("#claveL").val('');
+            } else {
+                $.cookie("nivel", data.nivel);
+                $.cookie("vidas", data.vidas);
+                $.cookie('nombre', data.nombre);
+                $.cookie('id', data._id);
+                borrarLogin();
+                mostrarInfoJuego2();
+            }
         }
     });
 }
