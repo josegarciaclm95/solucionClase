@@ -15,8 +15,48 @@ function inicio() {
         comprobarUsuario();
     } else {
         console.log("No hay una cookie");
-        mostrarCabecera();
+        //mostrarCabecera();
+        mostrarLogin();
     }
+}
+
+function mostrarLogin(){
+    $("#login").remove();
+    var form = "";
+    form += '<form><div class="form-group" id="login"><input type="text" class="form-control" id="nombreL" placeholder="Introduce tu nombre"><input type="password" class="form-control" id="claveL" placeholder="Introduce tu clave"></div>';
+    form += '<button type="button" id="loginBtn" class="btn btn-primary btn-md" style="margin-bottom:10px">Entrar</button>';
+    form += '<div id="registerGroup" class="form-group" style="margin-bottom:0px"><label for="register">¿Eres nuevo? Regístrate</label><br/>';
+    form += '<button type="button" id="registrBtn" class="btn btn-primary btn-md">Registrar</button></div></form>';
+    $("#control").append(form);
+    $("#nombreL").on("keyup", function (e) {
+        if (e.keyCode == 13) {
+            comprobarUsuarioMongo($("#nombreL").val());
+        }
+    });
+    $("#loginBtn").on("click",function(e){
+        comprobarUsuarioMongo($("#nombreL").val());
+    });
+    $("#registrBtn").on("click",function(e){
+        mostrarFormularioRegistro();
+    });
+}
+
+function mostrarFormularioRegistro(){
+    var form = "";
+    $("#registerGroup").remove();
+    form = '<form id="formRegistro"><div class="form-group"><label for="nombreUsuario">Nombre de usuario:</label>';
+    form += '<input type="text" class="form-control" id="nombreUsuario"></div>';
+    form += '<div class="form-group"><label for="password1">Contraseña</label>';
+    form += '<input type="password" class="form-control" id="password1"></div>';
+    form += '<div class="form-group"><label for="password2">Repite la contraseña</label>';
+    form += '<input type="password" class="form-control" id="password2"></div>';
+    form += '<button type="button" id="confirmaRegBtn" class="btn btn-primary btn-md" style="margin-bottom:10px">Regístrame</button>';
+    $("#juegoContainer").append(form);
+    $("#confirmaRegBtn").on("click", function(){
+        crearUsuario($("#nombreUsuario").val());
+        $("#formRegistro").remove();
+    });
+
 }
 
 function mierdaPrueba() {
@@ -89,7 +129,7 @@ function mostrarInfoJuego2() {
 	$('#cabeceraP').remove();
 	$('#cabecera').remove();
 	$('#prog').remove();
-	$('#control').append('<div id="cabecera"><h2>Panel</h2></div>')
+	//$('#control').append('<div id="cabecera"><h2>Panel</h2></div>')
 	$('#control').append('<div id="datos"><h4>Nombre: '+nombre+'<br />Nivel: '+nivel+'</h4></div>');
 	$('#control').append('<div class="progress" id="prog"><div class="progress-bar progress-bar-success progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width:'+percen+'%">'+percen+'%</div></div>');
 	siguienteNivel();
@@ -138,8 +178,6 @@ function obtenerResultados(){
 }
 
 function mostrarResultados(datos){
-  //eliminarGame();
-  //eliminarCabeceras();
   $('#res').remove();
   $('#resultados').remove();
   $('#juegoId').append('<h3 id="res">Resultados</h3>');
@@ -172,7 +210,7 @@ function crearUsuario(nombre) {
         $.cookie('nivel', datos.nivel);
         $.cookie('vidas', datos.vidas);
         //mostrarInfoJuego(juego.usuarios[juego.usuarios.length -1]);
-        mostrarInfoJuego2();
+        //mostrarInfoJuego2();
     });
 }
 
@@ -228,6 +266,30 @@ function comprobarUsuario() {
     });
 }
 
+function comprobarUsuarioMongo(nombre){
+    console.log("Comprobando un usuario en Mongo");
+    $.getJSON('/comprobarUsuarioMongo/' + nombre, function (datos) {
+        if (datos.nivel < 1) {
+            console.log("El usuario no existe");
+            //reset();
+            $("#nombreL").val('');
+            $("#claveL").val('');
+        } else {
+            console.log("Actualizamos nivel de cookie");
+            $.cookie("nivel", datos.nivel);
+            $.cookie("vidas", datos.vidas);
+            $.cookie('nombre', datos.nombre);
+            $.cookie('id', datos.id);
+            borrarLogin();
+            mostrarInfoJuego2();
+        }
+    });
+}
+
+function borrarLogin(){
+    $("#login").remove();
+    $("#loginBtn").remove();
+}
 /**
  * Borramos la cookie que hubiera en el navegador
  */
@@ -249,5 +311,5 @@ function noHayNiveles(){
 
 function reset(){
 	borrarCookies();
-	mostrarCabecera();
+	mostrarLogin();
 }

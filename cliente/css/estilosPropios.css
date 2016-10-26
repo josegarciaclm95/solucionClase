@@ -29,3 +29,7 @@ ul.vidas li {
 #resultadosContainer {
     font-size: 20px;
 }
+
+input {
+    margin-bottom: 5px;
+}
