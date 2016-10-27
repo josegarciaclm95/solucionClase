@@ -173,8 +173,8 @@ function mongoConnect(){
 			console.log("Conectados");
 			dbM = db;
 			usersM = dbM.collection("usuarios");
-			console.log(usersM);
-			console.log("Datos extraidos");
+			//console.log(usersM);
+			//console.log("Datos extraidos");
 		}
 	});
 }
