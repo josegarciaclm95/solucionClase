@@ -18,7 +18,7 @@ function Juego(){
     }
     this.buscarUsuarioById = function(id){
         return _.find(this.usuarios,function(usu){
-			return usu.id==id
+			return usu.id == id
 		});
     }
 }
@@ -29,26 +29,10 @@ function Nivel(num){
 
 function Usuario(nombre){
     this.nombre = nombre;
-    //this.puntuacion = 0;
     this.vidas = 5;
+    //id hay que quitarlo y usaremos el _id de mongo, que se le añadira en el post del registro
     this.id = new Date().valueOf();
     this.nivel = 1;
-    /*
-    var file = fs.readFileSync("./juego.json");
-	var data = JSON.parse(file);
-	if(typeof(data[this.nombre]) == "undefined"){
-        data[this.nombre] = 0;
-        this.puntuacion = 0;
-	} else {
-		this.puntuacion = data[this.nombre];
-	}
-    fs.writeFile("./juego.json", JSON.stringify(data), function(err) {
-		if(err) {
-			return console.log(err);
-		}
-    	console.log("Datos de juego actualizados");
-	}); 
-    */
 }
 
 

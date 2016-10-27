@@ -12,14 +12,18 @@ var usuarioDevuelto = undefined;
  */
 function inicio() {
     if ($.cookie('nombre') != undefined) {
-        comprobarUsuario();
+        comprobarUsuarioMongo($.cookie('nombre'),undefined);
     } else {
         console.log("No hay una cookie");
-        //mostrarCabecera();
         mostrarLogin();
     }
 }
 
+function limpiarMongo(){
+    $.getJSON('/resultados/', function (datos) {
+        console.log("Coleccion vacia");
+    });
+}
 function mostrarLogin(){
     $("#login").remove();
     var form = "";
@@ -31,14 +35,15 @@ function mostrarLogin(){
     
     $("#nombreL").on("keyup", function (e) {
         if (e.keyCode == 13) {
+            console.log($("#nombreL").val() + " - " + $("#claveL").val());
             comprobarUsuarioMongo($("#nombreL").val(),$("#claveL").val());
         }
     });
-    $("#nombreL").on("focus", function (e) {
+    $("#nombreL,#claveL").on("focus", function (e) {
         $(this).removeAttr("style");
-        $("#claveL").removeAttr("style");
     });
     $("#loginBtn").on("click",function(e){
+        console.log($("#nombreL").val() + " - " + $("#claveL").val());
         comprobarUsuarioMongo($("#nombreL").val(),$("#claveL").val());
     });
     $("#registrBtn").on("click",function(e){
@@ -57,9 +62,17 @@ function mostrarFormularioRegistro(){
     form += '<input type="password" class="form-control" id="password2"></div>';
     form += '<button type="button" id="confirmaRegBtn" class="btn btn-primary btn-md" style="margin-bottom:10px">Regístrame</button>';
     $("#juegoContainer").append(form);
+    $("#password1,#password2,#nombreUsuario").on("focus",function(e){
+        $(this).removeAttr("style");
+    });
     $("#confirmaRegBtn").on("click", function(){
-        crearUsuario($("#nombreUsuario").val());
-        $("#formRegistro").remove();
+        console.log($("#nombreUsuario").val() + " - " + $("#password1").val());
+        if($("#password2").val() != $("#password1").val()){
+            $('#password2').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
+            $('#password1').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
+        } else {
+            crearUsuario($("#nombreUsuario").val(), $("#password2").val());
+        }
     });
 
 }
@@ -67,13 +80,9 @@ function mostrarFormularioRegistro(){
 function mierdaPrueba() {
     $.getJSON('/resultados/', function (datos) {
         console.log(JSON.stringify(datos));
-        //a = "nivel1";
-	    //console.log(datos.nivel1.platforms);
-        //datos.nivel1.platforms.push(1);
         for (p in datos){
             console.log(datos[p].user);
         }
-        
     });
 }
 
@@ -82,42 +91,6 @@ function mierdaPrueba() {
  */
 function borrarControl() {
     $("#control").remove();
-}
-
-/**
- * Hacemos visible el cuadro de texto de escribir el nombre y llamamos al método que crea el boton de Empezar
- */
-function mostrarCabecera() {
-    $("#cabecera").remove();
-    $("#control").append('<div id="cabecera"><input type="text" id="nombre" placeholder="Introduce tu nombre"></div> ');
-    $("#nombre").on("keyup", function (e) {
-        if (e.keyCode == 13) {
-            SetGame();
-        }
-    })
-    botonNombre();
-}
-
-/**
- * Añadimos el botón de Empezar
- */
-function botonNombre() {
-    $("#cabecera").append('<button type="button" id="nombreBtn" class="btn btn-primary btn-md" style="margin-left:5px">Enviar</button>');
-    $("#nombreBtn").on("click", function () {
-        SetGame();
-    });
-}
-
-/**
- * Eliminamos el boton de Empezar, añadimos el cuadro en el que se insertará el juego, llamaremos a crearUsuario y vaciamos el cuadro
- * de texto
- * @constructor
- */
-function SetGame() {
-    $("#nombreBtn").remove();
-    $("#juegoContainer").append('<div id="juegoId"></div>');
-    crearUsuario($("#nombre").val());
-    $("#nombre").val('');
 }
 
 /**
@@ -153,6 +126,7 @@ function siguienteNivel() {
         $("#enh").remove();
 		$('#res').remove();
   		$('#resultados').remove();
+        $("#formRegistro").remove();
         $("#juegoContainer").append('<div id="juegoId"></div>');
         console.log("Nivel de cookie es ->" + $.cookie("nivel"));
         crearNivel($.cookie("nivel"));
@@ -200,26 +174,28 @@ function mostrarResultados(datos){
  * Seteamos la cookie inicial.
  * @param nombre
  */
-function crearUsuario(nombre) {
+function crearUsuario(nombre,pass) {
     if (nombre == "") {
         nombre = "jugador";
     }
-    $.getJSON('/crearUsuario/' + nombre, function (datos) {
-        //Datos será un objeto Usuario
-        console.log("Datos recibidos en getJSON");
-        //juego = datos;
-        usuarioDevuelto = datos;
-        //crearJuego();
-        console.log(datos);
-        $.cookie('nombre', datos.nombre);
-        $.cookie('id', datos.id);
-        $.cookie('nivel', datos.nivel);
-        $.cookie('vidas', datos.vidas);
-        //mostrarInfoJuego(juego.usuarios[juego.usuarios.length -1]);
-        //mostrarInfoJuego2();
+    $.ajax({
+        type:"POST",
+        contentType:"application/json",
+        url:"/crearUsuario/",
+        data:JSON.stringify({email:nombre,password:pass}),
+        success:function(data){
+            if(data.nivel == -1){
+                $('#nombreUsuario').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
+            } else {
+                $("#formRegistro").remove();
+                $.cookie("nivel", data.nivel);
+                $.cookie("vidas", data.vidas);
+                $.cookie('nombre', data.nombre);
+                $.cookie('id', data._id);
+            }
+        }
     });
 }
-
 /**
  * Enviamos el score del jugador al servidor
  * @param puntos
@@ -271,30 +247,6 @@ function comprobarUsuario() {
         }
     });
 }
-
-/*
-function comprobarUsuarioMongo(nombre,pass){
-    console.log("Comprobando un usuario en Mongo");
-    $.getJSON('/comprobarUsuarioMongo/' + nombre, function (datos) {
-        if (datos.nivel < 1) {
-            console.log("El usuario no existe");
-            //reset();
-            $('#nombreL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
-            $('#claveL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
-            $("#nombreL").val('');
-            $("#claveL").val('');
-        } else {
-            console.log("Actualizamos nivel de cookie");
-            $.cookie("nivel", datos.nivel);
-            $.cookie("vidas", datos.vidas);
-            $.cookie('nombre', datos.nombre);
-            $.cookie('id', datos.id);
-            borrarLogin();
-            mostrarInfoJuego2();
-        }
-    });
-}
-*/
 
 function comprobarUsuarioMongo(nombre,pass){
     console.log(nombre);

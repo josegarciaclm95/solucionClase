@@ -19,7 +19,7 @@ var MongoClient = require('mongodb');
 var bodyParser = require("body-parser");
 var urlM = 'mongodb://josemaria:procesos1617@ds031617.mlab.com:31617/usuariosjuego';
 var dbM;
-var users;
+var usersM;
 
 //app.use(app.router);
 app.use(exp.static(__dirname + "/cliente/"));
@@ -35,8 +35,8 @@ app.get("/mierdaPrueba/", function (request, response) {
 app.get("/datosJuego/:nivel", function (request, response) {
 	console.log("Llamada a /datosJuego/" + request.params.nivel);
 	var jsa = JSON.parse(fs.readFileSync("./cliente/js/juego-json.json"));
-	console.log("Respuesta es -> " + jsa[request.params.nivel]);
-	console.log(request.params.nivel);
+	//console.log("Respuesta es -> " + jsa[request.params.nivel]);
+	//console.log(request.params.nivel);
 	response.send(jsa[request.params.nivel]);
 });
 app.get("/", function (request, response) {
@@ -46,30 +46,49 @@ app.get("/", function (request, response) {
 	response.send(contenido);
 });
 
-//Hacer esto con un post
-app.get("/crearUsuario/:nombre", function (request, response) {
-	//Crear el usuario con el nombre recibido
-	var usuario = new modelo.Usuario(request.params.nombre);
-	juego.agregarUsuario(usuario);
-	users = dbM.collection("usuarios");
-	users.insert({id_juego:usuario.id, nombre:usuario.nombre, nivel:usuario.nivel, vidas:usuario.vidas}, function(err,result){
+
+app.post("/crearUsuario/", function (request, response) {
+	var email = request.body.email;
+	var pass = request.body.password;
+	var criteria = {"nombre":email};
+	usersM.find(criteria, function(err,cursor){
 		if(err){
 			console.log(err);
 		} else {
-			console.log("Usuario insertado");
-			console.log(result);
+			cursor.toArray(function(er, users){
+				console.log(users);
+				if(users.length == 0){
+					console.log("No existe el usuario");
+					var usuario = new modelo.Usuario(email);
+					juego.agregarUsuario(usuario);
+					usersM.insert({id_juego:usuario.id, nombre:usuario.nombre, password:pass, nivel:usuario.nivel, vidas:usuario.vidas}, function(err,result){
+						if(err){
+							console.log(err);
+						} else {
+							console.log("Usuario insertado");
+							console.log(result);
+							response.send(result);
+						}
+					});
+				} else {
+					console.log("El usuario ya existe");
+					response.send({nivel:-1});
+				}
+			});
 		}
 	});
-	console.log("Nombre: " + request.params.nombre);
-	response.send(usuario);
 });
 
 app.post('/login/', function(request, response){
 	var email = request.body.email;
-	console.log(email);
 	var password = request.body.password;
-	//users = dbM.collection("usuarios");
-	users.find({"nombre":email}, function(err,cursor){
+	//console.log(email + " - " + password);
+	var criteria = {"nombre":email};
+	//
+	if (password != ""){
+		criteria["password"] = password;
+	}
+	usersM.find(criteria, function(err,cursor){
 	if(err){
 		console.log(err);
 	} else {
@@ -79,7 +98,7 @@ app.post('/login/', function(request, response){
 				console.log("No existe el usuario");
 				response.send({nivel:-1});
 			} else {
-				console.log(users[0])
+				//console.log(users[0])
 				response.send(users[0]);
 			}
 		});
@@ -94,36 +113,10 @@ app.get("/resultados/", function (request, response) {
 	response.send(data.puntuaciones);
 });
 
-app.get('/comprobarUsuario/:id', function (request, response) {
-	var id = request.params.id;
-	var usuario = juego.buscarUsuarioById(id);
-	if (usuario == undefined) {
-		response.send({ 'nivel': -1 });
-	} else {
-		response.send({ 'nivel': usuario.nivel, 'vidas': usuario.vidas });
-	}
+app.get('limpiarMongo', function(request,response){
+	usersM.remove({});
+	response.send({"ok":"Todo bien"});
 });
-
-/*
-app.get('/comprobarUsuarioMongo/:nombre', function (request, response) {
-	var users = dbM.collection("usuarios");
-	users.find({"nombre":request.params.nombre}, function(err,cursor){
-		if(err){
-			console.log(err);
-		} else {
-			cursor.toArray(function(er, users){
-				if(users.length == 0){
-					console.log("No existe el usuario");
-					response.send({nivel:-1});
-				} else {
-					console.log(users[0])
-					response.send(users[0]);
-				}
-			});
-		}
-	});
-});
-*/
 
 app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 	var id = request.params.id;
@@ -178,7 +171,8 @@ function mongoConnect(){
 		} else {
 			console.log("Conectados");
 			dbM = db;
-			users = dbM.collection("usuarios");
+			usersM = dbM.collection("usuarios");
+			console.log(usersM);
 			console.log("Datos extraidos");
 		}
 	});

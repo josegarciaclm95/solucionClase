@@ -23,4 +23,12 @@ describe("El juego tiene inicialmente...", function() {
         expect(juego.usuarios[0].nombre).toEqual("Jose");
         expect(juego.usuarios[0].nombre).not.toEqual("Juan");
     });
+    it("Buscar usuarios por nombre e id", function(){
+        var us = new modelo.Usuario("Jose")
+        juego.agregarUsuario(us);
+        expect(juego.usuarios.length).toEqual(1);
+        expect(juego.buscarUsuario("Jose")).toEqual(us);
+        expect(juego.buscarUsuarioById(us.id)).toEqual(us);
+        expect(juego.usuarios[0].nombre).not.toEqual("Juan");
+    });
 });
