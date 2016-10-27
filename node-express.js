@@ -46,7 +46,6 @@ app.get("/", function (request, response) {
 	response.send(contenido);
 });
 
-
 app.post("/crearUsuario/", function (request, response) {
 	var email = request.body.email;
 	var pass = request.body.password;
@@ -82,12 +81,14 @@ app.post("/crearUsuario/", function (request, response) {
 app.post('/login/', function(request, response){
 	var email = request.body.email;
 	var password = request.body.password;
+	console.log(password);
 	//console.log(email + " - " + password);
 	var criteria = {"nombre":email};
 	//
-	if (password != ""){
+	if (password != undefined){
 		criteria["password"] = password;
 	}
+	console.log(criteria);
 	usersM.find(criteria, function(err,cursor){
 	if(err){
 		console.log(err);
