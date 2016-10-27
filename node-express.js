@@ -55,7 +55,7 @@ app.post("/crearUsuario/", function (request, response) {
 			console.log(err);
 		} else {
 			cursor.toArray(function(er, users){
-				console.log(users);
+				//console.log(users);
 				if(users.length == 0){
 					console.log("No existe el usuario");
 					var usuario = new modelo.Usuario(email);
@@ -81,20 +81,20 @@ app.post("/crearUsuario/", function (request, response) {
 app.post('/login/', function(request, response){
 	var email = request.body.email;
 	var password = request.body.password;
-	console.log(password);
+	//console.log(password);
 	//console.log(email + " - " + password);
 	var criteria = {"nombre":email};
 	//
 	if (password != undefined){
 		criteria["password"] = password;
 	}
-	console.log(criteria);
+	//console.log(criteria);
 	usersM.find(criteria, function(err,cursor){
 	if(err){
 		console.log(err);
 	} else {
 		cursor.toArray(function(er, users){
-			console.log(users);
+			//console.log(users);
 			if(users.length == 0){
 				console.log("No existe el usuario");
 				response.send({nivel:-1});
@@ -110,7 +110,7 @@ app.post('/login/', function(request, response){
 app.get("/resultados/", function (request, response) {
 	var file = fs.readFileSync("./juego.json");
 	var data = JSON.parse(file);
-	console.log(data.puntuaciones);
+	//console.log(data.puntuaciones);
 	response.send(data.puntuaciones);
 });
 
