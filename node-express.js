@@ -65,6 +65,9 @@ app.post("/crearUsuario/", function (request, response) {
 							console.log(err);
 						} else {
 							console.log("Usuario insertado");
+							usuario.id = result.ops[0]._id;
+							console.log(usuario.id);
+							console.log(juego.toString());
 							console.log(result);
 							response.send(result);
 						}
@@ -78,6 +81,9 @@ app.post("/crearUsuario/", function (request, response) {
 	});
 });
 
+/*
+Aqui habra que traer el uid de Mongo
+*/
 app.post('/login/', function(request, response){
 	var email = request.body.email;
 	var password = request.body.password;
@@ -90,20 +96,25 @@ app.post('/login/', function(request, response){
 	}
 	//console.log(criteria);
 	usersM.find(criteria, function(err,cursor){
-	if(err){
-		console.log(err);
-	} else {
-		cursor.toArray(function(er, users){
-			//console.log(users);
-			if(users.length == 0){
-				console.log("No existe el usuario");
-				response.send({nivel:-1});
-			} else {
-				//console.log(users[0])
-				response.send(users[0]);
-			}
-		});
-	}
+		console.log(cursor);
+		if(err){
+			console.log(err);
+		} else {
+			cursor.toArray(function(er, users){
+				//console.log("Array de usuarios -> " + users);
+				if(users.length == 0){
+					console.log("No existe el usuario");
+					response.send({nivel:-1});
+				} else {
+					var u = new modelo.Usuario(users[0].nombre);
+					u.id = users[0]._id;
+					juego.agregarUsuario(u);
+					console.log(juego.toString());
+					//console.log(users[0])
+					response.send(users[0]);
+				}
+			});
+		}
 	});
 });
 
@@ -127,6 +138,7 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 	usuario.nivel += 1;
 	console.log(usuario.nivel);
 	usuario.tiempo = tiempo;
+	/*
 	if (usuario != undefined) {
 		var result = {}
 		result.user = usuario.nombre;
@@ -150,6 +162,7 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 			console.log("The file was saved!");
 		});
 	}
+	*/
 	console.log("Nuevo nivel es ->" + usuario.nivel);
 	response.send({'nivel':usuario.nivel});
 });

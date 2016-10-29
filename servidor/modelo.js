@@ -21,6 +21,13 @@ function Juego(){
 			return usu.id == id
 		});
     }
+    Juego.prototype.toString = function(){
+        var res = "";
+        this.usuarios.forEach(function(el){
+            res += "Usuario " + el.nombre + " - Id " + el.id;
+        });
+        return res;
+    }
 }
     
 function Nivel(num){

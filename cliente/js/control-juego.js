@@ -123,6 +123,7 @@ function siguienteNivel() {
     $("#control").append('<button type="button" id="cerrarSesBtn" class="btn btn-primary btn-md" style="margin-top:5px">Cerrar sesión</button>');
     $("#siguienteBtn").on("click", function () {
         $(this).remove();
+        $("#cerrarSesBtn").remove();
         $("#juegoId").remove();
         $("#enh").remove();
 		$('#res').remove();
@@ -144,7 +145,7 @@ function nivelCompletado(tiempo) {
     game.destroy();
     $('#juegoId').append("<h2 id='enh'>Enhorabuena!</h2>");
     comunicarNivelCompletado(tiempo);
-    obtenerResultados();
+    //obtenerResultados();
 }
 
 function comunicarNivelCompletado(tiempo){

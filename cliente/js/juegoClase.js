@@ -55,7 +55,7 @@ function crearNivel(nivel){
 }
 
 function preload() {
-    game.load.image('sky', 'assets/sky.png');
+    game.load.image('sky', 'assets/sky2.png');
     game.load.image('heaven', 'assets/heaven.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('ground2', 'assets/platform2.png');
@@ -73,18 +73,19 @@ function create() {
     //Habilita fisica
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    game.add.sprite(0, 0, 'sky');
-
+    var sky = game.add.sprite(0, 0, 'sky');
+    sky.scale.setTo(1.1,1.5);
     //Adding de grupos de plataformas y configutacion de las mismas
     PlatformGroup.platforms = game.add.group();
     PlatformGroup.cielo = game.add.group();
     enableBodyObject(PlatformGroup);
     
-    var ground = PlatformGroup.platforms.create(0, game.world.height - 64, 'ground');
+    var ground = PlatformGroup.platforms.create(0, game.world.height - 50, 'ground');
     var heav = PlatformGroup.cielo.create(0, -25, 'heaven');
     ground.scale.setTo(2, 2);
     heav.scale.setTo(3,1);
     ground.body.immovable = true;
+    ground.visible = false;
     heav.body.immovable = true;
 
     //Creamos las plataformas
