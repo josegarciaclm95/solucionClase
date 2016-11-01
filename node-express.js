@@ -105,6 +105,39 @@ app.post("/crearUsuario/", function (request, response) {
 	});
 });
 
+app.post("/modificarUsuario/", function (request, response) {
+	var oldMail = request.body.old_email;
+	var newEmail = request.body.new_email;
+	var newPass = request.body.new_password;
+	var criteria = {"nombre":oldMail};
+	var changes = {"nombre":newEmail};
+	if(newPass != ""){
+		changes["password"] = newPass;
+	}
+	console.log(criteria);
+	console.log(changes);
+	usersM.update(criteria,{$set: changes}, {},function(err,result){
+		if(err){
+			console.log(err)
+		} else {
+		response.send(result.result);
+		}
+	});
+});
+
+app.post("/eliminarUsuario/", function (request, response) {
+	var email = request.body.email;
+	var pass = request.body.password;
+	var criteria = {"nombre":email, "password":pass};
+	usersM.remove(criteria,function(err,result){
+		if(err){
+			console.log(err)
+		} else {
+			response.send(result.result);
+		}
+	})	
+});
+
 app.get("/resultados/", function (request, response) {
 	var file = fs.readFileSync("./juego.json");
 	var data = JSON.parse(file);
@@ -133,7 +166,14 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 		{usuario:id,
 		"resultados.idJuego":usuario.idJuego
 		},
-		{$set : {k:tiempo}}
+		{$set : {k:tiempo}},
+		{upsert:false, multi:false},
+		function(err,result){
+			if(err){
+				console.log(err);
+			} 
+			console.log(result);
+		}
 	);
 	console.log("Nuevo nivel es ->" + usuario.nivel);
 	response.send({'nivel':usuario.nivel});

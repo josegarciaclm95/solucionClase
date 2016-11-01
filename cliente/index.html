@@ -29,9 +29,11 @@
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="./index.html">Inicio <span class="sr-only">(current)</span></a></li>
-                    <li><a href="./index.html">Reiniciar</a></li>
+                <ul id="barNav" class="nav navbar-nav">
+                    <li id="inicio" class="active"><a href="#inicio">Inicio <span class="sr-only">(current)</span></a></li>
+                    <li id="reiniciar"><a href="#reiniciar" onclick="reset()">Reiniciar</a></li>
+                    <li id="modificar"><a href="#modificar" onclick="modificarUsuario()">Modificar usuario</a></li>
+                    <li id="eliminar"><a href="#eliminar" onclick="eliminarUsuario()">Eliminar usuario</a></li>
                     <li><a href="./resultados.html">Resultados</a></li>
                 </ul>
             </div>
@@ -61,6 +63,17 @@
     <script type="text/javascript" src="js/builder-json.js"></script>
     <script type="text/javascript">
         inicio();
+        window.onhashchange = function(e){
+            //console.log(e)
+            var newPage = e.newURL.split('#')[1]
+            var oldPage = e.oldURL.split('#')[1]
+            //console.log(newPage)
+            //console.log(oldPage)
+            // Fix for non # reference
+            if (!oldPage) oldPage = "inicio";
+            $('#' + newPage).addClass('active')
+            $('#' + oldPage).removeClass('active')
+        }
     </script>
 </body>
 
