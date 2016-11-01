@@ -32,13 +32,6 @@ function crearNivel(nivel){
     if(ni < maxNiveles)
     {
         game = new Phaser.Game(800, 600, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
-        /*
-        $.getJSON('/datosJuego/nivel'+ni, function (datos) {
-              infoJuego = datos;  
-              console.log("Datos llegados a infoJuego -> " + JSON.stringify(infoJuego));
-
-            });
-        */
         $.ajax({
         url: '/datosJuego/nivel'+ni,
         dataType: 'json',
@@ -144,14 +137,12 @@ function update() {
     player.body.velocity.x = 0;
 
     if (cursors.left.isDown) {
-        player.body.velocity.x = -220;
+        player.body.velocity.x = -250;
         player.animations.play('left');
-        //lastKeyPress = cursors.left;
     }
     else if (cursors.right.isDown) {
-        player.body.velocity.x = 180;
+        player.body.velocity.x = 250;
         player.animations.play('right');
-        //lastKeyPress = cursors.right;
     }
     else {
         player.animations.stop();
@@ -180,23 +171,18 @@ function crearNuevaEstrella(){
 
 function collectStar(player, star) {
     star.kill();
+    var explosion = explosions.getFirstExists(false);
+    explosion.reset(star.body.x-30, star.body.y-50);
+    explosion.play('boom', 30, false, true);
+    crearNuevaEstrella();
     player.vidas -= 1;
-    //actualizarVida(-1);
-    //score += 10;
-    //actualizarPuntuacion(score);
     scoreText.text = 'Vidas: ' + player.vidas;
     if (player.vidas==0){
         player.kill();
         game.time.events.remove(timer);
+        finDelJuego();
+
     }
-    /*
-    if(score == 120){
-        salvarPuntuacion(score);
-    }
-    */
-}
-function reduceHealth(player, badguy){
-    actualizarVida(-1);
 }
 
 function updateTiempo(){
@@ -206,8 +192,6 @@ function updateTiempo(){
 
 function nextLevel(player, heaven){
     console.log("Nivel completado");
-    //$("#juegoId").remove();
-    //$("#juegoContainer").append('<span class="infoPersonaje">¡¡¡HAS GANADO!!!</span>');
     player.kill();
     PlatformGroup = {};
     infoJuego = {};

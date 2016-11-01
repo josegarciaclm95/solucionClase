@@ -45,22 +45,22 @@
     "nivel3": {
         "platforms": [
             {
-                "asset": "ground",
+                "asset": "ground2",
                 "x": 200,
                 "y": 450
             },
             {
-                "asset": "ground",
+                "asset": "ground2",
                 "x": 100,
                 "y": 350
             },
             {
-                "asset": "ground",
+                "asset": "ground2",
                 "x": 0,
                 "y": 250
             },
             {
-                "asset": "ground",
+                "asset": "ground2",
                 "x": 200,
                 "y": 150
             }

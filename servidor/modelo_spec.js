@@ -28,6 +28,7 @@ describe("El juego tiene inicialmente...", function() {
         juego.agregarUsuario(us);
         expect(juego.usuarios.length).toEqual(1);
         expect(juego.buscarUsuario("Jose")).toEqual(us);
+        expect(juego.buscarUsuario("Pepe")).toEqual(undefined);
         expect(juego.buscarUsuarioById(us.id)).toEqual(us);
         expect(juego.usuarios[0].nombre).not.toEqual("Juan");
     });

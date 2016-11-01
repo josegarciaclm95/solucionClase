@@ -9,7 +9,12 @@ function Juego(){
         this.niveles.push(nivel);
     };
     this.agregarUsuario = function(usuario){
-        this.usuarios.push(usuario);
+        var a = this.buscarUsuario(usuario.nombre);
+        if(a == undefined){
+            this.usuarios.push(usuario);
+        } else {
+            console.log("El usuario ya existia");
+        }
     };
     this.buscarUsuario = function(nombre_us){
         return this.usuarios.filter(function(actual_element){
@@ -24,7 +29,7 @@ function Juego(){
     Juego.prototype.toString = function(){
         var res = "";
         this.usuarios.forEach(function(el){
-            res += "Usuario " + el.nombre + " - Id " + el.id;
+            res += "Usuario " + el.nombre + " - Id " + el.idJuego + "\n";
         });
         return res;
     }
@@ -38,7 +43,7 @@ function Usuario(nombre){
     this.nombre = nombre;
     this.vidas = 5;
     //id hay que quitarlo y usaremos el _id de mongo, que se le añadira en el post del registro
-    this.id = new Date().valueOf();
+    this.idJuego = new Date().valueOf();
     this.nivel = 1;
 }
 

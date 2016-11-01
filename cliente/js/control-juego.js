@@ -20,14 +20,15 @@ function inicio() {
 }
 
 function limpiarMongo(){
-    $.getJSON('/resultados/', function (datos) {
+    $.getJSON('/limpiarMongo/', function (datos) {
         console.log("Coleccion vacia");
+        console.log(datos);
     });
 }
 function mostrarLogin(){
     $("#login").remove();
     var form = "";
-    form += '<form><div class="form-group" id="login"><input type="text" class="form-control" id="nombreL" placeholder="Introduce tu nombre"><input type="password" class="form-control" id="claveL" placeholder="Introduce tu clave"></div>';
+    form += '<form id="login"><div class="form-group"><input type="text" class="form-control" id="nombreL" placeholder="Introduce tu nombre"><input type="password" class="form-control" id="claveL" placeholder="Introduce tu clave"></div>';
     form += '<button type="button" id="loginBtn" class="btn btn-primary btn-md" style="margin-bottom:10px">Entrar</button>';
     form += '<div id="registerGroup" class="form-group" style="margin-bottom:0px"><label for="register">¿Eres nuevo? Regístrate</label><br/>';
     form += '<button type="button" id="registrBtn" class="btn btn-primary btn-md">Registrar</button></div></form>';
@@ -52,29 +53,21 @@ function mostrarLogin(){
 }
 
 function mostrarFormularioRegistro(){
-    var form = "";
     $("#registerGroup").remove();
-    form = '<form id="formRegistro"><div class="form-group"><label for="nombreUsuario">Nombre de usuario:</label>';
-    form += '<input type="text" class="form-control" id="nombreUsuario"></div>';
-    form += '<div class="form-group"><label for="password1">Contraseña</label>';
-    form += '<input type="password" class="form-control" id="password1"></div>';
-    form += '<div class="form-group"><label for="password2">Repite la contraseña</label>';
-    form += '<input type="password" class="form-control" id="password2"></div>';
-    form += '<button type="button" id="confirmaRegBtn" class="btn btn-primary btn-md" style="margin-bottom:10px">Regístrame</button>';
-    $("#juegoContainer").append(form);
-    $("#password1,#password2,#nombreUsuario").on("focus",function(e){
-        $(this).removeAttr("style");
+    $("#juegoContainer").load('../registro.html',function(){
+        $("#password1,#password2,#nombreUsuario").on("focus",function(e){
+            $(this).removeAttr("style");
+        });
+        $("#confirmaRegBtn").on("click", function(){
+            console.log($("#nombreUsuario").val() + " - " + $("#password1").val());
+            if($("#password2").val() != $("#password1").val()){
+                $('#password2').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
+                $('#password1').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
+            } else {
+                crearUsuario($("#nombreUsuario").val(), $("#password2").val(),false);
+            }
+        });
     });
-    $("#confirmaRegBtn").on("click", function(){
-        console.log($("#nombreUsuario").val() + " - " + $("#password1").val());
-        if($("#password2").val() != $("#password1").val()){
-            $('#password2').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
-            $('#password1').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
-        } else {
-            crearUsuario($("#nombreUsuario").val(), $("#password2").val(),false);
-        }
-    });
-
 }
 
 function mierdaPrueba() {
@@ -135,13 +128,11 @@ function siguienteNivel() {
     });
     $("#cerrarSesBtn").on("click", function(){
         $("#control").empty();
-        borrarCookies();
-        mostrarLogin(); 
+        reset();
     });
 }
 
 function nivelCompletado(tiempo) {
-    //game.destroy();
     game.destroy();
     $('#juegoId').append("<h2 id='enh'>Enhorabuena!</h2>");
     comunicarNivelCompletado(tiempo);
@@ -249,7 +240,8 @@ function comprobarUsuarioMongo(nombre,pass,fromCookie){
             success:function(data){
                 if(data.nivel == -1){
                     console.log("No hay nada");
-                    //mostrarLogin();
+                    borrarLogin();
+                    mostrarLogin();
                     $('#nombreL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
                     $('#claveL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
                     $("#nombreL").val('');
@@ -286,7 +278,21 @@ function noHayNiveles(){
 	$('#control').append('<button type="button" id="siguienteBtn" class="btn btn-primary btn-md">Volver a empezar</button>')
 	$('#siguienteBtn').on('click',function(){
 		$('#siguienteBtn').remove();
+        $('#datos').remove();
+        $('#prog').remove();
 		reset();
+	});
+}
+
+function finDelJuego(){
+    game.destroy();
+    $('#juegoId').append("<h2 id='enh'>Lo siento,  has perdido :(</h2>");
+    $('#control').append('<button type="button" id="siguienteBtn" class="btn btn-primary btn-md">Volver a empezar</button>');
+    $('#siguienteBtn').on('click',function(){
+        $('#siguienteBtn').remove();
+        $('#datos').remove();
+        $('#prog').remove();
+        siguienteNivel();
 	});
 }
 
