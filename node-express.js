@@ -16,6 +16,7 @@ var modelo = require("./servidor/modelo.js");
 var app = exp();
 var juego = new modelo.Juego();
 var MongoClient = require('mongodb');
+var ObjectID = require("mongodb").ObjectID;
 var bodyParser = require("body-parser");
 var urlM = 'mongodb://josemaria:procesos1617@ds031617.mlab.com:31617/usuariosjuego';
 var dbM;
@@ -109,6 +110,7 @@ app.post("/modificarUsuario/", function (request, response) {
 	var oldMail = request.body.old_email;
 	var newEmail = request.body.new_email;
 	var newPass = request.body.new_password;
+	console.log(oldMail + " - " + newEmail + " - " + newPass);
 	var criteria = {"nombre":oldMail};
 	var changes = {"nombre":newEmail};
 	if(newPass != ""){
@@ -160,13 +162,13 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 	usuario.nivel += 1;
 	console.log(usuario.nivel);
 	usuario.tiempo = tiempo;
-	var k = "resultados.$.nivel"+(usuario.nivel-1);
-	//console.log(k);
+	var set = {};
+  	set["resultados.$.nivel" + (usuario.nivel-1)] = tiempo;
 	dbM.collection("resultados").update(
-		{usuario:id,
+		{usuario:ObjectID(id),
 		"resultados.idJuego":usuario.idJuego
 		},
-		{$set : {k:tiempo}},
+		{$set : set},
 		{upsert:false, multi:false},
 		function(err,result){
 			if(err){
