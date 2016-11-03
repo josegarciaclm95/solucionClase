@@ -174,7 +174,7 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 			if(err){
 				console.log(err);
 			} 
-			console.log(result);
+			//console.log(result);
 		}
 	);
 	console.log("Nuevo nivel es ->" + usuario.nivel);

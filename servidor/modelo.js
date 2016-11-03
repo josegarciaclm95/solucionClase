@@ -14,6 +14,7 @@ function Juego(){
             this.usuarios.push(usuario);
         } else {
             console.log("El usuario ya existia");
+            this.buscarUsuario(usuario.nombre).nivel = 1;
         }
     };
     this.buscarUsuario = function(nombre_us){
