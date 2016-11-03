@@ -386,6 +386,7 @@ function finDelJuego(){
 
 function reset(){
 	borrarCookies();
+    $("#control").empty();
 	mostrarLogin();
 }
 
