@@ -204,3 +204,9 @@ function enableBodyObject(obj){
         obj[element].enableBody = true;
     }
 }
+
+function borrarJuego(){
+    if(game){
+        game.destroy();
+    }
+}
