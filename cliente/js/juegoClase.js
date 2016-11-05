@@ -22,29 +22,27 @@ var lastKeyPress = undefined;
 var explosions;
 var PlatformGroup = {};
 var infoJuego = {};
-var ni;
-var maxNiveles = 4;
 var builderObject;
 
-function crearNivel(nivel){
-    ni = parseInt(nivel);
-    console.log("El nivel es " + ni);
-    if(ni < maxNiveles)
-    {
-        game = new Phaser.Game(800, 600, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
-        $.ajax({
-        url: '/datosJuego/nivel'+ni,
+function crearNivel(){
+    game = new Phaser.Game(800, 600, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
+    console.log('Llamada a /datosJuego/'+$.cookie("id"));
+    $.ajax({
+        url: '/datosJuego/'+$.cookie("id"),
         dataType: 'json',
         async: false,
         success: function (data) {
-            infoJuego = data;  
-            console.log("Datos llegados a infoJuego -> " + JSON.stringify(infoJuego));
+            console.log(data);
+            if(data.nivel == -1){
+                game.destroy();
+                noHayNiveles();
+            } else {
+                infoJuego = data;  
+                console.log(infoJuego);
+                console.log("Datos llegados a infoJuego -> " + JSON.stringify(infoJuego));
+            }
         }
-        });
-    }
-    else{
-        noHayNiveles();
-    }
+    });
 }
 
 function preload() {
@@ -202,11 +200,5 @@ function nextLevel(player, heaven){
 function enableBodyObject(obj){
     for(element in obj){
         obj[element].enableBody = true;
-    }
-}
-
-function borrarJuego(){
-    if(game){
-        game.destroy();
     }
 }

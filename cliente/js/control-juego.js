@@ -1,6 +1,5 @@
 //Funciones que modifican el index
 var vidas = undefined;
-var maxVidas = undefined;
 var usuarioDevuelto = undefined;
 
 //var url = "https://juegoprocesos.herokuapp.com/";
@@ -124,12 +123,11 @@ function borrarControl() {
  * Haciendo uso de una cookie previa, presentamos la info del jugador (tras haber actualizado la cookie)
  */
 function mostrarInfoJuego2() {
-    maxVida = $.cookie("vidas");
     vidas = $.cookie("vidas");
     var nombre=$.cookie("nombre");
 	var id=$.cookie("id");
 	var nivel=$.cookie("nivel");
-	var percen=Math.floor(((nivel-1)/3)*100);
+	var percen=Math.floor(((nivel-1)/$.cookie("maxNivel"))*100);
 	$('#datos').remove();
 	$('#cabeceraP').remove();
 	$('#cabecera').remove();
@@ -158,11 +156,12 @@ function siguienteNivel() {
         $("#formRegistro").remove();
         $("#juegoContainer").append('<div id="juegoId"></div>');
         console.log("Nivel de cookie es ->" + $.cookie("nivel"));
-        crearNivel($.cookie("nivel"));
+        console.log("Llamamos a crear nivel sin parametros en siguienteNivel()");
+        crearNivel();
     });
     $("#cerrarSesBtn").on("click", function(){
         $("#control").empty();
-        reset();
+        resetControl();
     });
 }
 
@@ -193,8 +192,8 @@ function comunicarNivelCompletado(tiempo){
 function obtenerResultados(){
 	var id=$.cookie("id");
 	$.getJSON('/obtenerResultados/'+id,function(datos){
-			//$.cookie("nivel",datos.nivel);
-			mostrarResultados(datos);
+        console.log(datos);
+        mostrarResultados(datos);
 	});
 }
 
@@ -225,15 +224,13 @@ function crearUsuario(nombre,pass) {
         url:"/crearUsuario/",
         data:JSON.stringify({email:nombre,password:pass}),
         success:function(data){
+            console.log(data);
             if(data.nivel == -1){
                 $('#nombreUsuario').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
                 $('#nombreUsuario').val('Usuario existente');
             } else {
                 $("#formRegistro").remove();
-                $.cookie("nivel", data.nivel);
-                $.cookie("vidas", data.vidas);
-                $.cookie('nombre', data.nombre);
-                $.cookie('id', data._id);
+                setCookies(data);
             }
         }
     });
@@ -253,7 +250,7 @@ function modificarUsuarioServer(nombre,pass) {
             } else {
                 $("#formRegistro").remove();
                 borrarSiguienteNivel();
-                reset();
+                resetControl();
             }
         }
     });
@@ -273,7 +270,7 @@ function eliminarUsuarioServer(nombre,pass) {
             } else {
                 $("#formRegistro").remove();
                 borrarSiguienteNivel();
-                reset();
+                resetControl();
             }
         }
     });
@@ -302,6 +299,7 @@ function mostrarResultados() {
         async: false,
         success: function (data) {
             resultadosJuego = data;
+            console.log(data);
         }
     });
     for (var key in resultadosJuego) {
@@ -322,10 +320,11 @@ function comprobarUsuarioMongo(nombre,pass,fromCookie){
             url:"/login/",
             data:JSON.stringify({email:nombre,password:pass}),
             success:function(data){
+                console.log(data);
                 if(data.nivel == -1){
                     console.log("No hay nada");
                     borrarLogin();
-                    reset();
+                    resetControl();
                     $('#nombreL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
                     $('#claveL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
                     $("#nombreL").val('Usuario o contraseña incorrectos');
@@ -352,13 +351,16 @@ function borrarCookies() {
     $.removeCookie('id');
     $.removeCookie('nivel');
     $.removeCookie('vidas');
+    $.removeCookie('maxNivel');
 }
 
 function setCookies(data){
-    $.cookie("nivel", data.nivel);
+
+    $.cookie('nivel', data.nivel);
     $.cookie("vidas", data.vidas);
     $.cookie('nombre', data.nombre);
-    $.cookie('id', data._id);
+    $.cookie('id', data.id);
+    $.cookie('maxNivel',data.maxNivel);
 }
 
 function noHayNiveles(){
@@ -368,7 +370,7 @@ function noHayNiveles(){
 		$('#siguienteBtn').remove();
         $('#datos').remove();
         $('#prog').remove();
-		reset();
+		resetControl();
 	});
 }
 
@@ -384,11 +386,10 @@ function finDelJuego(){
 	});
 }
 
-function reset(){
+function resetControl(){
 	borrarCookies();
     $("#control").empty();
     $("#juegoContainer").empty();
-    borrarJuego();
 	mostrarLogin();
 }
 

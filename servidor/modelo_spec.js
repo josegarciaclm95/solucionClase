@@ -11,9 +11,9 @@ describe("El juego tiene inicialmente...", function() {
     });
     //xit para que se ignore un test a medias
     it("Agregar niveles", function(){
-        juego.agregarNivel(new modelo.Nivel(2));
+        juego.agregarNivel(new modelo.Nivel("nivel1"));
         expect(juego.niveles.length).toEqual(1);
-        expect(juego.niveles[0].nivel).toEqual(2);
+        expect(juego.niveles[0].nivel).toEqual(1);
     });
     it("Agregar usuarios", function(){
         var us = new modelo.Usuario("Jose")
@@ -31,5 +31,15 @@ describe("El juego tiene inicialmente...", function() {
         expect(juego.buscarUsuario("Pepe")).toEqual(undefined);
         expect(juego.buscarUsuarioById(us.id)).toEqual(us);
         expect(juego.usuarios[0].nombre).not.toEqual("Juan");
+    });
+    it("Crear juego por fichero JSON", function(){
+        var juego = new modelo.Juego();
+        var jFM = new modelo.JuegoFM('./cliente/js/juego-json.json');
+        juego = jFM.makeJuego();
+        expect(juego.niveles.length).toEqual(4);
+        expect(juego.niveles[0].nivel).toEqual(1);
+        expect(juego.niveles[1].nivel).toEqual(2);
+        expect(juego.niveles[2].nivel).toEqual(3);
+        expect(juego.niveles[3].nivel).toEqual(4);
     });
 });

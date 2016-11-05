@@ -28,27 +28,53 @@ function Juego(){
 		});
     }
     Juego.prototype.toString = function(){
-        var res = "";
+        var res = "Usuarios\n";
         this.usuarios.forEach(function(el){
             res += "Usuario " + el.nombre + " - Id " + el.idJuego + "\n";
+        });
+        res += "Niveles\n";
+        this.niveles.forEach(function(el){
+            res += "Nivel " + el.nivel + " - Coordenadas " + el.platforms + "\n";
         });
         return res;
     }
 }
     
-function Nivel(num){
-    this.nivel = num;
+function Nivel(num,coord,gravedad){
+    this.nivel = parseInt(num[5]);
+    this.platforms = coord;
+    this.gravity = gravedad;
 }
 
 function Usuario(nombre){
     this.nombre = nombre;
     this.vidas = 5;
-    //id hay que quitarlo y usaremos el _id de mongo, que se le añadira en el post del registro
     this.idJuego = new Date().valueOf();
     this.nivel = 1;
+}
+
+function JuegoFM(archivo){
+    this.juego = new Juego();
+    this.array = leerCoordenadas(archivo);
+    this.makeJuego = function(){
+        var j = new Juego();
+        var i = 0;
+        for(var x in this.array){
+            console.log(x);
+            var nivel = new Nivel(x,this.array[x].platforms,this.array[x].gravity);
+            j.agregarNivel(nivel);
+        }
+        return j;
+    }
+}
+
+function leerCoordenadas(archivo){
+    var array = JSON.parse(fs.readFileSync(archivo));
+    return array;
 }
 
 
 module.exports.Juego = Juego;
 module.exports.Usuario = Usuario;
 module.exports.Nivel = Nivel;
+module.exports.JuegoFM = JuegoFM;

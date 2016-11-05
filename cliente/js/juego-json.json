@@ -1,5 +1,6 @@
 {
     "nivel1": {
+        "gravity": 50,
         "platforms": [
             {
                 "asset": "ground",
@@ -19,6 +20,7 @@
         ]
     },
     "nivel2": {
+        "gravity": 50,
         "platforms": [
             {
                 "asset": "ground2",
@@ -43,6 +45,7 @@
         ]
     },
     "nivel3": {
+        "gravity": 50,
         "platforms": [
             {
                 "asset": "ground2",
@@ -58,6 +61,31 @@
                 "asset": "ground2",
                 "x": 0,
                 "y": 250
+            },
+            {
+                "asset": "ground2",
+                "x": 200,
+                "y": 150
+            }
+        ]
+    },
+    "nivel4": {
+        "gravity": 50,
+        "platforms": [
+            {
+                "asset": "ground2",
+                "x": 200,
+                "y": 300
+            },
+            {
+                "asset": "ground2",
+                "x": 100,
+                "y": 350
+            },
+            {
+                "asset": "ground2",
+                "x": 400,
+                "y": 450
             },
             {
                 "asset": "ground2",

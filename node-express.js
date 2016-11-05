@@ -14,7 +14,9 @@ var port = config.port;
 var exp = require("express");
 var modelo = require("./servidor/modelo.js");
 var app = exp();
-var juego = new modelo.Juego();
+var juegofm = new modelo.JuegoFM('./cliente/js/juego-json.json');
+var juego = juegofm.makeJuego();
+console.log(juego.toString());
 var MongoClient = require('mongodb');
 var ObjectID = require("mongodb").ObjectID;
 var bodyParser = require("body-parser");
@@ -38,13 +40,18 @@ app.get("/mierdaPrueba/", function (request, response) {
 	);
 });
 
-app.get("/datosJuego/:nivel", function (request, response) {
-	console.log("Llamada a /datosJuego/" + request.params.nivel);
-	var jsa = JSON.parse(fs.readFileSync("./cliente/js/juego-json.json"));
-	//console.log("Respuesta es -> " + jsa[request.params.nivel]);
-	//console.log(request.params.nivel);
-	response.send(jsa[request.params.nivel]);
+app.get("/datosJuego/:id", function (request, response) {
+	//console.log("Llamada a /datosJuego/" + request.params.nivel);
+	var id = request.params.id;
+	var usuario = juego.buscarUsuarioById(id);
+	if(usuario && (usuario.nivel-1) < juego.niveles.length){
+		response.send(juego.niveles[usuario.nivel-1]);
+	} else {
+		response.send({"nivel":-1});
+	}	
 });
+
+
 app.get("/", function (request, response) {
 	console.log("Inicio de página");
 	var contenido = fs.readFileSync("./cliente/index.html");
@@ -74,7 +81,8 @@ app.post('/login/', function(request, response){
 					addNewResults(u);
 					juego.agregarUsuario(u);
 					console.log(juego.toString());
-					response.send(users[0]);
+					u.maxNivel = juego.niveles.length;
+					response.send(u);
 				}
 			});
 		}
@@ -96,7 +104,8 @@ app.post("/crearUsuario/", function (request, response) {
 					var usuario = new modelo.Usuario(email);
 					juego.agregarUsuario(usuario);
 					result = insertUser(usuario,pass);
-					response.send(result);
+					usuario.maxNivel = juego.niveles.length;
+					response.send(usuario);
 				} else {
 					console.log("El usuario ya existe");
 					response.send({nivel:-1});
@@ -141,10 +150,14 @@ app.post("/eliminarUsuario/", function (request, response) {
 });
 
 app.get("/resultados/", function (request, response) {
-	var file = fs.readFileSync("./juego.json");
-	var data = JSON.parse(file);
-	//console.log(data.puntuaciones);
-	response.send(data.puntuaciones);
+	dbM.collection("resultados").find({}).toArray(function(err,doc){
+		if(err){
+			console.log(err);
+		} else {
+			console.log(doc);
+			response.send(doc);
+		}
+	});
 });
 
 app.get('/limpiarMongo/', function(request,response){
@@ -183,9 +196,16 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 
 app.get('/obtenerResultados/:id', function (request, response) {
 	var id = request.params.id;
-	var usuario = juego.buscarUsuarioById(id);
-	response.send({'nivel':usuario.nivel, 'tiempo':usuario.tiempo, 'nombre':usuario.nombre});
+	var user = juego.buscarUsuarioById(id);
+	dbM.collection("resultados").findOne({usuario:user.nombre}, function(err,doc){
+		if(err){
+			console.log(err);
+		} else {
+			response.send(doc);
+		}
+	});
 });
+
 
 console.log("Servidor escuchando en el puerto "+process.env.PORT );
 app.listen(process.env.PORT || port);
@@ -211,7 +231,7 @@ mongoConnect();
 function addNewResults(usuario){
 	dbM.collection("resultados").update(
 		{usuario:usuario.id},
-		{$push: {resultados: {idJuego:usuario.idJuego,nivel1:-1,nivel2:-1,nivel3:-1}}}
+		{$push: {resultados: {idJuego:usuario.idJuego,nivel1:-1,nivel2:-1,nivel3:-1,nivel4:-1}}}
 	);
 }
 
