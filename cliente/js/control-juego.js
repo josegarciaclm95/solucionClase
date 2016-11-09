@@ -11,20 +11,20 @@ var usuarioDevuelto = undefined;
  */
 function inicio() {
     if ($.cookie('nombre') != undefined) {
-        comprobarUsuarioMongo($.cookie('nombre'),undefined,true);
+        comprobarUsuarioMongo($.cookie('nombre'), undefined, true);
     } else {
         console.log("No hay una cookie");
         mostrarLogin();
     }
 }
 
-function limpiarMongo(){
+function limpiarMongo() {
     $.getJSON('/limpiarMongo/', function (datos) {
         console.log("Coleccion vacia");
         console.log(datos);
     });
 }
-function mostrarLogin(){
+function mostrarLogin() {
     $("#login").remove();
     var form = "";
     form += '<form id="login"><div class="form-group"><input type="text" class="form-control" id="nombreL" placeholder="Introduce tu nombre"><input type="password" class="form-control" id="claveL" placeholder="Introduce tu clave"></div>';
@@ -32,73 +32,73 @@ function mostrarLogin(){
     form += '<div id="registerGroup" class="form-group" style="margin-bottom:0px"><label for="register">¿Eres nuevo? Regístrate</label><br/>';
     form += '<button type="button" id="registrBtn" class="btn btn-primary btn-md">Registrar</button></div></form>';
     $("#control").append(form);
-    
+
     $("#nombreL,#claveL").on("keyup", function (e) {
         if (e.keyCode == 13) {
             console.log($("#nombreL").val() + " - " + $("#claveL").val());
-            comprobarUsuarioMongo($("#nombreL").val(),$("#claveL").val(), false);
+            comprobarUsuarioMongo($("#nombreL").val(), $("#claveL").val(), false);
         }
     });
     $("#nombreL,#claveL").on("focus", function (e) {
         $(this).removeAttr("style");
         $(this).val('');
     });
-    $("#loginBtn").on("click",function(e){
+    $("#loginBtn").on("click", function (e) {
         console.log($("#nombreL").val() + " - " + $("#claveL").val());
-        comprobarUsuarioMongo($("#nombreL").val(),$("#claveL").val(),false);
+        comprobarUsuarioMongo($("#nombreL").val(), $("#claveL").val(), false);
     });
-    $("#registrBtn").on("click",function(e){
+    $("#registrBtn").on("click", function (e) {
         mostrarFormularioRegistro();
     });
 }
 
-function mostrarFormularioRegistro(){
+function mostrarFormularioRegistro() {
     $("#juegoContainer").empty();
-    $("#juegoContainer").load('../registro.html',function(){
-        $("#password1,#password2,#nombreUsuario").on("focus",function(e){
+    $("#juegoContainer").load('../registro.html', function () {
+        $("#password1,#password2,#nombreUsuario").on("focus", function (e) {
             $(this).removeAttr("style");
             $(this).val('');
         });
-        $("#confirmaRegBtn").on("click", function(){
+        $("#confirmaRegBtn").on("click", function () {
             console.log($("#nombreUsuario").val() + " - " + $("#password1").val());
-            if($("#password2").val() != $("#password1").val()){
+            if ($("#password2").val() != $("#password1").val()) {
                 $('#password2').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
                 $('#password1').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
             } else {
-                crearUsuario($("#nombreUsuario").val(), $("#password2").val(),false);
+                crearUsuario($("#nombreUsuario").val(), $("#password2").val(), false);
             }
-        });    
-});
+        });
+    });
 }
 
-function mostrarFormularioModificar(){
+function mostrarFormularioModificar() {
     $("#juegoContainer").empty();
-    $("#juegoContainer").load('../registro.html',function(){
-        $("#password1,#password2,#nombreUsuario").on("focus",function(e){
+    $("#juegoContainer").load('../registro.html', function () {
+        $("#password1,#password2,#nombreUsuario").on("focus", function (e) {
             $(this).removeAttr("style");
         });
         $("#nombreUsuario").val($.cookie('nombre'));
         $("#confirmaRegBtn").text("Guardar cambios");
-        $("#confirmaRegBtn").on("click", function(){
+        $("#confirmaRegBtn").on("click", function () {
             console.log($("#nombreUsuario").val() + " - " + $("#password1").val());
-            if($("#password2").val() != $("#password1").val()){
+            if ($("#password2").val() != $("#password1").val()) {
                 $('#password2').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
                 $('#password1').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
             } else {
                 modificarUsuarioServer($("#nombreUsuario").val(), $("#password1").val());
             }
-        });    
+        });
     });
 }
 
-function mostrarFormularioEliminar(){
+function mostrarFormularioEliminar() {
     $("#juegoContainer").empty();
-    $("#juegoContainer").load('../registro.html',function(){
+    $("#juegoContainer").load('../registro.html', function () {
         $("#formRegistro").prepend('<span style="color:#FF0000">Confirma tus credenciales</span>');
         $("#camposContra2").remove();
         $("#confirmaRegBtn").text("Eliminar credenciales");
-        $("#confirmaRegBtn").on("click", function(){
-                eliminarUsuarioServer($("#nombreUsuario").val(), $("#password1").val());
+        $("#confirmaRegBtn").on("click", function () {
+            eliminarUsuarioServer($("#nombreUsuario").val(), $("#password1").val());
         });
     });
 }
@@ -106,7 +106,7 @@ function mostrarFormularioEliminar(){
 function mierdaPrueba() {
     $.getJSON('/resultados/', function (datos) {
         console.log(JSON.stringify(datos));
-        for (p in datos){
+        for (p in datos) {
             console.log(datos[p].user);
         }
     });
@@ -124,18 +124,18 @@ function borrarControl() {
  */
 function mostrarInfoJuego2() {
     vidas = $.cookie("vidas");
-    var nombre=$.cookie("nombre");
-	var id=$.cookie("id");
-	var nivel=$.cookie("nivel");
-	var percen=Math.floor(((nivel-1)/$.cookie("maxNivel"))*100);
-	$('#datos').remove();
-	$('#cabeceraP').remove();
-	$('#cabecera').remove();
-	$('#prog').remove();
-	//$('#control').append('<div id="cabecera"><h2>Panel</h2></div>')
-	$('#control').append('<div id="datos"><h4>Nombre: '+nombre+'<br />Nivel: '+nivel+'</h4></div>');
-	$('#control').append('<div class="progress" id="prog"><div class="progress-bar progress-bar-success progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width:'+percen+'%">'+percen+'%</div></div>');
-	$("#registerGroup").remove();
+    var nombre = $.cookie("nombre");
+    var id = $.cookie("id");
+    var nivel = $.cookie("nivel");
+    var percen = Math.floor(((nivel - 1) / $.cookie("maxNivel")) * 100);
+    $('#datos').remove();
+    $('#cabeceraP').remove();
+    $('#cabecera').remove();
+    $('#prog').remove();
+    //$('#control').append('<div id="cabecera"><h2>Panel</h2></div>')
+    $('#control').append('<div id="datos"><h4>Nombre: ' + nombre + '<br />Nivel: ' + nivel + '</h4></div>');
+    $('#control').append('<div class="progress" id="prog"><div class="progress-bar progress-bar-success progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width:' + percen + '%">' + percen + '%</div></div>');
+    $("#registerGroup").remove();
     siguienteNivel();
 }
 
@@ -151,27 +151,27 @@ function siguienteNivel() {
         $("#cerrarSesBtn").remove();
         $("#juegoId").remove();
         $("#enh").remove();
-		$('#res').remove();
-  		$('#resultados').remove();
+        $('#res').remove();
+        $('#resultados').remove();
         $("#formRegistro").remove();
         $("#juegoContainer").append('<div id="juegoId"></div>');
         console.log("Nivel de cookie es ->" + $.cookie("nivel"));
         console.log("Llamamos a crear nivel sin parametros en siguienteNivel()");
         crearNivel();
     });
-    $("#cerrarSesBtn").on("click", function(){
+    $("#cerrarSesBtn").on("click", function () {
         $("#control").empty();
         resetControl();
     });
 }
 
-function borrarSiguienteNivel(){
+function borrarSiguienteNivel() {
     $("#siguienteBtn").remove();
     $("#cerrarSesBtn").remove();
     $('#datos').remove();
-	$('#cabeceraP').remove();
-	$('#cabecera').remove();
-	$('#prog').remove();
+    $('#cabeceraP').remove();
+    $('#cabecera').remove();
+    $('#prog').remove();
 }
 
 function nivelCompletado(tiempo) {
@@ -181,34 +181,34 @@ function nivelCompletado(tiempo) {
     obtenerResultados();
 }
 
-function comunicarNivelCompletado(tiempo){
-	var id=$.cookie("id");
-	$.getJSON('/nivelCompletado/'+id+"/"+tiempo,function(datos){
-			$.cookie("nivel",datos.nivel);
-			mostrarInfoJuego2();
-	});	
+function comunicarNivelCompletado(tiempo) {
+    var id = $.cookie("id");
+    $.getJSON('/nivelCompletado/' + id + "/" + tiempo, function (datos) {
+        $.cookie("nivel", datos.nivel);
+        mostrarInfoJuego2();
+    });
 }
 
-function obtenerResultados(){
-	var id=$.cookie("id");
+function obtenerResultados() {
+    var id = $.cookie("id");
     console.log(id);
-	$.getJSON('/obtenerResultados/'+id,function(datos){
+    $.getJSON('/obtenerResultados/' + id, function (datos) {
         console.log(datos);
         mostrarResultadosUsuario(datos);
-	});
+    });
 }
 
-function mostrarResultadosUsuario(datos){
+function mostrarResultadosUsuario(datos) {
     console.log("Mostrar resultados con parametros")
     $('#res').remove();
     $('#resultados').remove();
     $('#juegoId').append('<h3 id="res">Resultados</h3>');
-    var cadena="<table id='resultados' class='table table-bordered table-condensed'><tr><th>Nombre</th><th>Nivel</th><th>Tiempo</th></tr>";
-        for(var i=0;i<datos.length;i++){
-        cadena=cadena+"<tr><td>"+$.cookie("nombre")+"</td><td> "+datos[i].nivel+"</td>"+"</td><td> "+datos[i].tiempo+"</td></tr>";      
-        }
-        cadena=cadena+"</table>";
-        $('#juegoId').append(cadena);
+    var cadena = "<table id='resultados' class='table table-bordered table-condensed'><tr><th>Nombre</th><th>Nivel</th><th>Tiempo</th></tr>";
+    for (var i = 0; i < datos.length; i++) {
+        cadena = cadena + "<tr><td>" + $.cookie("nombre") + "</td><td> " + datos[i].nivel + "</td>" + "</td><td> " + datos[i].tiempo + "</td></tr>";
+    }
+    cadena = cadena + "</table>";
+    $('#juegoId').append(cadena);
 }
 
 //Funciones de comunicación
@@ -216,18 +216,18 @@ function mostrarResultadosUsuario(datos){
  * Seteamos la cookie inicial.
  * @param nombre
  */
-function crearUsuario(nombre,pass) {
+function crearUsuario(nombre, pass) {
     if (nombre == "") {
         nombre = "jugador";
     }
     $.ajax({
-        type:"POST",
-        contentType:"application/json",
-        url:"/crearUsuario/",
-        data:JSON.stringify({email:nombre,password:pass}),
-        success:function(data){
+        type: "POST",
+        contentType: "application/json",
+        url: "/crearUsuario/",
+        data: JSON.stringify({ email: nombre, password: pass }),
+        success: function (data) {
             console.log(data);
-            if(data.nivel == -1){
+            if (data.nivel == -1) {
                 $('#nombreUsuario').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
                 $('#nombreUsuario').val('Usuario existente');
             } else {
@@ -238,15 +238,15 @@ function crearUsuario(nombre,pass) {
     });
 }
 
-function modificarUsuarioServer(nombre,pass) {
+function modificarUsuarioServer(nombre, pass) {
     $.ajax({
-        type:"POST",
-        contentType:"application/json",
-        url:"/modificarUsuario/",
-        data:JSON.stringify({old_email:$.cookie('nombre'),new_email:nombre,new_password:pass}),
-        success:function(data){
+        type: "POST",
+        contentType: "application/json",
+        url: "/modificarUsuario/",
+        data: JSON.stringify({ old_email: $.cookie('nombre'), new_email: nombre, new_password: pass }),
+        success: function (data) {
             console.log(data);
-            if(data.nModified != 1){
+            if (data.nModified != 1) {
                 $('#nombreUsuario').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
                 $('#nombreUsuario').val('Usuario existente');
             } else {
@@ -258,15 +258,15 @@ function modificarUsuarioServer(nombre,pass) {
     });
 }
 
-function eliminarUsuarioServer(nombre,pass) {
+function eliminarUsuarioServer(nombre, pass) {
     $.ajax({
-        type:"POST",
-        contentType:"application/json",
-        url:"/eliminarUsuario/",
-        data:JSON.stringify({email:nombre,password:pass}),
-        success:function(data){
+        type: "POST",
+        contentType: "application/json",
+        url: "/eliminarUsuario/",
+        data: JSON.stringify({ email: nombre, password: pass }),
+        success: function (data) {
             console.log(data);
-            if(data.n != 1){
+            if (data.n != 1) {
                 $('#nombreUsuario').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
                 $('#nombreUsuario').val('Error en servidor');
             } else {
@@ -291,10 +291,22 @@ function salvarPuntuacion(puntos) {
 /**
  * Mostramos los resultados de los que tiene registro el servidor
  */
+function auxiliar(){
+    var d;
+    $.ajax({
+        url: '/resultados/',
+        dataType: 'json',
+        async: false,
+        success: function (data) {
+            d = data;
+        }
+    });
+    return d;
+}
+
 function mostrarResultados() {
     var resultadosJuego = undefined;
-    var resultJuegoHtml = "";
-    //Prueba con otro método
+    console.log("LLamamos a mostrar resultados");
     $.ajax({
         url: '/resultados/',
         dataType: 'json',
@@ -304,26 +316,46 @@ function mostrarResultados() {
             console.log(data);
         }
     });
-    for (var key in resultadosJuego) {
-        resultJuegoHtml += resultadosJuego[key].user + " - " + resultadosJuego[key].score + "<br/>";
+    $('#resultadosContainer').append('<h3 id="res">Resultados</h3>');
+    var cadena = "";
+    cadena += "<table id='resultados' class='table table-bordered table-condensed'>";
+    cadena += "<tr><th colspan='4' style='text-align:center;'><img style='height:150px; width:150px' src='./assets/wall-fame.png'></th></tr>";
+    cadena += "<tr><th style='text-align:center'>Nombre</th><th style='text-align:center'>Partida</th><th style='text-align:center'>Nivel</th><th style='text-align:center'>Tiempo</th></tr>";
+
+    for (var i in resultadosJuego) {
+        //console.log("i - " + i);
+        for (var j in resultadosJuego[i].resultados) {
+            //console.log("j - " + j);
+                for (var z in resultadosJuego[i].resultados[j]){
+                    var date;
+                    //console.log("z - " + z)
+                    if(z != "idJuego"){
+                        cadena = cadena + "<tr><td>" + resultadosJuego[i].nombre + "</td><td>" + date +"</td><td> " + z.slice(-1) + "</td>" + "</td><td> " + resultadosJuego[i].resultados[j][z] + "</td></tr>";
+                    } else {
+                        date = new Date(resultadosJuego[i].resultados[j][z])
+                    }
+                }
+        }
     }
-    $("#resultadosContainer").append(resultJuegoHtml);
+    cadena = cadena + "</table>";
+    //console.log(cadena);
+    $('#resultadosContainer').append(cadena);
 }
 
-function comprobarUsuarioMongo(nombre,pass,fromCookie){
+function comprobarUsuarioMongo(nombre, pass, fromCookie) {
     //console.log(nombre);
     //console.log(pass);
-    if (pass == "" && !fromCookie){
+    if (pass == "" && !fromCookie) {
         $('#claveL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
     } else {
         $.ajax({
-            type:"POST",
-            contentType:"application/json",
-            url:"/login/",
-            data:JSON.stringify({email:nombre,password:pass}),
-            success:function(data){
+            type: "POST",
+            contentType: "application/json",
+            url: "/login/",
+            data: JSON.stringify({ email: nombre, password: pass }),
+            success: function (data) {
                 console.log(data);
-                if(data.nivel == -1){
+                if (data.nivel == -1) {
                     console.log("No hay nada");
                     borrarLogin();
                     resetControl();
@@ -341,7 +373,7 @@ function comprobarUsuarioMongo(nombre,pass,fromCookie){
     }
 }
 
-function borrarLogin(){
+function borrarLogin() {
     $("#login").remove();
     $("#loginBtn").remove();
 }
@@ -356,47 +388,47 @@ function borrarCookies() {
     $.removeCookie('maxNivel');
 }
 
-function setCookies(data){
+function setCookies(data) {
 
     $.cookie('nivel', data.nivel);
     $.cookie("vidas", data.vidas);
     $.cookie('nombre', data.nombre);
     $.cookie('id', data.id);
-    $.cookie('maxNivel',data.maxNivel);
+    $.cookie('maxNivel', data.maxNivel);
 }
 
-function noHayNiveles(){
-	$('#juegoId').append("<h2 id='enh'>Lo siento, no tenemos más niveles</h2>");
-	$('#control').append('<button type="button" id="siguienteBtn" class="btn btn-primary btn-md">Volver a empezar</button>')
-	$('#siguienteBtn').on('click',function(){
-		$('#siguienteBtn').remove();
+function noHayNiveles() {
+    $('#juegoId').append("<h2 id='enh'>Lo siento, no tenemos más niveles</h2>");
+    $('#control').append('<button type="button" id="siguienteBtn" class="btn btn-primary btn-md">Volver a empezar</button>')
+    $('#siguienteBtn').on('click', function () {
+        $('#siguienteBtn').remove();
         $('#datos').remove();
         $('#prog').remove();
-		resetControl();
-	});
+        resetControl();
+    });
 }
 
-function finDelJuego(){
+function finDelJuego() {
     game.destroy();
     $('#juegoId').append("<h2 id='enh'>Lo siento,  has perdido :(</h2>");
     $('#control').append('<button type="button" id="siguienteBtn" class="btn btn-primary btn-md">Volver a empezar</button>');
-    $('#siguienteBtn').on('click',function(){
+    $('#siguienteBtn').on('click', function () {
         $('#siguienteBtn').remove();
         $('#datos').remove();
         $('#prog').remove();
         mostrarInfoJuego2();
-	});
+    });
 }
 
-function resetControl(){
-	borrarCookies();
+function resetControl() {
+    borrarCookies();
     $("#control").empty();
     $("#juegoContainer").empty();
-	mostrarLogin();
+    mostrarLogin();
 }
 
-function modificarUsuario(){
-    if($.cookie('nombre') != undefined){
+function modificarUsuario() {
+    if ($.cookie('nombre') != undefined) {
         mostrarFormularioModificar();
     } else {
         $("#juegoContainer").empty();
@@ -404,8 +436,8 @@ function modificarUsuario(){
     }
 }
 
-function eliminarUsuario(){
-    if($.cookie('nombre') != undefined){
+function eliminarUsuario() {
+    if ($.cookie('nombre') != undefined) {
         mostrarFormularioEliminar();
     } else {
         $("#juegoContainer").empty();

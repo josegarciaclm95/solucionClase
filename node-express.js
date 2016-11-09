@@ -244,10 +244,10 @@ app.get('/obtenerResultados/:id', function (request, response) {
 });
 
 
-//console.log("Servidor escuchando en el puerto "+process.env.PORT );
-//app.listen(process.env.PORT || port);
-console.log("Servidor escuchando en el puerto " + port);
-app.listen(port, host);
+console.log("Servidor escuchando en el puerto "+process.env.PORT );
+app.listen(process.env.PORT || port);
+//console.log("Servidor escuchando en el puerto " + port);
+//app.listen(port, host);
 
 function mongoConnect(){
 	MongoClient.connect(urlM, function (err, db) {
