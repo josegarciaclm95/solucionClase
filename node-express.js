@@ -16,7 +16,7 @@ var modelo = require("./servidor/modelo.js");
 var app = exp();
 var juegofm = new modelo.JuegoFM('./cliente/js/juego-json.json');
 var juego = juegofm.makeJuego();
-console.log(juego.toString());
+//console.log(juego.toString());
 var MongoClient = require('mongodb');
 var ObjectID = require("mongodb").ObjectID;
 var bodyParser = require("body-parser");
@@ -44,11 +44,15 @@ app.get("/datosJuego/:id", function (request, response) {
 	//console.log("Llamada a /datosJuego/" + request.params.nivel);
 	var id = request.params.id;
 	var usuario = juego.buscarUsuarioById(id);
-	if(usuario && (usuario.nivel-1) < juego.niveles.length){
-		response.send(juego.niveles[usuario.nivel-1]);
+	var res;
+	console.log(usuario);
+	if(usuario && usuario.nivel <= juego.niveles.length){
+		res = juego.niveles[usuario.nivel-1];
 	} else {
-		response.send({"nivel":-1});
-	}	
+		res = {"nivel":-1}
+	}
+	console.log("Datos a devolver -> " +  JSON.stringify(res.nivel));
+	response.send(res);
 });
 
 
@@ -80,7 +84,7 @@ app.post('/login/', function(request, response){
 					u.id = users[0]._id;
 					addNewResults(u);
 					juego.agregarUsuario(u);
-					console.log(juego.toString());
+					console.log(u);
 					u.maxNivel = juego.niveles.length;
 					response.send(u);
 				}
@@ -150,6 +154,45 @@ app.post("/eliminarUsuario/", function (request, response) {
 });
 
 app.get("/resultados/", function (request, response) {
+	dbM.collection("usuarios").find({}).toArray(function(err,data){
+		callBackUsuarios(err,data,response);
+	});
+});	
+
+function callBackUsuarios(err,data,response){
+	var res = [];
+	if(err){
+		console.log(err);
+	} else {
+		console.log(data.length);
+		var max = data.length;
+		data.forEach(function(item,i){
+			var user = {}
+			user.nombre = item.nombre;
+			dbM.collection("resultados").find({usuario:ObjectID(item._id)}).toArray(function(err,results){
+				console.log("Llamada con i = " + i)
+				callBackResultados(err,results,user,res,response,i,max);				
+			});
+		});
+	}
+}
+
+function callBackResultados(err,results,user,res,response,i,max){
+	if(err){
+		console.log(err);
+	} else {
+		console.log(results)
+		console.log(results[0].resultados);
+		user.resultados = results[0].resultados;
+		//console.log(user);
+		res.push(user);
+		console.log(i + " -  max " + max);
+		if(i + 1 == max){
+			response.send(res);
+		}
+	}
+}
+	/*
 	dbM.collection("resultados").find({}).toArray(function(err,doc){
 		if(err){
 			console.log(err);
@@ -157,8 +200,7 @@ app.get("/resultados/", function (request, response) {
 			console.log(doc);
 			response.send(doc);
 		}
-	});
-});
+	});*/
 
 app.get('/limpiarMongo/', function(request,response){
 	usersM.remove({});
@@ -171,6 +213,7 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 	var id = request.params.id;
 	var tiempo = parseInt(request.params.tiempo);
 	var usuario = juego.buscarUsuarioById(id);
+	usuario.agregarResultado(new modelo.Resultado(usuario.nivel,tiempo));
 	console.log(id + " - Tiempo " + tiempo + " IdJuego - " + usuario.idJuego);
 	usuario.nivel += 1;
 	console.log(usuario.nivel);
@@ -197,20 +240,14 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 app.get('/obtenerResultados/:id', function (request, response) {
 	var id = request.params.id;
 	var user = juego.buscarUsuarioById(id);
-	dbM.collection("resultados").findOne({usuario:user.nombre}, function(err,doc){
-		if(err){
-			console.log(err);
-		} else {
-			response.send(doc);
-		}
-	});
+	response.send(user.resultados);
 });
 
 
-console.log("Servidor escuchando en el puerto "+process.env.PORT );
-app.listen(process.env.PORT || port);
-//console.log("Servidor escuchando en el puerto " + port);
-//app.listen(port, host);
+//console.log("Servidor escuchando en el puerto "+process.env.PORT );
+//app.listen(process.env.PORT || port);
+console.log("Servidor escuchando en el puerto " + port);
+app.listen(port, host);
 
 function mongoConnect(){
 	MongoClient.connect(urlM, function (err, db) {
@@ -247,7 +284,7 @@ function insertUser(usuario,pass){
 					console.log(err1);
 				} else {
 					console.log("Resultados inicializados");
-					console.log(result1);
+					//console.log(result1);
 				}
 			});
 			console.log("Usuario insertado");

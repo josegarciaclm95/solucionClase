@@ -178,7 +178,7 @@ function nivelCompletado(tiempo) {
     game.destroy();
     $('#juegoId').append("<h2 id='enh'>Enhorabuena!</h2>");
     comunicarNivelCompletado(tiempo);
-    //obtenerResultados();
+    obtenerResultados();
 }
 
 function comunicarNivelCompletado(tiempo){
@@ -191,22 +191,24 @@ function comunicarNivelCompletado(tiempo){
 
 function obtenerResultados(){
 	var id=$.cookie("id");
+    console.log(id);
 	$.getJSON('/obtenerResultados/'+id,function(datos){
         console.log(datos);
-        mostrarResultados(datos);
+        mostrarResultadosUsuario(datos);
 	});
 }
 
-function mostrarResultados(datos){
-  $('#res').remove();
-  $('#resultados').remove();
-  $('#juegoId').append('<h3 id="res">Resultados</h3>');
-  var cadena="<table id='resultados' class='table table-bordered table-condensed'><tr><th>Nombre</th><th>Nivel</th><th>Tiempo</th></tr>";
-    for(var i=0;i<datos.length;i++){
-      cadena=cadena+"<tr><td>"+datos[i].nombre+"</td><td> "+datos[i].nivel+"</td>"+"</td><td> "+datos[i].tiempo+"</td></tr>";      
-    }
-    cadena=cadena+"</table>";
-    $('#juegoId').append(cadena);
+function mostrarResultadosUsuario(datos){
+    console.log("Mostrar resultados con parametros")
+    $('#res').remove();
+    $('#resultados').remove();
+    $('#juegoId').append('<h3 id="res">Resultados</h3>');
+    var cadena="<table id='resultados' class='table table-bordered table-condensed'><tr><th>Nombre</th><th>Nivel</th><th>Tiempo</th></tr>";
+        for(var i=0;i<datos.length;i++){
+        cadena=cadena+"<tr><td>"+$.cookie("nombre")+"</td><td> "+datos[i].nivel+"</td>"+"</td><td> "+datos[i].tiempo+"</td></tr>";      
+        }
+        cadena=cadena+"</table>";
+        $('#juegoId').append(cadena);
 }
 
 //Funciones de comunicación
@@ -382,7 +384,7 @@ function finDelJuego(){
         $('#siguienteBtn').remove();
         $('#datos').remove();
         $('#prog').remove();
-        siguienteNivel();
+        mostrarInfoJuego2();
 	});
 }
 

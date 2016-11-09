@@ -25,19 +25,20 @@ var infoJuego = {};
 var builderObject;
 
 function crearNivel(){
-    game = new Phaser.Game(800, 600, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
     console.log('Llamada a /datosJuego/'+$.cookie("id"));
     $.ajax({
         url: '/datosJuego/'+$.cookie("id"),
         dataType: 'json',
         async: false,
         success: function (data) {
+            console.log("Datos devultos a crearNivel")
             console.log(data);
-            if(data.nivel == -1){
-                game.destroy();
+            if(data.nivel == -1 || data == {}){
+                //game.destroy();
                 noHayNiveles();
             } else {
                 infoJuego = data;  
+                game = new Phaser.Game(800, 600, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
                 console.log(infoJuego);
                 console.log("Datos llegados a infoJuego -> " + JSON.stringify(infoJuego));
             }

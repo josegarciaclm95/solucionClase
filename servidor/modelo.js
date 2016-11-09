@@ -14,7 +14,9 @@ function Juego(){
             this.usuarios.push(usuario);
         } else {
             console.log("El usuario ya existia");
-            this.buscarUsuario(usuario.nombre).nivel = 1;
+            var u = this.buscarUsuario(usuario.nombre);
+            u.nivel = 1;
+            u.resultados = [];
         }
     };
     this.buscarUsuario = function(nombre_us){
@@ -51,6 +53,26 @@ function Usuario(nombre){
     this.vidas = 5;
     this.idJuego = new Date().valueOf();
     this.nivel = 1;
+    this.resultados = []
+    this.agregarResultado = function (result){
+        this.resultados.push(result);
+    }
+    Usuario.prototype.toString = function(){
+        var r = "Usuario " + this.nombre + " - Id " + this.id + "\n";
+        r += "Nivel actual " + this.nivel + "\n";
+        for(var i in this.resultados){
+            r += this.resultados[i].toString() + "\n";
+        } 
+        return r;
+    }
+}
+
+function Resultado(nivel,tiempo){
+    this.nivel = nivel;
+    this.tiempo = tiempo;
+    Resultado.prototype.toString = function(){
+        return "Nivel " + this.nivel + " - Tiempo " + this.tiempo; 
+    }
 }
 
 function JuegoFM(archivo){
@@ -78,3 +100,4 @@ module.exports.Juego = Juego;
 module.exports.Usuario = Usuario;
 module.exports.Nivel = Nivel;
 module.exports.JuegoFM = JuegoFM;
+module.exports.Resultado = Resultado;
