@@ -192,15 +192,6 @@ function callBackResultados(err,results,user,res,response,i,max){
 		}
 	}
 }
-	/*
-	dbM.collection("resultados").find({}).toArray(function(err,doc){
-		if(err){
-			console.log(err);
-		} else {
-			console.log(doc);
-			response.send(doc);
-		}
-	});*/
 
 app.get('/limpiarMongo/', function(request,response){
 	usersM.remove({});

@@ -329,10 +329,11 @@ function mostrarResultados() {
                 for (var z in resultadosJuego[i].resultados[j]){
                     var date;
                     //console.log("z - " + z)
-                    if(z != "idJuego"){
+                    if(z != "idJuego" && resultadosJuego[i].resultados[j][z] != -1){
                         cadena = cadena + "<tr><td>" + resultadosJuego[i].nombre + "</td><td>" + date +"</td><td> " + z.slice(-1) + "</td>" + "</td><td> " + resultadosJuego[i].resultados[j][z] + "</td></tr>";
                     } else {
-                        date = new Date(resultadosJuego[i].resultados[j][z])
+                        date = new Date(resultadosJuego[i].resultados[j][z]);
+                        date = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
                     }
                 }
         }
