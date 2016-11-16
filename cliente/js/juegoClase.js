@@ -54,6 +54,7 @@ function preload() {
     game.load.image('star', 'assets/star.png');
     game.load.spritesheet('dude', 'assets/sora.png', 60, 56);
     game.load.spritesheet('boom','assets/explosion.png',100,100);
+    game.load.spritesheet('rain', 'assets/rain.png', 17, 17);
     //game.load.spritesheet('boom','assets/explosion2.png',269,264);
 }
 
@@ -61,7 +62,19 @@ function create() {
     //Creamos builder de elementos
     
     builderObject = new Builder(infoJuego);
-
+   /*
+    var emitter = game.add.emitter(300, 0, 400);
+    emitter.width = game.world.width;
+	emitter.angle = 30;
+    emitter.makeParticles('rain');
+	emitter.minParticleScale = 1;
+	emitter.maxParticleScale = 2;
+	emitter.setYSpeed(300, 500);
+	emitter.setXSpeed(-5, 5);
+	emitter.minRotation = 0;
+	emitter.maxRotation = 0;
+	emitter.start(false, 1600, 5, 0);
+*/
     //Habilita fisica
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -93,7 +106,7 @@ function create() {
         var star = stars.create(i * 47, 0, 'star');
         game.physics.enable(star,Phaser.Physics.ARCADE);
         star.body.gravity.y = 50*i + 10;
-        star.body.velocity.x = game.rnd.integerInRange(-50,50);
+        star.body.velocity.x = game.rnd.integerInRange(-200,200);
     }
 
     explosions = game.add.group();
@@ -165,7 +178,7 @@ function crearNuevaEstrella(){
     var strella = stars.create(j, 0, 'star');
     game.physics.enable(strella,Phaser.Physics.ARCADE)
     strella.body.gravity.y = game.rnd.integerInRange(40, 100) + 10;
-    strella.body.velocity.x = game.rnd.integerInRange(-50,50);
+    strella.body.velocity.x = game.rnd.integerInRange(-200,200);
 }
 
 function collectStar(player, star) {

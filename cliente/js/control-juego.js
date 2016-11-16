@@ -9,6 +9,16 @@ var usuarioDevuelto = undefined;
  * CAUTION!! En estos momentos no es necesario, pero si hubiera varios clientes (app movil Android, app movil iOS)
  * entonces cabría la posibilidad de que se hubiera avanzado en otro sitio y habría que mantener la información actualizada
  */
+
+/**
+ * Libreria sendGrid - proveedor de correo
+ * nodemailer + sendgrid
+ * En el signup, en lugar de meter el usuario hacemos una confirmación de correo.
+ * Tenemos una coleccion limbo
+ * Metemos el usuario en limbo
+ * fabricamos un mail
+ */
+
 function inicio() {
     if ($.cookie('nombre') != undefined) {
         comprobarUsuarioMongo($.cookie('nombre'), undefined, true);
@@ -17,6 +27,9 @@ function inicio() {
         mostrarLogin();
     }
 }
+/**
+ * Definir una funcion para las llamadas de AJAX que reciba el tipo de llamada, el cuerpo, y el callback en caos de exito 
+ */
 
 function limpiarMongo() {
     $.getJSON('/limpiarMongo/', function (datos) {
@@ -344,11 +357,23 @@ function mostrarResultados() {
 }
 
 function comprobarUsuarioMongo(nombre, pass, fromCookie) {
-    //console.log(nombre);
-    //console.log(pass);
     if (pass == "" && !fromCookie) {
         $('#claveL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
     } else {
+        var callback = function(data){
+            if (data.nivel == -1) {
+                    console.log("No hay nada");
+                    borrarLogin();
+                    resetControl();
+                    borrarEstilosLogin();
+                } else {
+                    setCookies(data);
+                    borrarLogin();
+                    mostrarInfoJuego2();
+                }
+        }
+        peticionAjax("POST","/login/",JSON.stringify({email: nombre, password: pass}),callback);
+        /*
         $.ajax({
             type: "POST",
             contentType: "application/json",
@@ -370,8 +395,15 @@ function comprobarUsuarioMongo(nombre, pass, fromCookie) {
                     mostrarInfoJuego2();
                 }
             }
-        });
+        });*/
     }
+}
+
+function borrarEstilosLogin(){
+    $('#nombreL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
+    $('#claveL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
+    $("#nombreL").val('Usuario o contraseña incorrectos');
+    $("#claveL").val('');
 }
 
 function borrarLogin() {
@@ -444,4 +476,14 @@ function eliminarUsuario() {
         $("#juegoContainer").empty();
         $("#juegoContainer").append('<span style="color:#FF0000">Tienes que logearte primero!!</span>');
     }
+}
+
+function peticionAjax(peticion,url,body,successCallback){
+     $.ajax({
+            type: peticion,
+            contentType: "application/json",
+            url: url,
+            data: body,
+            success: successCallback
+     });
 }
