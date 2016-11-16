@@ -373,29 +373,6 @@ function comprobarUsuarioMongo(nombre, pass, fromCookie) {
                 }
         }
         peticionAjax("POST","/login/",JSON.stringify({email: nombre, password: pass}),callback);
-        /*
-        $.ajax({
-            type: "POST",
-            contentType: "application/json",
-            url: "/login/",
-            data: JSON.stringify({ email: nombre, password: pass }),
-            success: function (data) {
-                console.log(data);
-                if (data.nivel == -1) {
-                    console.log("No hay nada");
-                    borrarLogin();
-                    resetControl();
-                    $('#nombreL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
-                    $('#claveL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
-                    $("#nombreL").val('Usuario o contraseña incorrectos');
-                    $("#claveL").val('');
-                } else {
-                    setCookies(data);
-                    borrarLogin();
-                    mostrarInfoJuego2();
-                }
-            }
-        });*/
     }
 }
 
