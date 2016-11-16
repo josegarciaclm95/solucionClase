@@ -37,6 +37,7 @@ function limpiarMongo() {
         console.log(datos);
     });
 }
+
 function mostrarLogin() {
     $("#login").remove();
     var form = "";
@@ -190,8 +191,17 @@ function borrarSiguienteNivel() {
 function nivelCompletado(tiempo) {
     game.destroy();
     $('#juegoId').append("<h2 id='enh'>Enhorabuena!</h2>");
-    comunicarNivelCompletado(tiempo);
-    obtenerResultados();
+    var callbackNivelCompletado = function(datos){
+        $.cookie("nivel", datos.nivel);
+        mostrarInfoJuego2();
+    }
+    peticionAjax("GET","/nivelCompletado/"+$.cookie("id")+"/"+tiempo,true,{},callbackNivelCompletado);
+    //comunicarNivelCompletado(tiempo);
+    var callbackObtenerResultados = function(datos){
+        mostrarResultadosUsuario(datos);
+    }
+    peticionAjax("GET","/obtenerResultados/"+$.cookie("id"),true,{},callbackNivelCompletado);
+    //obtenerResultados();
 }
 
 function comunicarNivelCompletado(tiempo) {
@@ -233,53 +243,36 @@ function crearUsuario(nombre, pass) {
     if (nombre == "") {
         nombre = "jugador";
     }
-    $.ajax({
-        type: "POST",
-        contentType: "application/json",
-        url: "/crearUsuario/",
-        data: JSON.stringify({ email: nombre, password: pass }),
-        success: function (data) {
-            console.log(data);
-            if (data.nivel == -1) {
-                $('#nombreUsuario').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
-                $('#nombreUsuario').val('Usuario existente');
-            } else {
-                $("#formRegistro").remove();
-                setCookies(data);
-            }
+    var callback = function(data){
+        if (data.nivel == -1) {
+            $('#nombreUsuario').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
+            $('#nombreUsuario').val('Usuario existente');
+        } else {
+            $("#formRegistro").remove();
+            setCookies(data);
         }
-    });
+    }
+    peticionAjax("POST","/crearUsuario/",true,JSON.stringify({ email:nombre, password:pass }),callback);
 }
 
 function modificarUsuarioServer(nombre, pass) {
-    $.ajax({
-        type: "POST",
-        contentType: "application/json",
-        url: "/modificarUsuario/",
-        data: JSON.stringify({ old_email: $.cookie('nombre'), new_email: nombre, new_password: pass }),
-        success: function (data) {
-            console.log(data);
-            if (data.nModified != 1) {
-                $('#nombreUsuario').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
-                $('#nombreUsuario').val('Usuario existente');
-            } else {
-                $("#formRegistro").remove();
-                borrarSiguienteNivel();
-                resetControl();
-            }
+    var callback = function(data){
+        if (data.nModified != 1) {
+           $('#nombreUsuario').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
+           $('#nombreUsuario').val('Usuario existente');
+        } else {
+            $("#formRegistro").remove();
+            borrarSiguienteNivel();
+            resetControl();
         }
-    });
+    }
+    peticionAjax("POST","/modificarUsuario/",true,
+        JSON.stringify({ old_email: $.cookie('nombre'), new_email: nombre, new_password: pass }),callback);
 }
 
 function eliminarUsuarioServer(nombre, pass) {
-    $.ajax({
-        type: "POST",
-        contentType: "application/json",
-        url: "/eliminarUsuario/",
-        data: JSON.stringify({ email: nombre, password: pass }),
-        success: function (data) {
-            console.log(data);
-            if (data.n != 1) {
+    var callback = function(data){
+        if (data.n != 1) {
                 $('#nombreUsuario').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
                 $('#nombreUsuario').val('Error en servidor');
             } else {
@@ -287,8 +280,8 @@ function eliminarUsuarioServer(nombre, pass) {
                 borrarSiguienteNivel();
                 resetControl();
             }
-        }
-    });
+    }
+    peticionAjax("DELETE","/eliminarUsuario/",true,JSON.stringify({ email: nombre, password: pass }),callback);
 }
 /**
  * Enviamos el score del jugador al servidor
@@ -320,14 +313,8 @@ function auxiliar(){
 function mostrarResultados() {
     var resultadosJuego = undefined;
     console.log("LLamamos a mostrar resultados");
-    $.ajax({
-        url: '/resultados/',
-        dataType: 'json',
-        async: false,
-        success: function (data) {
-            resultadosJuego = data;
-            console.log(data);
-        }
+    peticionAjax("GET","/resultados/",false,{},function(data){
+        resultadosJuego = data;
     });
     $('#resultadosContainer').append('<h3 id="res">Resultados</h3>');
     var cadena = "";
@@ -336,23 +323,19 @@ function mostrarResultados() {
     cadena += "<tr><th style='text-align:center'>Nombre</th><th style='text-align:center'>Partida</th><th style='text-align:center'>Nivel</th><th style='text-align:center'>Tiempo</th></tr>";
 
     for (var i in resultadosJuego) {
-        //console.log("i - " + i);
         for (var j in resultadosJuego[i].resultados) {
-            //console.log("j - " + j);
-                for (var z in resultadosJuego[i].resultados[j]){
-                    var date;
-                    //console.log("z - " + z)
-                    if(z != "idJuego" && resultadosJuego[i].resultados[j][z] != -1){
-                        cadena = cadena + "<tr><td>" + resultadosJuego[i].nombre + "</td><td>" + date +"</td><td> " + z.slice(-1) + "</td>" + "</td><td> " + resultadosJuego[i].resultados[j][z] + "</td></tr>";
-                    } else {
-                        date = new Date(resultadosJuego[i].resultados[j][z]);
-                        date = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
-                    }
+            for (var z in resultadosJuego[i].resultados[j]){
+                var date;
+                if(z != "idJuego" && resultadosJuego[i].resultados[j][z] != -1){
+                    cadena = cadena + "<tr><td>" + resultadosJuego[i].nombre + "</td><td>" + date +"</td><td> " + z.slice(-1) + "</td>" + "</td><td> " + resultadosJuego[i].resultados[j][z] + "</td></tr>";
+                } else {
+                    date = new Date(resultadosJuego[i].resultados[j][z]);
+                    date = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
                 }
+            }
         }
     }
     cadena = cadena + "</table>";
-    //console.log(cadena);
     $('#resultadosContainer').append(cadena);
 }
 
@@ -372,7 +355,7 @@ function comprobarUsuarioMongo(nombre, pass, fromCookie) {
                     mostrarInfoJuego2();
                 }
         }
-        peticionAjax("POST","/login/",JSON.stringify({email: nombre, password: pass}),callback);
+        peticionAjax("POST","/login/",true,JSON.stringify({email: nombre, password: pass}),callback);
     }
 }
 
@@ -399,7 +382,6 @@ function borrarCookies() {
 }
 
 function setCookies(data) {
-
     $.cookie('nivel', data.nivel);
     $.cookie("vidas", data.vidas);
     $.cookie('nombre', data.nombre);
@@ -441,8 +423,7 @@ function modificarUsuario() {
     if ($.cookie('nombre') != undefined) {
         mostrarFormularioModificar();
     } else {
-        $("#juegoContainer").empty();
-        $("#juegoContainer").append('<span style="color:#FF0000">Tienes que logearte primero!!</span>');
+        avisoLogin();
     }
 }
 
@@ -450,15 +431,20 @@ function eliminarUsuario() {
     if ($.cookie('nombre') != undefined) {
         mostrarFormularioEliminar();
     } else {
-        $("#juegoContainer").empty();
-        $("#juegoContainer").append('<span style="color:#FF0000">Tienes que logearte primero!!</span>');
+        avisoLogin();
     }
 }
 
-function peticionAjax(peticion,url,body,successCallback){
+function avisoLogin(){
+    $("#juegoContainer").empty();
+    $("#juegoContainer").append('<span style="color:#FF0000">Tienes que logearte primero!!</span>');
+}
+
+function peticionAjax(peticion,url,async,body,successCallback){
      $.ajax({
             type: peticion,
             contentType: "application/json",
+            async:async,
             url: url,
             data: body,
             success: successCallback

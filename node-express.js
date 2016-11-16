@@ -140,7 +140,7 @@ app.post("/modificarUsuario/", function (request, response) {
 	});
 });
 
-app.post("/eliminarUsuario/", function (request, response) {
+app.delete("/eliminarUsuario/", function (request, response) {
 	var email = request.body.email;
 	var pass = request.body.password;
 	var criteria = {"nombre":email, "password":pass};
