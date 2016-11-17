@@ -25,6 +25,17 @@ var dbM;
 var usersM;
 var resultsM;
 
+var nodemailer = require('nodemailer');
+var sgTransport = require('nodemailer-sendgrid-transport');
+
+var options = {
+  auth: {
+    api_user: 'garciagarciajosemaria',
+    api_key: 'prueba1!'
+  }
+}
+var client = nodemailer.createTransport(sgTransport(options));
+
 //app.use(app.router);
 app.use(exp.static(__dirname + "/cliente/"));
 app.use(bodyParser());
@@ -97,7 +108,6 @@ app.post("/crearUsuario/", function (request, response) {
 	var email = request.body.email;
 	var pass = request.body.password;
 	var criteria = {"nombre":email};
-	var result = undefined;
 	usersM.find(criteria, function(err,cursor){
 		if(err){
 			console.log(err);
@@ -105,15 +115,88 @@ app.post("/crearUsuario/", function (request, response) {
 			cursor.toArray(function(er, users){
 				if(users.length == 0){
 					console.log("No existe el usuario");
-					var usuario = new modelo.Usuario(email);
-					juego.agregarUsuario(usuario);
-					result = insertUser(usuario,pass);
-					usuario.maxNivel = juego.niveles.length;
-					response.send(usuario);
+					dbM.collection("limbo").find(criteria,function(err,cursor){
+						if(err){
+							console.log(err);
+						} else {
+							cursor.toArray(function(er, users){
+								if(users.length == 0){
+									var time = (new Date().valueOf());
+									console.log(window.location.href)
+									var url = "http://localhost:1338/confirmarCuenta/"+email+"/"+time;
+									console.log(time);
+									var html = 'Confirme su cuenta haciendo clic en el siguiente enlace: <br/>';
+									html += '<a href='+url+'>'+url+'</a>';
+									var mensaje = {
+										from: 'donotanswer@juegoprocesos.com',
+										to: email,
+										subject: 'Confirme su cuenta',
+										text: 'Hello world',
+										html: html
+									};
+									client.sendMail(mensaje, function(errr, info){
+										if (errr){
+											console.log(errr);
+										}
+										else {
+											console.log('Message sent: ' + info.response);
+											dbM.collection("limbo").insert({email:email,password:pass,tiempo:time},function(err,data){
+												if(err){
+													console.log(err)
+												} else {
+													response.send({result:"confirmEmail"})
+												}
+											})
+										}
+									});
+									//response.send({result:"confirmEmail"})
+								} else {
+									response.send({result:"userExists"})
+								}
+							})
+						}
+						});
+					//var usuario = new modelo.Usuario(email);
+					//juego.agregarUsuario(usuario);
+					//result = insertUser(usuario,pass);
+					
+					//usuario.maxNivel = juego.niveles.length;
 				} else {
 					console.log("El usuario ya existe");
-					response.send({nivel:-1});
+					response.send({result:"userExists"})
+					//response.send({nivel:-1});
 				}
+			});
+		}
+	});
+});
+
+app.get("/confirmarCuenta/:email/:id", function (request, response) {
+	console.log("CONFIRMAMOS CUENTA!!!")
+	var email = request.params.email;
+	console.log("EMAIL !!!" + email)
+	var id = parseInt(request.params.id);
+	console.log("TIEMPO !!!" + id)
+	var criteria = {email:email,tiempo:id};
+	dbM.collection("limbo").find(criteria, function(err,cursor){
+		if(err){
+			console.log(err);
+		} else {
+			cursor.toArray(function(er, users){
+				console.log("USERS!!")
+				console.log(users)
+				if(users.length != 0){
+					console.log(users)
+					console.log("Confirmar - Existe el usuario");
+					var usuario = new modelo.Usuario(email);
+					usuario.maxNivel = juego.niveles.length;
+					juego.agregarUsuario(usuario);
+					insertUser(usuario,users[0].password);
+					dbM.collection("limbo").remove({email:email});
+				} else {
+					console.log("El usuario ya existe");
+				}
+				response.redirect("/");
 			});
 		}
 	});
@@ -165,15 +248,19 @@ function callBackUsuarios(err,data,response){
 		console.log(err);
 	} else {
 		console.log(data.length);
-		var max = data.length;
-		data.forEach(function(item,i){
-			var user = {}
-			user.nombre = item.nombre;
-			dbM.collection("resultados").find({usuario:ObjectID(item._id)}).toArray(function(err,results){
-				console.log("Llamada con i = " + i)
-				callBackResultados(err,results,user,res,response,i,max);				
+		if(data.length != 0){
+			var max = data.length;
+			data.forEach(function(item,i){
+				var user = {}
+				user.nombre = item.nombre;
+				dbM.collection("resultados").find({usuario:ObjectID(item._id)}).toArray(function(err,results){
+					console.log("Llamada con i = " + i)
+					callBackResultados(err,results,user,res,response,i,max);				
+				});
 			});
-		});
+		} else {
+			response.send({});
+		}
 	}
 }
 

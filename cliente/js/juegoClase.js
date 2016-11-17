@@ -105,8 +105,8 @@ function create() {
     for (var i = 0; i <13; i++) {
         var star = stars.create(i * 47, 0, 'star');
         game.physics.enable(star,Phaser.Physics.ARCADE);
-        star.body.gravity.y = 50*i + 10;
-        star.body.velocity.x = game.rnd.integerInRange(-200,200);
+        star.body.gravity.y = game.rnd.integerInRange(-200,200);
+        //star.body.velocity.x = game.rnd.integerInRange(-200,200);
     }
 
     explosions = game.add.group();
@@ -177,8 +177,8 @@ function crearNuevaEstrella(){
     var j=Math.floor(Math.random()*765+1);
     var strella = stars.create(j, 0, 'star');
     game.physics.enable(strella,Phaser.Physics.ARCADE)
-    strella.body.gravity.y = game.rnd.integerInRange(40, 100) + 10;
-    strella.body.velocity.x = game.rnd.integerInRange(-200,200);
+    strella.body.gravity.y = game.rnd.integerInRange(-200,200);
+    //strella.body.velocity.x = game.rnd.integerInRange(-200,200);
 }
 
 function collectStar(player, star) {

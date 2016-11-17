@@ -17,6 +17,9 @@ var usuarioDevuelto = undefined;
  * Tenemos una coleccion limbo
  * Metemos el usuario en limbo
  * fabricamos un mail
+ * metemos lo de loly crypto  en un fichero y exportamos ese codigo como funciones encrypt y un decrypt
+ * En el node-express importamos el modulo crypto
+ * Al meter en el limbo tiene que ir ya la password cifrada
  */
 
 function inicio() {
@@ -24,7 +27,7 @@ function inicio() {
         comprobarUsuarioMongo($.cookie('nombre'), undefined, true);
     } else {
         console.log("No hay una cookie");
-        mostrarLogin();
+        construirLogin();
     }
 }
 /**
@@ -35,93 +38,6 @@ function limpiarMongo() {
     $.getJSON('/limpiarMongo/', function (datos) {
         console.log("Coleccion vacia");
         console.log(datos);
-    });
-}
-
-function mostrarLogin() {
-    /*
-    $("#login").remove();
-    var form = "";
-    form += '<form id="login"><div class="form-group"><input type="text" class="form-control" id="nombreL" placeholder="Introduce tu nombre"><input type="password" class="form-control" id="claveL" placeholder="Introduce tu clave"></div>';
-    form += '<button type="button" id="loginBtn" class="btn btn-primary btn-md" style="margin-bottom:10px">Entrar</button>';
-    form += '<div id="registerGroup" class="form-group" style="margin-bottom:0px"><label for="register">¿Eres nuevo? Regístrate</label><br/>';
-    form += '<button type="button" id="registrBtn" class="btn btn-primary btn-md">Registrar</button></div></form>';
-    $("#control").append(form);
-
-    $("#nombreL,#claveL").on("keyup", function (e) {
-        if (e.keyCode == 13) {
-            console.log($("#nombreL").val() + " - " + $("#claveL").val());
-            comprobarUsuarioMongo($("#nombreL").val(), $("#claveL").val(), false);
-        }
-    });
-    $("#nombreL,#claveL").on("focus", function (e) {
-        $(this).removeAttr("style");
-        $(this).val('');
-    });
-    $("#loginBtn").on("click", function (e) {
-        console.log($("#nombreL").val() + " - " + $("#claveL").val());
-        comprobarUsuarioMongo($("#nombreL").val(), $("#claveL").val(), false);
-    });
-    $("#registrBtn").on("click", function (e) {
-        mostrarFormularioRegistro();
-    });
-    */
-    construirLogin();
-}
-
-function mostrarFormularioRegistro() {
-    /*
-    $("#juegoContainer").empty();
-    $("#juegoContainer").load('../registro.html', function () {
-        $("#password1,#password2,#nombreUsuario").on("focus", function (e) {
-            $(this).removeAttr("style");
-            $(this).val('');
-        });
-        $("#confirmaRegBtn").on("click", function () {
-            console.log($("#nombreUsuario").val() + " - " + $("#password1").val());
-            if ($("#password2").val() != $("#password1").val()) {
-                $('#password2').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
-                $('#password1').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
-            } else {
-                crearUsuario($("#nombreUsuario").val(), $("#password2").val(), false);
-            }
-        });
-    });*/
-    construirRegistro();
-}
-
-function mostrarFormularioModificar() {
-    $("#juegoContainer").empty();
-    $("#juegoContainer").load('../registro.html', function () {
-        $("#password1,#password2,#nombreUsuario").on("focus", function (e) {
-            $(this).removeAttr("style");
-        });
-        $("#nombreUsuario").val($.cookie('nombre'));
-        $("#confirmaRegBtn").text("Guardar cambios");
-        $("#confirmaRegBtn").on("click", function () {
-            console.log($("#nombreUsuario").val() + " - " + $("#password1").val());
-            if ($("#password2").val() != $("#password1").val()) {
-                $('#password2').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
-                $('#password1').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
-                $("#formRegistro").prepend('<span id="warning" style="color:#FF0000">Contraseñas no coinciden!!!</span>');
-
-            } else {
-                modificarUsuarioServer($("#nombreUsuario").val(), $("#password1").val());
-                 $("#warning").remove();
-            }
-        });
-    });
-}
-
-function mostrarFormularioEliminar() {
-    $("#juegoContainer").empty();
-    $("#juegoContainer").load('../registro.html', function () {
-        $("#formRegistro").prepend('<span style="color:#FF0000">Confirma tus credenciales</span>');
-        $("#camposContra2").remove();
-        $("#confirmaRegBtn").text("Eliminar credenciales");
-        $("#confirmaRegBtn").on("click", function () {
-            eliminarUsuarioServer($("#nombreUsuario").val(), $("#password1").val());
-        });
     });
 }
 
@@ -171,12 +87,14 @@ function siguienteNivel() {
     $("#siguienteBtn").on("click", function () {
         $(this).remove();
         $("#cerrarSesBtn").remove();
-        $("#juegoId").remove();
+        //$("#juegoId").remove();
         $("#enh").remove();
         $('#res').remove();
         $('#resultados').remove();
         $("#formRegistro").remove();
+        $("#juegoContainer").empty();
         $("#juegoContainer").append('<div id="juegoId"></div>');
+        $("#backMusic").animate({volume:0},1000);
         console.log("Nivel de cookie es ->" + $.cookie("nivel"));
         console.log("Llamamos a crear nivel sin parametros en siguienteNivel()");
         crearNivel();
@@ -209,25 +127,8 @@ function nivelCompletado(tiempo) {
         console.log("Callback de obtener resultados con " + datos);
         mostrarResultadosUsuario(datos);
     }
-    peticionAjax("GET","/obtenerResultados/"+$.cookie("id"),true,{},callbackNivelCompletado);
+    peticionAjax("GET","/obtenerResultados/"+$.cookie("id"),true,{},callbackObtenerResultados);
     //obtenerResultados();
-}
-
-function comunicarNivelCompletado(tiempo) {
-    var id = $.cookie("id");
-    $.getJSON('/nivelCompletado/' + id + "/" + tiempo, function (datos) {
-        $.cookie("nivel", datos.nivel);
-        mostrarInfoJuego2();
-    });
-}
-
-function obtenerResultados() {
-    var id = $.cookie("id");
-    console.log(id);
-    $.getJSON('/obtenerResultados/' + id, function (datos) {
-        console.log(datos);
-        mostrarResultadosUsuario(datos);
-    });
 }
 
 function mostrarResultadosUsuario(datos) {
@@ -253,12 +154,13 @@ function crearUsuario(nombre, pass) {
         nombre = "jugador";
     }
     var callback = function(data){
-        if (data.nivel == -1) {
+        if (data.result == "userExists") {
             $('#nombreUsuario').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
             $('#nombreUsuario').val('Usuario existente');
         } else {
-            $("#formRegistro").remove();
-            setCookies(data);
+            //$("#formRegistro").remove();
+            //setCookies(data);
+            $("#juegoContainer").prepend('<span id="warning" style="color:#FF0000; font-weight: bold;">Confirma tu correo!!!</span>');
         }
     }
     peticionAjax("POST","/crearUsuario/",true,JSON.stringify({ email:nombre, password:pass }),callback);
@@ -369,12 +271,13 @@ function comprobarUsuarioMongo(nombre, pass, fromCookie) {
     }
 }
 
+/*
 function loginIncorrecto(){
     $('#nombreL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
     $('#claveL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
     $("#nombreL").val('Usuario o contraseña incorrectos');
     $("#claveL").val('');
-}
+}*/
 
 function borrarLogin() {
     $("#login").remove();
@@ -401,9 +304,9 @@ function setCookies(data) {
 
 function noHayNiveles() {
     $('#juegoId').append("<h2 id='enh'>Lo siento, no tenemos más niveles</h2>");
-    $('#control').append('<button type="button" id="siguienteBtn" class="btn btn-primary btn-md">Volver a empezar</button>')
-    $('#siguienteBtn').on('click', function () {
-        $('#siguienteBtn').remove();
+    $('#control').append('<button type="button" id="volverBtn" class="btn btn-primary btn-md">Volver a empezar</button>')
+    $('#volverBtn').on('click', function () {
+        $('#volverBtn').remove();
         $('#datos').remove();
         $('#prog').remove();
         resetControl();
@@ -413,9 +316,9 @@ function noHayNiveles() {
 function finDelJuego() {
     game.destroy();
     $('#juegoId').append("<h2 id='enh'>Lo siento,  has perdido :(</h2>");
-    $('#control').append('<button type="button" id="siguienteBtn" class="btn btn-primary btn-md">Volver a empezar</button>');
-    $('#siguienteBtn').on('click', function () {
-        $('#siguienteBtn').remove();
+    $('#control').append('<button type="button" id="finBtn" class="btn btn-primary btn-md">Volver a empezar</button>');
+    $('#finBtn').on('click', function () {
+        $('#finBtn').remove();
         $('#datos').remove();
         $('#prog').remove();
         mostrarInfoJuego2();
@@ -425,13 +328,13 @@ function finDelJuego() {
 function resetControl() {
     borrarCookies();
     $("#control").empty();
-    $("#juegoContainer").empty();
-    mostrarLogin();
+    //$("#juegoContainer").empty();
+    construirLogin();
 }
 
 function modificarUsuario() {
     if ($.cookie('nombre') != undefined) {
-        mostrarFormularioModificar();
+        construirFormularioModificar();
     } else {
         avisoLogin();
     }
@@ -439,7 +342,7 @@ function modificarUsuario() {
 
 function eliminarUsuario() {
     if ($.cookie('nombre') != undefined) {
-        mostrarFormularioEliminar();
+        construirFormularioEliminar();
     } else {
         avisoLogin();
     }
