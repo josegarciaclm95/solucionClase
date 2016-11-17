@@ -38,7 +38,7 @@ function crearNivel(){
                 noHayNiveles();
             } else {
                 infoJuego = data;  
-                game = new Phaser.Game(800, 600, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
+                game = new Phaser.Game(800, 550, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
                 console.log(infoJuego);
                 console.log("Datos llegados a infoJuego -> " + JSON.stringify(infoJuego));
             }

@@ -1,3 +1,7 @@
+body {
+    background: #0B2161;
+    color:#FFFFFF;
+}
 .infoPersonaje {
     font-family: 'Raleway',sans-serif; 
     font-size: 30px; 
@@ -13,23 +17,36 @@ ul {
 li {
     list-style: none;
 }
-li .normal{
+li.normal{
     font-family: 'Raleway',sans-serif; 
     font-size: 30px; 
     line-height: 10px; 
     margin-left: 15px;
 }
-ul .vidas {
+ul.vidas {
     list-style-type: none;
 }
 ul.vidas li {
     display: inline;
 }
-
 #resultadosContainer {
     font-size: 20px;
 }
-
 input {
     margin-bottom: 5px;
 }
+
+.intro{
+    display: none;
+    text-align: center;
+    vertical-align: middle;
+}
+p.intro {
+    font-size: 20px;
+}
+p.intro.emphasis {
+    font-weight: bold;
+    color: #FF0000;
+}
+
+

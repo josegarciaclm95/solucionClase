@@ -15,6 +15,7 @@
 </head>
 
 <body>
+    </embed>
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -52,6 +53,13 @@
                 <div id="infoJuego" style="margin-top:20px"></div>
             </div>
             <div class="col-sm-9" id="juegoContainer">
+                <p class="intro" id="info1">Kairi...<p>
+                <p class="intro emphasis" id="info2">...is missing!!<p>   
+                <p class="intro" id="info3">
+                    <img height="450" src="assets/kairi.jpg">
+                </p>
+                <p class="intro" id="info4">Could you find her?<p>
+                <p class="intro" id="info5">Reach the exit in each level to find her!!<p>  
             </div>
         </div>
     </div>
@@ -60,6 +68,7 @@
 -->
     <script type="text/javascript" src="js/juegoClase.js"></script>
     <script type="text/javascript" src="js/control-juego.js"></script>
+    <script type="text/javascript" src="js/GUIControl.js"></script>
     <script type="text/javascript" src="js/builder-json.js"></script>
     <script type="text/javascript">
         inicio();
@@ -74,7 +83,9 @@
             $('#' + newPage).addClass('active')
             $('#' + oldPage).removeClass('active')
         }
+        $(pruebaEffects());
     </script>
+    <embed src="assets/dearlyBeloved.mp3" autostart="true" loop="true" width="2" height="0">
 </body>
 
 </html>

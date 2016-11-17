@@ -39,6 +39,7 @@ function limpiarMongo() {
 }
 
 function mostrarLogin() {
+    /*
     $("#login").remove();
     var form = "";
     form += '<form id="login"><div class="form-group"><input type="text" class="form-control" id="nombreL" placeholder="Introduce tu nombre"><input type="password" class="form-control" id="claveL" placeholder="Introduce tu clave"></div>';
@@ -64,9 +65,12 @@ function mostrarLogin() {
     $("#registrBtn").on("click", function (e) {
         mostrarFormularioRegistro();
     });
+    */
+    construirLogin();
 }
 
 function mostrarFormularioRegistro() {
+    /*
     $("#juegoContainer").empty();
     $("#juegoContainer").load('../registro.html', function () {
         $("#password1,#password2,#nombreUsuario").on("focus", function (e) {
@@ -82,7 +86,8 @@ function mostrarFormularioRegistro() {
                 crearUsuario($("#nombreUsuario").val(), $("#password2").val(), false);
             }
         });
-    });
+    });*/
+    construirRegistro();
 }
 
 function mostrarFormularioModificar() {
@@ -98,8 +103,11 @@ function mostrarFormularioModificar() {
             if ($("#password2").val() != $("#password1").val()) {
                 $('#password2').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
                 $('#password1').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
+                $("#formRegistro").prepend('<span id="warning" style="color:#FF0000">Contraseñas no coinciden!!!</span>');
+
             } else {
                 modificarUsuarioServer($("#nombreUsuario").val(), $("#password1").val());
+                 $("#warning").remove();
             }
         });
     });
@@ -198,6 +206,7 @@ function nivelCompletado(tiempo) {
     peticionAjax("GET","/nivelCompletado/"+$.cookie("id")+"/"+tiempo,true,{},callbackNivelCompletado);
     //comunicarNivelCompletado(tiempo);
     var callbackObtenerResultados = function(datos){
+        console.log("Callback de obtener resultados con " + datos);
         mostrarResultadosUsuario(datos);
     }
     peticionAjax("GET","/obtenerResultados/"+$.cookie("id"),true,{},callbackNivelCompletado);
@@ -261,6 +270,7 @@ function modificarUsuarioServer(nombre, pass) {
            $('#nombreUsuario').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
            $('#nombreUsuario').val('Usuario existente');
         } else {
+            $("#juegoContainer").prepend('<span id="warning" style="color:#04B404">Yay!!! Todo ha ido bien</span>');
             $("#formRegistro").remove();
             borrarSiguienteNivel();
             resetControl();
@@ -348,7 +358,7 @@ function comprobarUsuarioMongo(nombre, pass, fromCookie) {
                     console.log("No hay nada");
                     borrarLogin();
                     resetControl();
-                    borrarEstilosLogin();
+                    loginIncorrecto();
                 } else {
                     setCookies(data);
                     borrarLogin();
@@ -359,7 +369,7 @@ function comprobarUsuarioMongo(nombre, pass, fromCookie) {
     }
 }
 
-function borrarEstilosLogin(){
+function loginIncorrecto(){
     $('#nombreL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
     $('#claveL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
     $("#nombreL").val('Usuario o contraseña incorrectos');
