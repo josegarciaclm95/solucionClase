@@ -53,8 +53,14 @@ function construirLogin(){
 function construirRegistro(){
     limpiarJuegoContainer();
     $("#juegoContainer").load('../registro.html', function () {
-        $("#password1,#password2,#nombreUsuario").on("focus", function (e) {
-            limpiarEstilos("#password1,#password2,#nombreUsuario");
+        $("#password1").on("focus", function (e) {
+            limpiarEstilos(this);
+        });
+        $("#password2").on("focus", function (e) {
+            limpiarEstilos(this);
+        });
+        $("#nombreUsuario").on("focus", function (e) {
+            limpiarEstilos(this);
         });
         $("#confirmaRegBtn").on("click", function () {
             //console.log($("#nombreUsuario").val() + " - " + $("#password1").val());

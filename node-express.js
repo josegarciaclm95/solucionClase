@@ -107,6 +107,7 @@ app.post('/login/', function(request, response){
 app.post("/crearUsuario/", function (request, response) {
 	var email = request.body.email;
 	var pass = request.body.password;
+	var urlD = request.body.url;
 	var criteria = {"nombre":email};
 	usersM.find(criteria, function(err,cursor){
 		if(err){
@@ -122,8 +123,8 @@ app.post("/crearUsuario/", function (request, response) {
 							cursor.toArray(function(er, users){
 								if(users.length == 0){
 									var time = (new Date().valueOf());
-									console.log(window.location.href)
-									var url = "http://localhost:1338/confirmarCuenta/"+email+"/"+time;
+									//console.log(window.location.href)
+									var url = urlD + "confirmarCuenta/" + email + "/" + time;
 									console.log(time);
 									var html = 'Confirme su cuenta haciendo clic en el siguiente enlace: <br/>';
 									html += '<a href='+url+'>'+url+'</a>';

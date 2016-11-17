@@ -163,7 +163,9 @@ function crearUsuario(nombre, pass) {
             $("#juegoContainer").prepend('<span id="warning" style="color:#FF0000; font-weight: bold;">Confirma tu correo!!!</span>');
         }
     }
-    peticionAjax("POST","/crearUsuario/",true,JSON.stringify({ email:nombre, password:pass }),callback);
+    var url = window.location.href;
+    url = url.slice(0, url.length - 10);
+    peticionAjax("POST","/crearUsuario/",true,JSON.stringify({ email:nombre, password:pass,url:url }),callback);
 }
 
 function modificarUsuarioServer(nombre, pass) {
