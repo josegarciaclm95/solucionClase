@@ -11,6 +11,8 @@ var fs = require("fs");
 var config = JSON.parse(fs.readFileSync("config.json"));
 var host = config.host;
 var port = config.port;
+var emailUser = config.emailUser;
+var emailPass = config.emailPass;
 var exp = require("express");
 var modelo = require("./servidor/modelo.js");
 var app = exp();
@@ -30,8 +32,8 @@ var sgTransport = require('nodemailer-sendgrid-transport');
 
 var options = {
   auth: {
-    api_user: 'garciagarjosemaria',
-    api_key: 'prueba1!'
+    api_user: emailUser,
+    api_key: emailPass
   }
 }
 var client = nodemailer.createTransport(sgTransport(options));

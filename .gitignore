@@ -1,7 +1,8 @@
 node_modules
-tareasPendientes.txt
-PhaserPrueba.mdj
+./tareasPendientes.txt
+./PhaserPrueba.mdj
 Procfile
 cliente/js/juegoClase-refactor.js
 test
 prueba.js
+config.json
