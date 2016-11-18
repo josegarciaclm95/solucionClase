@@ -30,7 +30,7 @@ var sgTransport = require('nodemailer-sendgrid-transport');
 
 var options = {
   auth: {
-    api_user: 'garciagarciajosemaria',
+    api_user: 'garciagarjosemaria',
     api_key: 'prueba1!'
   }
 }
@@ -323,10 +323,10 @@ app.get('/obtenerResultados/:id', function (request, response) {
 });
 
 
-//console.log("Servidor escuchando en el puerto "+process.env.PORT );
-//app.listen(process.env.PORT || port);
-console.log("Servidor escuchando en el puerto " + port);
-app.listen(port, host);
+console.log("Servidor escuchando en el puerto "+process.env.PORT );
+app.listen(process.env.PORT || port);
+//console.log("Servidor escuchando en el puerto " + port);
+//app.listen(port, host);
 
 function mongoConnect(){
 	MongoClient.connect(urlM, function (err, db) {
@@ -370,6 +370,10 @@ function insertUser(usuario,pass){
 			return result;
 		}
 	});
+}
+
+function findSomething(collection,criteria,callback){
+	dbM.collection(collection).find(criteria,callback);
 }
 
 //Añadir el usuario a limbo
