@@ -4,13 +4,15 @@
   "description": "Juego hecho en Phaser para Procesos",
   "main": "node-express.js",
   "dependencies": {
+    "body-parser": "^1.15.2",
     "express": "^4.9.6",
     "fs": "^0.0.2",
     "jasmine-node": "^1.14.5",
     "mongodb": "^2.2.10",
+    "nodemailer": "^2.6.4",
+    "nodemailer-sendgrid-transport": "^0.2.0",
     "ntwitter": "^0.5.0",
-    "underscore": "^1.7.0",
-    "body-parser":"^1.15.2"
+    "underscore": "^1.7.0"
   },
   "devDependencies": {},
   "scripts": {
