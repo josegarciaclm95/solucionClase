@@ -124,7 +124,7 @@ app.post("/crearUsuario/", function (request, response) {
 								if(users.length == 0){
 									var time = (new Date().valueOf());
 									//console.log(window.location.href)
-									var url = urlD + "confirmarCuenta/" + email + "/" + time;
+									var url = urlD + "/confirmarCuenta/" + email + "/" + time;
 									console.log(time);
 									var html = 'Confirme su cuenta haciendo clic en el siguiente enlace: <br/>';
 									html += '<a href='+url+'>'+url+'</a>';
