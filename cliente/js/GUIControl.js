@@ -114,6 +114,35 @@ function construirFormularioEliminar() {
     });
 }
 
+function mostrarResultados() {
+    var resultadosJuego = undefined;
+    console.log("LLamamos a mostrar resultados");
+    peticionAjax("GET","/resultados/",false,{},function(data){
+        resultadosJuego = data;
+    });
+    $('#resultadosContainer').append('<h3 id="res">Resultados</h3>');
+    var cadena = "";
+    cadena += "<table id='resultados' class='table table-bordered table-condensed'>";
+    cadena += "<tr><th colspan='4' style='text-align:center;'><img style='height:150px; width:150px' src='./assets/wall-fame.png'></th></tr>";
+    cadena += "<tr><th style='text-align:center'>Nombre</th><th style='text-align:center'>Partida</th><th style='text-align:center'>Nivel</th><th style='text-align:center'>Tiempo</th></tr>";
+
+    for (var i in resultadosJuego) {
+        for (var j in resultadosJuego[i].resultados) {
+            for (var z in resultadosJuego[i].resultados[j]){
+                var date;
+                if(z != "idJuego" && resultadosJuego[i].resultados[j][z] != -1){
+                    cadena = cadena + "<tr><td>" + resultadosJuego[i].nombre + "</td><td>" + date +"</td><td> " + z.slice(-1) + "</td>" + "</td><td> " + resultadosJuego[i].resultados[j][z] + "</td></tr>";
+                } else {
+                    date = new Date(resultadosJuego[i].resultados[j][z]);
+                    date = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
+                }
+            }
+        }
+    }
+    cadena = cadena + "</table>";
+    $('#resultadosContainer').append(cadena);
+}
+
 function pruebaEffects(){
     $("#info1").fadeIn(3500, function(){
          $("#info2").fadeIn(200,function(){

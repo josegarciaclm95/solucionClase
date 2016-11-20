@@ -83,27 +83,27 @@ app.post('/login/', function(request, response){
 	if (password != undefined){
 		criteria["password"] = password;
 	}
-	usersM.find(criteria, function(err,cursor){
-		//console.log(cursor);
+	function callbackLogin(err,cursor){
 		if(err){
-			console.log(err);
+			console.log(err)
 		} else {
-			cursor.toArray(function(er, users){
-				if(users.length == 0){
-					console.log("No existe el usuario");
-					response.send({nivel:-1});
-				} else {
-					var u = new modelo.Usuario(users[0].nombre);
-					u.id = users[0]._id;
-					addNewResults(u);
-					juego.agregarUsuario(u);
-					console.log(u);
-					u.maxNivel = juego.niveles.length;
-					response.send(u);
-				}
-			});
+			cursorHandler.emptyCursorCallback = function(users){
+				console.log("No existe el usuario");
+				response.send({nivel:-1});
+			} 
+			cursorHandler.cursorWithSomethingCallback = function(users){
+				var u = new modelo.Usuario(users[0].nombre);
+				u.id = users[0]._id;
+				u.maxNivel = juego.niveles.length;
+				addNewResults(u);
+				juego.agregarUsuario(u);
+				console.log(u);
+				response.send(u);
+			}
+			cursor.toArray(cursorHandler.checkCursor);
 		}
-	});
+	}
+	findSomething("usuarios",criteria,callbackLogin);
 });
 
 app.post("/crearUsuario/", function (request, response) {
@@ -380,3 +380,24 @@ function findSomething(collection,criteria,callback){
 
 //Añadir el usuario a limbo
 //Mandar email
+/**
+ * CURSOR HANDLER. Clase para facilitar la refactorizacion de los metodos que trabajan con cursores
+ */
+function CursorHandler(){
+	var self = this;
+	this.emptyCursorCallback = function(users){
+
+	};
+	this.cursorWithSomethingCallback = function(users){
+
+	};
+	this.checkCursor = function(err,result){
+		if(result.length == 0){
+			self.emptyCursorCallback(result);
+		} else {
+			self.cursorWithSomethingCallback(result);
+		}
+	}
+}
+
+var cursorHandler = new CursorHandler();	

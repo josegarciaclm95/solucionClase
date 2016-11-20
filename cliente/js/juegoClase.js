@@ -35,7 +35,7 @@ function crearNivel(){
             console.log(data);
             if(data.nivel == -1 || data == {}){
                 //game.destroy();
-                noHayNiveles();
+                finJuego("Lo siento, no tenemos más niveles",resetControl);
             } else {
                 infoJuego = data;  
                 game = new Phaser.Game(800, 550, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
@@ -192,8 +192,7 @@ function collectStar(player, star) {
     if (player.vidas==0){
         player.kill();
         game.time.events.remove(timer);
-        finDelJuego();
-
+        finJuego("Lo siento,  has perdido",mostrarInfoJuego2);
     }
 }
 

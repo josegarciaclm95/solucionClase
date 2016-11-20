@@ -88,10 +88,10 @@ function siguienteNivel() {
         $(this).remove();
         $("#cerrarSesBtn").remove();
         //$("#juegoId").remove();
-        $("#enh").remove();
-        $('#res').remove();
-        $('#resultados').remove();
-        $("#formRegistro").remove();
+        //$("#enh").remove();
+        //$('#res').remove();
+        //$('#resultados').remove();
+        //$("#formRegistro").remove();
         $("#juegoContainer").empty();
         $("#juegoContainer").append('<div id="juegoId"></div>');
         $("#backMusic").animate({volume:0},1000);
@@ -225,35 +225,6 @@ function auxiliar(){
     return d;
 }
 
-function mostrarResultados() {
-    var resultadosJuego = undefined;
-    console.log("LLamamos a mostrar resultados");
-    peticionAjax("GET","/resultados/",false,{},function(data){
-        resultadosJuego = data;
-    });
-    $('#resultadosContainer').append('<h3 id="res">Resultados</h3>');
-    var cadena = "";
-    cadena += "<table id='resultados' class='table table-bordered table-condensed'>";
-    cadena += "<tr><th colspan='4' style='text-align:center;'><img style='height:150px; width:150px' src='./assets/wall-fame.png'></th></tr>";
-    cadena += "<tr><th style='text-align:center'>Nombre</th><th style='text-align:center'>Partida</th><th style='text-align:center'>Nivel</th><th style='text-align:center'>Tiempo</th></tr>";
-
-    for (var i in resultadosJuego) {
-        for (var j in resultadosJuego[i].resultados) {
-            for (var z in resultadosJuego[i].resultados[j]){
-                var date;
-                if(z != "idJuego" && resultadosJuego[i].resultados[j][z] != -1){
-                    cadena = cadena + "<tr><td>" + resultadosJuego[i].nombre + "</td><td>" + date +"</td><td> " + z.slice(-1) + "</td>" + "</td><td> " + resultadosJuego[i].resultados[j][z] + "</td></tr>";
-                } else {
-                    date = new Date(resultadosJuego[i].resultados[j][z]);
-                    date = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
-                }
-            }
-        }
-    }
-    cadena = cadena + "</table>";
-    $('#resultadosContainer').append(cadena);
-}
-
 function comprobarUsuarioMongo(nombre, pass, fromCookie) {
     if (pass == "" && !fromCookie) {
         $('#claveL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
@@ -273,14 +244,6 @@ function comprobarUsuarioMongo(nombre, pass, fromCookie) {
         peticionAjax("POST","/login/",true,JSON.stringify({email: nombre, password: pass}),callback);
     }
 }
-
-/*
-function loginIncorrecto(){
-    $('#nombreL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
-    $('#claveL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
-    $("#nombreL").val('Usuario o contraseña incorrectos');
-    $("#claveL").val('');
-}*/
 
 function borrarLogin() {
     $("#login").remove();
@@ -305,6 +268,18 @@ function setCookies(data) {
     $.cookie('maxNivel', data.maxNivel);
 }
 
+function finJuego(text,callback){
+    $('#juegoId').append("<h2 id='enh'>"+text+"</h2>");
+    $('#control').append('<button type="button" id="volverBtn" class="btn btn-primary btn-md">Volver a empezar</button>')
+    $('#volverBtn').on('click', function () {
+        $(this).remove();
+        $('#datos').remove();
+        $('#prog').remove();
+        callback();
+    });
+}
+
+/*
 function noHayNiveles() {
     $('#juegoId').append("<h2 id='enh'>Lo siento, no tenemos más niveles</h2>");
     $('#control').append('<button type="button" id="volverBtn" class="btn btn-primary btn-md">Volver a empezar</button>')
@@ -327,6 +302,7 @@ function finDelJuego() {
         mostrarInfoJuego2();
     });
 }
+*/
 
 function resetControl() {
     borrarCookies();
