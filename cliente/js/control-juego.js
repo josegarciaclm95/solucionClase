@@ -169,7 +169,7 @@ function crearUsuario(nombre, pass) {
     }
     var url = window.location.href;
     //url = url.slice(0, url.length - 10);
-    url = "http://juegoprocesos.herokuapp.com"
+    url = "http://juegoprocesos.herokuapp.com";
     peticionAjax("POST","/crearUsuario/",true,JSON.stringify({ email:nombre, password:pass,url:url }),callback);
 }
 
@@ -283,31 +283,6 @@ function finJuego(text,callback){
         callback();
     });
 }
-
-/*
-function noHayNiveles() {
-    $('#juegoId').append("<h2 id='enh'>Lo siento, no tenemos más niveles</h2>");
-    $('#control').append('<button type="button" id="volverBtn" class="btn btn-primary btn-md">Volver a empezar</button>')
-    $('#volverBtn').on('click', function () {
-        $('#volverBtn').remove();
-        $('#datos').remove();
-        $('#prog').remove();
-        resetControl();
-    });
-}
-
-function finDelJuego() {
-    game.destroy();
-    $('#juegoId').append("<h2 id='enh'>Lo siento,  has perdido :(</h2>");
-    $('#control').append('<button type="button" id="finBtn" class="btn btn-primary btn-md">Volver a empezar</button>');
-    $('#finBtn').on('click', function () {
-        $('#finBtn').remove();
-        $('#datos').remove();
-        $('#prog').remove();
-        mostrarInfoJuego2();
-    });
-}
-*/
 
 function resetControl() {
     borrarCookies();

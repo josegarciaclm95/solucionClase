@@ -23,7 +23,7 @@ function estilosAlerta(selector){
 function construirLogin(){
     limpiarLogin();
     var form = "";
-    form += '<form id="login"><div class="form-group"><input type="text" class="form-control" id="nombreL" placeholder="Introduce tu nombre"><input type="password" class="form-control" id="claveL" placeholder="Introduce tu clave"></div>';
+    form += '<form id="login"><div class="form-group"><input type="text" class="form-control" id="nombreL" placeholder="Introduce tu email"><input type="password" class="form-control" id="claveL" placeholder="Introduce tu clave"></div>';
     form += '<button type="button" id="loginBtn" class="btn btn-primary btn-md" style="margin-bottom:10px">Entrar</button>';
     form += '<div id="registerGroup" class="form-group" style="margin-bottom:0px"><label for="register">¿Eres nuevo? Regístrate</label><br/>';
     form += '<button type="button" id="registrBtn" class="btn btn-primary btn-md">Registrar</button></div></form>';

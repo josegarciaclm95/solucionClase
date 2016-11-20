@@ -60,7 +60,7 @@ function preload() {
 
 function create() {
     //Creamos builder de elementos
-    $("body").append('<audio id="gameMusic" src="assets/sorrow.mp3" autoplay="true" loop="true"></audio>');
+    $("body").prepend('<audio id="gameMusic" src="assets/sorrow.mp3" autoplay="true" loop="true"></audio>');
     builderObject = new Builder(infoJuego);
    /*
     var emitter = game.add.emitter(300, 0, 400);

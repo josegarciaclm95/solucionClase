@@ -69,6 +69,8 @@ app.get("/datosJuego/:id", function (request, response) {
 	var id = request.params.id;
 	var usuario = juego.buscarUsuarioById(id);
 	var res;
+	console.log("LLamada a datosJuego, id - " + id);
+	console.log("Usuario encontrado ");
 	console.log(usuario);
 	if(usuario && usuario.nivel <= juego.niveles.length){
 		res = juego.niveles[usuario.nivel-1];
@@ -108,6 +110,7 @@ app.post('/login/', function(request, response){
 				u.maxNivel = juego.niveles.length;
 				addNewResults(u);
 				juego.agregarUsuario(u);
+				console.log("Usuario agregado en Login");
 				console.log(u);
 				response.send(u);
 			}
@@ -128,7 +131,7 @@ app.post("/crearUsuario/", function (request, response) {
 		} else {
 			cursor.toArray(function(er, users){
 				if(users.length == 0){
-					console.log("No existe el usuario");
+					console.log("No existe el usuario (crearUsuario)");
 					dbM.collection("limbo").find(criteria,function(err,cursor){
 						if(err){
 							console.log(err);
@@ -176,7 +179,7 @@ app.post("/crearUsuario/", function (request, response) {
 					
 					//usuario.maxNivel = juego.niveles.length;
 				} else {
-					console.log("El usuario ya existe");
+					console.log("El usuario ya existe (crearUsuario)");
 					response.send({result:"userExists"})
 					//response.send({nivel:-1});
 				}
@@ -200,11 +203,10 @@ app.get("/confirmarCuenta/:email/:id", function (request, response) {
 				console.log("USERS!!")
 				console.log(users)
 				if(users.length != 0){
+					console.log("USERS ES DISTINTO DE CERO!!")
 					console.log(users)
 					console.log("Confirmar - Existe el usuario");
 					var usuario = new modelo.Usuario(email);
-					usuario.maxNivel = juego.niveles.length;
-					juego.agregarUsuario(usuario);
 					insertUser(usuario,users[0].password);
 					dbM.collection("limbo").remove({email:email});
 				} else {
@@ -232,6 +234,7 @@ app.post("/modificarUsuario/", function (request, response) {
 		if(err){
 			console.log(err)
 		} else {
+		juego.modificarUsuario(oldMail,newEmail);
 		response.send(result.result);
 		}
 	});
@@ -245,6 +248,7 @@ app.delete("/eliminarUsuario/", function (request, response) {
 		if(err){
 			console.log(err)
 		} else {
+			juego.eliminarUsuario(email);
 			response.send(result.result);
 		}
 	})	
@@ -370,7 +374,9 @@ function insertUser(usuario,pass){
 			console.log(err);
 		} else {
 			usuario.id = result.ops[0]._id;
-			console.log(usuario.id);
+			usuario.maxNivel = juego.niveles.length;
+			console.log("Id asignado a insertUser - " + usuario.id);
+			juego.agregarUsuario(usuario);
 			dbM.collection("resultados").insert({usuario:usuario.id, resultados:[{idJuego:usuario.idJuego,nivel1:-1,nivel2:-1,nivel3:-1}]},function(err1,result1){
 				if(err1){
 					console.log(err1);

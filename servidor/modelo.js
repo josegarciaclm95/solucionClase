@@ -9,14 +9,14 @@ function Juego(){
         this.niveles.push(nivel);
     };
     this.agregarUsuario = function(usuario){
+        console.log(this.usuarios);
         var a = this.buscarUsuario(usuario.nombre);
         if(a == undefined){
             this.usuarios.push(usuario);
         } else {
             console.log("El usuario ya existia");
-            var u = this.buscarUsuario(usuario.nombre);
-            u.nivel = 1;
-            u.resultados = [];
+            a.nivel = 1;
+            a.resultados = [];
         }
     };
     this.buscarUsuario = function(nombre_us){
@@ -25,9 +25,21 @@ function Juego(){
         })[0];
     }
     this.buscarUsuarioById = function(id){
+        console.log(this.usuarios);
         return _.find(this.usuarios,function(usu){
 			return usu.id == id
 		});
+    }
+    this.eliminarUsuario = function(nombre_us){
+        console.log(this.usuarios);
+        console.log(this.usuarios.length);
+        var index = this.usuarios.indexOf(this.buscarUsuario(nombre_us));
+        this.usuarios.splice(index,1);
+        console.log(this.usuarios);
+        console.log(this.usuarios.length);
+    }
+    this.modificarUsuario = function(oldMail,newEmail){
+        this.buscarUsuario(nombre_us).nombre = newEmail;
     }
     Juego.prototype.toString = function(){
         var res = "Usuarios\n";
