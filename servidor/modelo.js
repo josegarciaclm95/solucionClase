@@ -42,10 +42,11 @@ function Juego(){
     }
 }
     
-function Nivel(num,coord,gravedad){
+function Nivel(num,coord,gravedad,numEstrellas){
     this.nivel = parseInt(num[5]);
     this.platforms = coord;
     this.gravity = gravedad;
+    this.starsNumber = numEstrellas;
 }
 
 function Usuario(nombre){
@@ -83,7 +84,7 @@ function JuegoFM(archivo){
         var i = 0;
         for(var x in this.array){
             console.log(x);
-            var nivel = new Nivel(x,this.array[x].platforms,this.array[x].gravity);
+            var nivel = new Nivel(x,this.array[x].platforms,this.array[x].gravity,this.array[x].starsNumber);
             j.agregarNivel(nivel);
         }
         return j;

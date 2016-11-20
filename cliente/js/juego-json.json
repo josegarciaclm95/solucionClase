@@ -1,76 +1,80 @@
 {
     "nivel1": {
         "gravity": 50,
+        "starsNumber": 5,
         "platforms": [
             {
                 "asset": "ground",
-                "x": 400,
-                "y": 400
-            },
-            {
-                "asset": "ground",
-                "x": -150,
-                "y": 250
+                "x": 200,
+                "y": 40
             },
             {
                 "asset": "ground2",
-                "x": 300,
-                "y": 150
+                "x": 220,
+                "y": 300
+            },
+            {
+                "asset": "ground2",
+                "x": 580,
+                "y": 200
             }
         ]
     },
     "nivel2": {
         "gravity": 50,
+        "starsNumber": 6,
         "platforms": [
             {
                 "asset": "ground2",
                 "x": 750,
-                "y": 450
+                "y": 400
             },
             {
                 "asset": "ground2",
                 "x": 600,
-                "y": 350
+                "y": 300
             },
             {
                 "asset": "ground2",
                 "x": 700,
-                "y": 250
+                "y": 200
             },
             {
                 "asset": "ground2",
                 "x": 600,
-                "y": 150
+                "y": 100
             }
         ]
     },
     "nivel3": {
         "gravity": 50,
+        "starsNumber": 7,
         "platforms": [
             {
                 "asset": "ground2",
                 "x": 200,
-                "y": 450
+                "y": 375
             },
             {
                 "asset": "ground2",
                 "x": 100,
-                "y": 350
+                "y": 275
             },
             {
                 "asset": "ground2",
                 "x": 0,
-                "y": 250
+                "y": 175
             },
             {
                 "asset": "ground2",
                 "x": 200,
-                "y": 150
+                "y": 75
             }
         ]
     },
     "nivel4": {
         "gravity": 50,
+        "starsNumber": 2,
         "platforms": [
             {
                 "asset": "ground2",

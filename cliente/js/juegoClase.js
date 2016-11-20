@@ -60,7 +60,7 @@ function preload() {
 
 function create() {
     //Creamos builder de elementos
-    
+    $("body").append('<audio id="gameMusic" src="assets/sorrow.mp3" autoplay="true" loop="true"></audio>');
     builderObject = new Builder(infoJuego);
    /*
     var emitter = game.add.emitter(300, 0, 400);
@@ -78,14 +78,14 @@ function create() {
     //Habilita fisica
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    var sky = game.add.sprite(0, 0, 'sky');
-    sky.scale.setTo(1.1,1.5);
+    var sky = game.add.sprite(0, 10, 'sky');
+    sky.scale.setTo(1.1,1.2);
     //Adding de grupos de plataformas y configutacion de las mismas
     PlatformGroup.platforms = game.add.group();
     PlatformGroup.cielo = game.add.group();
     enableBodyObject(PlatformGroup);
     
-    var ground = PlatformGroup.platforms.create(0, game.world.height - 50, 'ground');
+    var ground = PlatformGroup.platforms.create(0, game.world.height - 110, 'ground');
     var heav = PlatformGroup.cielo.create(0, -25, 'heaven');
     ground.scale.setTo(2, 2);
     heav.scale.setTo(3,1);
@@ -102,10 +102,10 @@ function create() {
     stars = game.add.group();
     stars.enableBody = true;
 
-    for (var i = 0; i <13; i++) {
-        var star = stars.create(i * 47, 0, 'star');
+    for (var i = 0; i <infoJuego.starsNumber; i++) {
+        var star = stars.create(i * (game.world.width/infoJuego.starsNumber), 0, 'star');
         game.physics.enable(star,Phaser.Physics.ARCADE);
-        star.body.gravity.y = game.rnd.integerInRange(-200,200);
+        star.body.gravity.y = game.rnd.integerInRange(50,200);
         //star.body.velocity.x = game.rnd.integerInRange(-200,200);
     }
 
@@ -126,7 +126,7 @@ function setupExplosions(expl){
 }
 
 function setPlayer(){
-    player = game.add.sprite(38, game.world.height - 150, 'dude');
+    player = game.add.sprite(38, game.world.height - 230, 'dude');
     player.vidas = 5;
     game.physics.arcade.enable(player);
 
@@ -177,7 +177,7 @@ function crearNuevaEstrella(){
     var j=Math.floor(Math.random()*765+1);
     var strella = stars.create(j, 0, 'star');
     game.physics.enable(strella,Phaser.Physics.ARCADE)
-    strella.body.gravity.y = game.rnd.integerInRange(-200,200);
+    strella.body.gravity.y = game.rnd.integerInRange(50,200);
     //strella.body.velocity.x = game.rnd.integerInRange(-200,200);
 }
 
@@ -192,6 +192,7 @@ function collectStar(player, star) {
     if (player.vidas==0){
         player.kill();
         game.time.events.remove(timer);
+        game.destroy();
         finJuego("Lo siento,  has perdido",mostrarInfoJuego2);
     }
 }

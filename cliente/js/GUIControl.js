@@ -69,6 +69,19 @@ function construirRegistro(){
                 $("#formRegistro").prepend('<span id="warning" style="color:#FF0000; font-weight: bold;">Contraseñas no coinciden!!!</span>');
             } else {
                 crearUsuario($("#nombreUsuario").val(), $("#password2").val(), false);
+                $.loadingBlockShow({
+                    imgPath: 'assets/default.svg',
+                    text: 'Un momento pls, que esto tarda ...',
+                    style: {
+                        position: 'fixed',
+                        width: '100%',
+                        height: '100%',
+                        background: 'rgba(0, 0, 0, .8)',
+                        left: 0,
+                        top: 0,
+                        zIndex: 10000
+                    }
+                });
             }
         });
     });

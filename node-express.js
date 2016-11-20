@@ -37,6 +37,17 @@ var options = {
   }
 }
 var client = nodemailer.createTransport(sgTransport(options));
+var crypto = require('crypto'),
+    algorithm = 'aes-256-ctr',
+    password = 'd6F3Efeq';
+
+function encrypt(text){
+    var cipher = crypto.createCipher(algorithm,password)
+    var crypted = cipher.update(text,'utf8','hex')
+    crypted += cipher.final('hex');
+    return crypted;
+}
+
 
 //app.use(app.router);
 app.use(exp.static(__dirname + "/cliente/"));
@@ -81,7 +92,7 @@ app.post('/login/', function(request, response){
 	var password = request.body.password;
 	var criteria = {"nombre":email};
 	if (password != undefined){
-		criteria["password"] = password;
+		criteria["password"] = encrypt(password);
 	}
 	function callbackLogin(err,cursor){
 		if(err){
@@ -143,7 +154,7 @@ app.post("/crearUsuario/", function (request, response) {
 										}
 										else {
 											console.log('Message sent: ' + info.response);
-											dbM.collection("limbo").insert({email:email,password:pass,tiempo:time},function(err,data){
+											dbM.collection("limbo").insert({email:email,password:encrypt(pass),tiempo:time},function(err,data){
 												if(err){
 													console.log(err)
 												} else {
@@ -213,7 +224,7 @@ app.post("/modificarUsuario/", function (request, response) {
 	var criteria = {"nombre":oldMail};
 	var changes = {"nombre":newEmail};
 	if(newPass != ""){
-		changes["password"] = newPass;
+		changes["password"] = encrypt(newPass);
 	}
 	console.log(criteria);
 	console.log(changes);
@@ -228,7 +239,7 @@ app.post("/modificarUsuario/", function (request, response) {
 
 app.delete("/eliminarUsuario/", function (request, response) {
 	var email = request.body.email;
-	var pass = request.body.password;
+	var pass = encrypt(request.body.password);
 	var criteria = {"nombre":email, "password":pass};
 	usersM.remove(criteria,function(err,result){
 		if(err){

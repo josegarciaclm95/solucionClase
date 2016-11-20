@@ -116,6 +116,9 @@ function borrarSiguienteNivel() {
 
 function nivelCompletado(tiempo) {
     game.destroy();
+    $("#gameMusic").animate({volume:0},1000,function(){
+        $(this).remove();
+    });
     $('#juegoId').append("<h2 id='enh'>Enhorabuena!</h2>");
     var callbackNivelCompletado = function(datos){
         $.cookie("nivel", datos.nivel);
@@ -154,12 +157,13 @@ function crearUsuario(nombre, pass) {
         nombre = "jugador";
     }
     var callback = function(data){
+        $.loadingBlockHide();
         if (data.result == "userExists") {
             $('#nombreUsuario').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
             $('#nombreUsuario').val('Usuario existente');
         } else {
-            //$("#formRegistro").remove();
             //setCookies(data);
+            $("#formRegistro").remove();
             $("#juegoContainer").prepend('<span id="warning" style="color:#FF0000; font-weight: bold;">Confirma tu correo!!!</span>');
         }
     }
@@ -269,6 +273,7 @@ function setCookies(data) {
 }
 
 function finJuego(text,callback){
+    $("#gameMusic").animate({volume:0},1000);
     $('#juegoId').append("<h2 id='enh'>"+text+"</h2>");
     $('#control').append('<button type="button" id="volverBtn" class="btn btn-primary btn-md">Volver a empezar</button>')
     $('#volverBtn').on('click', function () {
