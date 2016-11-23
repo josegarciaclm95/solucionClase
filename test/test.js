@@ -1,7 +1,19 @@
 var request = require("request");
+var crypto = require('crypto'),
+    algorithm = 'aes-256-ctr',
+    password = 'd6F3Efeq';
+
+function encrypt(text){
+    var cipher = crypto.createCipher(algorithm,password)
+    var crypted = cipher.update(text,'utf8','hex')
+    crypted += cipher.final('hex');
+    return crypted;
+}
+
+
 //var sleep = require("sleep");
-//var url = "http://localhost:1338";
-var url = "https://juegoprocesos.herokuapp.com";
+var url = "http://localhost:1338";
+//var url = "https://juegoprocesos.herokuapp.com";
 /***********************IMPORTANTEEEEEEEEEEEEEEEEEEEEEEEE************************** */
 var id = "5832d03a1656bd00123dd956"
 /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^SETEALOOOOOOOOOOOOOO^^^^^^^^^^^^^^^^^^^^^^^^*/
@@ -141,6 +153,7 @@ function testLogin(email, pass){
             console.log("========================================== \n")
         } else {
             console.log(error)
+            //console.log(response)
             //console.log(response.statusCode);
         } 
     });
@@ -171,12 +184,12 @@ function testModificarUsuario(old_email, new_email, new_pass){
 function testEliminarUsuario(email,pass){
     var options = {
         url:url + '/eliminarUsuario/',
-        method:'POST',
+        method:'DELETE',
         form:{email:email,password:pass},
         headers:headers,
         qs:{'':''}
     }
-    request.post(options, function(error, response, body){
+    request(options, function(error, response, body){
        if(!error && response.statusCode == 200){
             console.log("==========================================")
 	        console.log("Respuesta testEliminar() - Email " + email +  " Password " + pass);
@@ -186,6 +199,7 @@ function testEliminarUsuario(email,pass){
             console.log("========================================== \n")
             testLogin(email,pass);
         } else {
+            console.log("Error en eliminar")
             console.log(response.statusCode);
         } 
     });
@@ -208,7 +222,7 @@ function testSiguienteNivel(tiempo){
             console.log("Test Siguiente nivel - Nivel -> " + JSON.parse(body).nivel + " OK");
             console.log("========================================== \n")
         } else {
-            console.log(response);
+            //console.log(response);
             console.log(response.statusCode);
         } 
     });
@@ -236,28 +250,30 @@ function testObtenerResultados(){
     });
 }
 
+
 testRaiz();
 
-/*
+
 testCrearUsuario("xemagg95@gmail.com","jose"); //Nombre que ya existe
 testCrearUsuario("jose","jose"); //Nombre que ya esta en el limbo
 
 testCrearUsuario("josemariagarcia95@gmail.com","jose"); //nombre que no existe
 
 testConfirmarUsuario("jose",1479927787369)
-*/
+
 testDatosJuego();
 
 testLogin("xemagg95@gmail.com",""); //sin contrasena - no devuelve nada
 testLogin("juan",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
 testLogin("pepe","pepe"); // contrasena buena - devuelve user
-/*
+
 testModificarUsuario("josem","joseM","");
 testModificarUsuario("dani","dani","dani1");
+
 
 testEliminarUsuario("jose2","jose2");
 
 testSiguienteNivel(666);
 testObtenerResultados();
-*/
+
 

@@ -39,7 +39,10 @@ function Juego(){
         console.log(this.usuarios.length);
     }
     this.modificarUsuario = function(oldMail,newEmail){
-        this.buscarUsuario(nombre_us).nombre = newEmail;
+        var user = this.buscarUsuario(oldMail);
+        if (user != undefined){
+            user.nombre = newEmail;
+        }
     }
     Juego.prototype.toString = function(){
         var res = "Usuarios\n";

@@ -100,6 +100,7 @@ app.post('/login/', function(request, response){
 		if(err){
 			console.log(err)
 		} else {
+			var cursorHandler = new CursorHandler();
 			cursorHandler.emptyCursorCallback = function(users){
 				console.log("No existe el usuario " + email);
 				response.send({nivel:-1});
@@ -246,11 +247,14 @@ app.post("/modificarUsuario/", function (request, response) {
 app.delete("/eliminarUsuario/", function (request, response) {
 	var email = request.body.email;
 	var pass = encrypt(request.body.password);
+	console.log(email + " - " + pass)
 	var criteria = {"nombre":email, "password":pass};
 	usersM.remove(criteria,function(err,result){
+		console.log(result)
 		if(err){
 			console.log(err)
 		} else {
+			console.log(result.result)
 			juego.eliminarUsuario(email);
 			response.send(result.result);
 		}
@@ -312,11 +316,16 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 	var id = request.params.id;
 	var tiempo = parseInt(request.params.tiempo);
 	var usuario = juego.buscarUsuarioById(id);
-	usuario.agregarResultado(new modelo.Resultado(usuario.nivel,tiempo));
-	console.log(id + " - Tiempo " + tiempo + " IdJuego - " + usuario.idJuego);
+	if(usuario != undefined){
+		usuario.agregarResultado(new modelo.Resultado(usuario.nivel,tiempo));
+		console.log(id + " - Tiempo " + tiempo + " IdJuego - " + usuario.idJuego);
+		console.log(usuario.nivel);
+		usuario.tiempo = tiempo;
+	} else {
+		usuario = new modelo.Usuario("dummy");
+		
+	}
 	usuario.nivel += 1;
-	console.log(usuario.nivel);
-	usuario.tiempo = tiempo;
 	var set = {};
   	set["resultados.$.nivel" + (usuario.nivel-1)] = tiempo;
 	dbM.collection("resultados").update(
@@ -339,6 +348,10 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 app.get('/obtenerResultados/:id', function (request, response) {
 	var id = request.params.id;
 	var user = juego.buscarUsuarioById(id);
+	if(user == undefined){
+		user = new modelo.Usuario("dummyRes");
+		user.resultados.push(1);
+	}
 	response.send(user.resultados);
 });
 
@@ -372,7 +385,7 @@ function addNewResults(usuario){
 }
 
 function insertUser(usuario,pass){
-	usersM.insert({id_juego:usuario.idJuego, nombre:usuario.nombre, password:pass, nivel:usuario.nivel, vidas:usuario.vidas}, function(err,result){
+	usersM.insert({id_juego:usuario.idJuego, nombre:usuario.nombre, password:encrypt(pass), nivel:usuario.nivel, vidas:usuario.vidas}, function(err,result){
 		if(err){
 			console.log(err);
 		} else {
@@ -444,12 +457,16 @@ function CursorHandler(){
 
 	};
 	this.checkCursor = function(err,result){
+		console.log("Results en checkCursor")
+		console.log(result)
 		if(result.length == 0){
+			console.log("Llamamos a vacio")
 			self.emptyCursorCallback(result);
 		} else {
+			console.log("Llamamos a con algo")
 			self.cursorWithSomethingCallback(result);
 		}
 	}
 }
 
-var cursorHandler = new CursorHandler();	
+//var cursorHandler = new CursorHandler();	
