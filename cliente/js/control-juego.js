@@ -250,7 +250,7 @@ function comprobarUsuarioMongo(nombre, pass, fromCookie) {
 }
 
 function meterEnLimbo(email,pass){
-    peticionAjax("POST","/meterEnLimbo/",true,JSON.stringify({email: nombre, password: pass}), function(data){
+    peticionAjax("POST","/meterEnLimbo/",true,JSON.stringify({email: email, password: pass}), function(data){
         console.log(data);
     })
 }
