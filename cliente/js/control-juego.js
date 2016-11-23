@@ -249,6 +249,12 @@ function comprobarUsuarioMongo(nombre, pass, fromCookie) {
     }
 }
 
+function meterEnUsuarios(email,pass){
+    peticionAjax("POST","/meterEnUsuarios/",true,JSON.stringify({email: email, password: pass}), function(data){
+        console.log(data);
+    })
+}
+
 function meterEnLimbo(email,pass){
     peticionAjax("POST","/meterEnLimbo/",true,JSON.stringify({email: email, password: pass}), function(data){
         console.log(data);

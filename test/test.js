@@ -92,7 +92,7 @@ function testConfirmarUsuario(email,id){
             console.log("========================================== ")
 	        console.log("Respuesta testConfirmarUsuario() con datos - Email " + email + " id " + id);
 	        console.log("--------------------------------------------------------");
-            console.log("Test confirmarUsuario - " + email + ", " + id + " Resultado -> " + JSON.parse(body) + " OK");
+            console.log("Test confirmarUsuario - " + email + ", " + id + " Resultado ->  OK");
             console.log("========================================== \n")
         } else {
             console.log(response.statusCode);
@@ -140,7 +140,8 @@ function testLogin(email, pass){
             console.log("Test Login - " + email + ", " + pass + " Nivel -> " + JSON.parse(body).nivel + " OK");
             console.log("========================================== \n")
         } else {
-            console.log(response.statusCode);
+            console.log(error)
+            //console.log(response.statusCode);
         } 
     });
 }
@@ -207,7 +208,7 @@ function testSiguienteNivel(tiempo){
             console.log("Test Siguiente nivel - Nivel -> " + JSON.parse(body).nivel + " OK");
             console.log("========================================== \n")
         } else {
-            //console.log(response);
+            console.log(response);
             console.log(response.statusCode);
         } 
     });
@@ -237,17 +238,20 @@ function testObtenerResultados(){
 
 testRaiz();
 
+/*
 testCrearUsuario("xemagg95@gmail.com","jose"); //Nombre que ya existe
 testCrearUsuario("jose","jose"); //Nombre que ya esta en el limbo
-testCrearUsuario("pac22","paco"); //nombre que no existe
 
-testConfirmarUsuario("jose","")
+testCrearUsuario("josemariagarcia95@gmail.com","jose"); //nombre que no existe
+
+testConfirmarUsuario("jose",1479927787369)
+*/
 testDatosJuego();
 
-testLogin("xemagg95@gmail.com",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
 testLogin("xemagg95@gmail.com",""); //sin contrasena - no devuelve nada
-testLogin("xemagg95@gmail.com","jose"); // contrasena buena - devuelve user
-
+testLogin("juan",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
+testLogin("pepe","pepe"); // contrasena buena - devuelve user
+/*
 testModificarUsuario("josem","joseM","");
 testModificarUsuario("dani","dani","dani1");
 
@@ -255,3 +259,5 @@ testEliminarUsuario("jose2","jose2");
 
 testSiguienteNivel(666);
 testObtenerResultados();
+*/
+
