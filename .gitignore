@@ -3,5 +3,4 @@ node_modules
 ./PhaserPrueba.mdj
 Procfile
 cliente/js/juegoClase-refactor.js
-test
 prueba.js
