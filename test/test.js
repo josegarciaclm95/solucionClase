@@ -3,9 +3,16 @@ var request = require("request");
 //var url = "http://localhost:1338";
 var url = "https://juegoprocesos.herokuapp.com";
 /***********************IMPORTANTEEEEEEEEEEEEEEEEEEEEEEEE************************** */
-var id = "581e3b2e6a4d870011c7295f"
+var id = "5832d03a1656bd00123dd956"
 /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^SETEALOOOOOOOOOOOOOO^^^^^^^^^^^^^^^^^^^^^^^^*/
 
+/**
+ * TENEMOS UNA CUENTA ACTIVA xemagg95@gmail.com - jose
+ * UN USUARIO jose - jose EN EL limbo
+ * UN USUARIO josem - jose ACTIVO
+ * UN USUARIO dani - dani ACTIVO
+ * UN USUARIO jose2 - jose2 ACTIVO
+ */
 var headers = {
     "User-Agent":'Super Agent/0.0.1',
     "Content-Type":'application/x-www-form-urlencoded'
@@ -13,10 +20,11 @@ var headers = {
 
 console.log("==============================================")
 console.log(" Inicio de las pruebas del API REST:" + url);
-console.log(" 1. Crear usuario - 2. Traer datos de juego");
-console.log(" 3. Login de usuario (existente/inexistente)");
-console.log(" 4. Modificar usuario - 5. Eliminar usuario");
-console.log(" 6. El usuario no puede iniciar sesión");
+console.log(" 1. Crear usuario - 2. Confirmar usuario");
+console.log(" 3. Traer datos de juego");
+console.log(" 4. Login de usuario (existente/inexistente)");
+console.log(" 5. Modificar usuario - 6. Eliminar usuario");
+console.log(" 7. El usuario no puede iniciar sesión");
 console.log("============================================== \n")
 
 console.log("==============================================")
@@ -63,13 +71,36 @@ function testCrearUsuario(email, pass){
             console.log("========================================== ")
 	        console.log("Respuesta testCrearUsuario() con datos - Email " + email + " Password " + pass);
 	        console.log("--------------------------------------------------------");
-            console.log("Test crearUsuario - " + email + ", " + pass + " Nivel -> " + JSON.parse(body).nivel + " OK");
+            console.log("Test crearUsuario - " + email + ", " + pass + " Resultado -> " + JSON.parse(body).result + " OK");
             console.log("========================================== \n")
         } else {
             console.log(response.statusCode);
         } 
     });
 }
+
+function testConfirmarUsuario(email,id){
+    var options = {
+        url:url + '/confirmarCuenta/' + email + '/' + id,
+        method:'GET',
+        headers:headers,
+        qs:{'':''}
+    }
+    request(options, function(error, response, body){
+       if(!error && response.statusCode == 200){
+            //console.log("Body crear" + body);
+            console.log("========================================== ")
+	        console.log("Respuesta testConfirmarUsuario() con datos - Email " + email + " id " + id);
+	        console.log("--------------------------------------------------------");
+            console.log("Test confirmarUsuario - " + email + ", " + id + " Resultado -> " + JSON.parse(body) + " OK");
+            console.log("========================================== \n")
+        } else {
+            console.log(response.statusCode);
+        } 
+    });
+}
+
+
 
 function testDatosJuego(){
     var options = {
@@ -206,16 +237,18 @@ function testObtenerResultados(){
 
 testRaiz();
 
-testCrearUsuario("dani","dani"); //Nombre que ya existe
+testCrearUsuario("xemagg95@gmail.com","jose"); //Nombre que ya existe
+testCrearUsuario("jose","jose"); //Nombre que ya esta en el limbo
 testCrearUsuario("pac22","paco"); //nombre que no existe
 
+testConfirmarUsuario("jose","")
 testDatosJuego();
 
-testLogin("jose",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
-testLogin("jose",""); //sin contrasena - no devuelve nada
-testLogin("jose","jose"); // contrasena buena - devuelve user
+testLogin("xemagg95@gmail.com",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
+testLogin("xemagg95@gmail.com",""); //sin contrasena - no devuelve nada
+testLogin("xemagg95@gmail.com","jose"); // contrasena buena - devuelve user
 
-testModificarUsuario("jose","joseM","");
+testModificarUsuario("josem","joseM","");
 testModificarUsuario("dani","dani","dani1");
 
 testEliminarUsuario("jose2","jose2");

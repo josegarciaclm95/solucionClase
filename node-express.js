@@ -395,6 +395,27 @@ function findSomething(collection,criteria,callback){
 	dbM.collection(collection).find(criteria,callback);
 }
 
+app.post('/meterEnLimbo/', function(request, response){
+	var email = request.body.email;
+	var pass = request.body.pass;
+	var time = (new Date()).valueOf();
+	function callbackInsertLimbo(err,data){
+		if(err){
+			console.log(err)
+			response.send({result:err})
+		} else {
+			response.send({result:"insertOnLimbo", tiempo:time})
+		}
+	}
+	insertOn("limbo",{email:email,password:encrypt(pass),tiempo:time}, callbackInsertLimbo)
+
+});
+
+
+function insertOn(collection,object,callback){
+	dbM.collection(collection).insert(object,callback);
+}
+
 //Añadir el usuario a limbo
 //Mandar email
 /**

@@ -249,6 +249,12 @@ function comprobarUsuarioMongo(nombre, pass, fromCookie) {
     }
 }
 
+function meterEnLimbo(email,pass){
+    peticionAjax("POST","/meterEnLimbo/",true,JSON.stringify({email: nombre, password: pass}), function(data){
+        console.log(data);
+    })
+}
+
 function borrarLogin() {
     $("#login").remove();
     $("#loginBtn").remove();
