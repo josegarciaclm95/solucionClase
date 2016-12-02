@@ -1,12 +1,3 @@
-/**********************************************************************
- * "/" - Se responde con el index
- * "/crearUsuario/nombre" - Crea el usuario y devuelve el juego junto con sus datos. Dentro de agregarUsuario() se crea
- * su registro en el fichero juego.json, con miras a ahorrar comprobaciones cuando se guarde su score
- * "/resultados/" - Lee el contenido de juego.json
- *
- * *
- *
- **********************************************************************/
 var fs = require("fs");
 var config = JSON.parse(fs.readFileSync("config.json"));
 var host = config.host;
@@ -36,6 +27,7 @@ var options = {
     api_key: emailPass
   }
 }
+
 var client = nodemailer.createTransport(sgTransport(options));
 var crypto = require('crypto'),
     algorithm = 'aes-256-ctr',
@@ -48,30 +40,26 @@ function encrypt(text){
     return crypted;
 }
 
+var html = '¡¡Bienvenido a ConquistaNiveles!! <br/>';
+html += 'Confirme su cuenta haciendo clic en el siguiente enlace: <br/>';
 
-//app.use(app.router);
+var mensaje = {
+	from: 'donotanswer@juegoprocesos.com',
+	subject: 'Confirme su cuenta',
+	text: 'Hello world'
+};
+
 app.use(exp.static(__dirname + "/cliente/"));
 app.use(bodyParser());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
-app.get("/mierdaPrueba/", function (request, response) {
-	//var jsa = JSON.parse(fs.readFileSync("./cliente/js/juego-json.json"));
-	//response.send(jsa);
-	dbM.collection("resultados").update(
-		{usuario:"5818be9c74aaec1824c28626","resultados.idJuego":1478016668428},
-		{$set: {"resultados.$.nivel1":"20"}}
-	);
-});
-
 app.get("/datosJuego/:id", function (request, response) {
-	//console.log("Llamada a /datosJuego/" + request.params.nivel);
 	var id = request.params.id;
 	var usuario = juego.buscarUsuarioById(id);
 	var res;
 	console.log("LLamada a datosJuego, id - " + id);
 	console.log("Usuario encontrado ");
-	console.log(usuario);
 	if(usuario && usuario.nivel <= juego.niveles.length){
 		res = juego.niveles[usuario.nivel-1];
 	} else {
@@ -126,100 +114,87 @@ app.post("/crearUsuario/", function (request, response) {
 	var pass = request.body.password;
 	var urlD = request.body.url;
 	var criteria = {"nombre":email};
-	usersM.find(criteria, function(err,cursor){
+	function callbackCrearUsuario(err,cursor){
 		if(err){
 			console.log(err);
 		} else {
-			cursor.toArray(function(er, users){
-				if(users.length == 0){
-					console.log("No existe el usuario (crearUsuario)");
-					var criteria = {"email":email};
-					dbM.collection("limbo").find(criteria,function(err,cursor){
-						if(err){
-							console.log(err);
-						} else {
-							cursor.toArray(function(er, limbos){
-								if(limbos.length == 0){
-									var time = (new Date().valueOf());
-									//console.log(window.location.href)
-									var url = urlD + "/confirmarCuenta/" + email + "/" + time;
-									console.log(time);
-									var html = 'Confirme su cuenta haciendo clic en el siguiente enlace: <br/>';
-									html += '<a href='+url+'>'+url+'</a>';
-									var mensaje = {
-										from: 'donotanswer@juegoprocesos.com',
-										to: email,
-										subject: 'Confirme su cuenta',
-										text: 'Hello world',
-										html: html
-									};
-									client.sendMail(mensaje, function(errr, info){
-										if (errr){
-											console.log(errr);
-											response.send({result:"EmailNotSent"})
-										}
-										else {
-											console.log('Message sent: ' + info.response);
-											dbM.collection("limbo").insert({email:email,password:encrypt(pass),tiempo:time},function(err,data){
-												if(err){
-													console.log(err)
-												} else {
-													response.send({result:"confirmEmail"})
-												}
-											})
-										}
-									});
-									//response.send({result:"confirmEmail"})
-								} else {
-									console.log("El usuario ya existe en limbo(crearUsuario)");
-									response.send({result:"userExists"})
+			var cursorHandler = new CursorHandler();
+			cursorHandler.cursorWithSomethingCallback = function(users){
+				console.log("El usuario ya existe en usuarios(crearUsuario)");
+				response.send({result:"userExists"})
+			}
+			cursorHandler.emptyCursorCallback = function(users){
+				console.log("No existe el usuario (crearUsuario) en usuarios");
+				var criteria = {"email":email};
+				function callbackCrearUsuarioLimbo(err,cursor){
+					if(err){
+						console.log(err)
+					} else {
+					var cursorHandlerInt = new CursorHandler();
+						cursorHandlerInt.emptyCursorCallback = function(userss){
+							var time = (new Date().valueOf());
+							var url = urlD + "/confirmarCuenta/" + email + "/" + time;
+							html += '<a href='+url+'>'+url+'</a>';
+							mensaje.to = email;
+							mensaje.html = html;
+							function callbackSendEmail(errr,info){
+								if (errr){
+									console.log(errr);
+									response.send({result:"EmailNotSent"})
 								}
-							})
+								else {
+									console.log('Message sent: ' + info.response);
+									insertOn("limbo",{email:email,password:encrypt(pass),tiempo:time},function(err,data){
+										if(err){
+											console.log(err)
+										} else {
+											response.send({result:"confirmEmail"})
+										}
+									})
+								}
+							}
+							client.sendMail(mensaje, callbackSendEmail);
 						}
-						});
-					//var usuario = new modelo.Usuario(email);
-					//juego.agregarUsuario(usuario);
-					//result = insertUser(usuario,pass);
-					
-					//usuario.maxNivel = juego.niveles.length;
-				} else {
-					console.log("El usuario ya existe en usuarios(crearUsuario)");
-					response.send({result:"userExists"})
-					//response.send({nivel:-1});
+						cursorHandlerInt.cursorWithSomethingCallback = function(userss){
+							console.log("El usuario ya existe en limbo(crearUsuario)");
+							response.send({result:"userExists"})
+						}
+						cursor.toArray(cursorHandlerInt.checkCursor)
+					}
 				}
-			});
+				findSomething("limbo",criteria,callbackCrearUsuarioLimbo)
+			}
+			cursor.toArray(cursorHandler.checkCursor)
 		}
-	});
+	}
+	findSomething("usuarios",criteria,callbackCrearUsuario)
 });
 
 app.get("/confirmarCuenta/:email/:id", function (request, response) {
-	console.log("CONFIRMAMOS CUENTA!!!")
+	console.log("Llamada a confirmar cuenta")
 	var email = request.params.email;
-	console.log("EMAIL !!!" + email)
 	var id = parseInt(request.params.id);
-	console.log("TIEMPO !!!" + id)
 	var criteria = {email:email,tiempo:id};
-	dbM.collection("limbo").find(criteria, function(err,cursor){
+	function callbackConfirmar(err,cursor){
 		if(err){
 			console.log(err);
 		} else {
-			cursor.toArray(function(er, users){
-				console.log("USERS!!")
-				console.log(users)
-				if(users.length != 0){
-					console.log("USERS ES DISTINTO DE CERO!!")
-					console.log(users)
-					console.log("Confirmar - Existe el usuario");
-					var usuario = new modelo.Usuario(email);
-					insertUser(usuario,users[0].password);
-					dbM.collection("limbo").remove({email:email});
-				} else {
-					console.log("El usuario ya existe");
-				}
+			var cursorHandler = new CursorHandler();
+			cursor.emptyCursorCallback = function(users) {
+				console.log("El usuario ya existe");
 				response.redirect("/");
-			});
+			}
+			cursorHandler.cursorWithSomethingCallback = function(users){
+				console.log("Confirmar - Existe el usuario");
+				var usuario = new modelo.Usuario(email);
+				insertUser(usuario,users[0].password);
+				dbM.collection("limbo").remove({email:email});
+				response.redirect("/");
+			}
+			cursor.toArray(cursorHandler.checkCursor);
 		}
-	});
+	}
+	findSomething("limbo",criteria,callbackConfirmar)
 });
 
 app.post("/modificarUsuario/", function (request, response) {
@@ -250,11 +225,10 @@ app.delete("/eliminarUsuario/", function (request, response) {
 	console.log(email + " - " + pass)
 	var criteria = {"nombre":email, "password":pass};
 	usersM.remove(criteria,function(err,result){
-		console.log(result)
 		if(err){
 			console.log(err)
 		} else {
-			console.log(result.result)
+			console.log("Usuario eliminado")
 			juego.eliminarUsuario(email);
 			response.send(result.result);
 		}
@@ -279,7 +253,7 @@ function callBackUsuarios(err,data,response){
 				var user = {}
 				user.nombre = item.nombre;
 				dbM.collection("resultados").find({usuario:ObjectID(item._id)}).toArray(function(err,results){
-					console.log("Llamada con i = " + i)
+					//console.log("Llamada con i = " + i)
 					callBackResultados(err,results,user,res,response,i,max);				
 				});
 			});
@@ -293,12 +267,8 @@ function callBackResultados(err,results,user,res,response,i,max){
 	if(err){
 		console.log(err);
 	} else {
-		console.log(results)
-		console.log(results[0].resultados);
 		user.resultados = results[0].resultados;
-		//console.log(user);
 		res.push(user);
-		console.log(i + " -  max " + max);
 		if(i + 1 == max){
 			response.send(res);
 		}
@@ -358,8 +328,6 @@ app.get('/obtenerResultados/:id', function (request, response) {
 
 console.log("Servidor escuchando en el puerto "+process.env.PORT );
 app.listen(process.env.PORT || port);
-//console.log("Servidor escuchando en el puerto " + port);
-//app.listen(port, host);
 
 function mongoConnect(){
 	MongoClient.connect(urlM, function (err, db) {
@@ -369,8 +337,6 @@ function mongoConnect(){
 			console.log("Conectados");
 			dbM = db;
 			usersM = dbM.collection("usuarios");
-			//console.log(usersM);
-			//console.log("Datos extraidos");
 		}
 	});
 }
@@ -385,7 +351,7 @@ function addNewResults(usuario){
 }
 
 function insertUser(usuario,pass){
-	usersM.insert({id_juego:usuario.idJuego, nombre:usuario.nombre, password:encrypt(pass), nivel:usuario.nivel, vidas:usuario.vidas}, function(err,result){
+	usersM.insert({id_juego:usuario.idJuego, nombre:usuario.nombre, password:pass, nivel:usuario.nivel, vidas:usuario.vidas}, function(err,result){
 		if(err){
 			console.log(err);
 		} else {
@@ -393,19 +359,24 @@ function insertUser(usuario,pass){
 			usuario.maxNivel = juego.niveles.length;
 			console.log("Id asignado a insertUser - " + usuario.id);
 			juego.agregarUsuario(usuario);
-			dbM.collection("resultados").insert({usuario:usuario.id, resultados:[{idJuego:usuario.idJuego,nivel1:-1,nivel2:-1,nivel3:-1}]},function(err1,result1){
-				if(err1){
-					console.log(err1);
+			var obj = {usuario:usuario.id, 
+						resultados:[
+								{idJuego:usuario.idJuego,nivel1:-1,nivel2:-1,nivel3:-1, nivel4:-1}
+							]
+					}
+			function consoleLogError(err,result){
+				if(err){
+					console.log(err);
 				} else {
-					console.log("Resultados inicializados");
-					//console.log(result1);
+					console.log("Resultados inicializados en insertUser")
 				}
-			});
-			console.log("Usuario insertado");
-			return result;
+			}
+			insertOn("resultados",obj, consoleLogError);
+			console.log("Usuario " + usuario.nombre + " insertado");
 		}
 	});
 }
+
 
 function findSomething(collection,criteria,callback){
 	dbM.collection(collection).find(criteria,callback);
@@ -432,19 +403,13 @@ app.post('/meterEnUsuarios/', function(request, response){
 	var pass = request.body.password;
 	var user = new modelo.Usuario(email);
 	console.log(pass)
-	insertUser(user,pass)
+	insertUser(user,encrypt(pass))
 });
-
-
-
-
 
 function insertOn(collection,object,callback){
 	dbM.collection(collection).insert(object,callback);
 }
 
-//Añadir el usuario a limbo
-//Mandar email
 /**
  * CURSOR HANDLER. Clase para facilitar la refactorizacion de los metodos que trabajan con cursores
  */
@@ -460,13 +425,9 @@ function CursorHandler(){
 		console.log("Results en checkCursor")
 		console.log(result)
 		if(result.length == 0){
-			console.log("Llamamos a vacio")
 			self.emptyCursorCallback(result);
 		} else {
-			console.log("Llamamos a con algo")
 			self.cursorWithSomethingCallback(result);
 		}
 	}
 }
-
-//var cursorHandler = new CursorHandler();	

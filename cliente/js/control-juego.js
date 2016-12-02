@@ -231,32 +231,26 @@ function auxiliar(){
 
 function comprobarUsuarioMongo(nombre, pass, fromCookie) {
     if (pass == "" && !fromCookie) {
-        $('#claveL').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
+        estilosAlerta('#claveL')
     } else {
         var callback = function(data){
             if (data.nivel == -1) {
-                    console.log("No hay nada");
-                    borrarLogin();
-                    resetControl();
-                    loginIncorrecto();
-                } else {
-                    setCookies(data);
-                    borrarLogin();
-                    mostrarInfoJuego2();
-                }
+                console.log("No hay nada");
+                //resetControl();
+                borrarCookies();
+                loginIncorrecto();
+            } else {
+                setCookies(data);
+                borrarLogin();
+                mostrarInfoJuego2();
+            }
         }
         peticionAjax("POST","/login/",true,JSON.stringify({email: nombre, password: pass}),callback);
     }
 }
 
-function meterEnUsuarios(email,pass){
-    peticionAjax("POST","/meterEnUsuarios/",true,JSON.stringify({email: email, password: pass}), function(data){
-        console.log(data);
-    })
-}
-
-function meterEnLimbo(email,pass){
-    peticionAjax("POST","/meterEnLimbo/",true,JSON.stringify({email: email, password: pass}), function(data){
+function meterEnColeccion(email,pass,col){
+    peticionAjax("POST","/meterEn"+col+"/",true,JSON.stringify({email: email, password: pass}), function(data){
         console.log(data);
     })
 }
@@ -299,24 +293,15 @@ function finJuego(text,callback){
 function resetControl() {
     borrarCookies();
     $("#control").empty();
-    //$("#juegoContainer").empty();
     construirLogin();
 }
 
-function modificarUsuario() {
+function cambiarUsuario(action){
     if ($.cookie('nombre') != undefined) {
-        construirFormularioModificar();
+        eval("construirFormulario"+action+"()")
     } else {
         avisoLogin();
-    }
-}
-
-function eliminarUsuario() {
-    if ($.cookie('nombre') != undefined) {
-        construirFormularioEliminar();
-    } else {
-        avisoLogin();
-    }
+    } 
 }
 
 function avisoLogin(){
