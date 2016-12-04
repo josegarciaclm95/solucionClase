@@ -169,6 +169,7 @@ function crearUsuario(nombre, pass) {
     }
     var url = window.location.href;
     //url = url.slice(0, url.length - 10);
+    //url = "http://localhost:1338"
     url = "http://juegoprocesos.herokuapp.com";
     peticionAjax("POST","/crearUsuario/",true,JSON.stringify({ email:nombre, password:pass,url:url }),callback);
 }

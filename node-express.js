@@ -40,9 +40,6 @@ function encrypt(text){
     return crypted;
 }
 
-var html = '¡¡Bienvenido a ConquistaNiveles!! <br/>';
-html += 'Confirme su cuenta haciendo clic en el siguiente enlace: <br/>';
-
 var mensaje = {
 	from: 'donotanswer@juegoprocesos.com',
 	subject: 'Confirme su cuenta',
@@ -111,6 +108,7 @@ app.post('/login/', function(request, response){
 
 app.post("/crearUsuario/", function (request, response) {
 	var email = request.body.email;
+	console.log(email)
 	var pass = request.body.password;
 	var urlD = request.body.url;
 	var criteria = {"nombre":email};
@@ -134,6 +132,9 @@ app.post("/crearUsuario/", function (request, response) {
 						cursorHandlerInt.emptyCursorCallback = function(userss){
 							var time = (new Date().valueOf());
 							var url = urlD + "/confirmarCuenta/" + email + "/" + time;
+							console.log(url)
+							var html = '¡¡Bienvenido a ConquistaNiveles!! <br/>';
+							html += 'Confirme su cuenta haciendo clic en el siguiente enlace: <br/>';
 							html += '<a href='+url+'>'+url+'</a>';
 							mensaje.to = email;
 							mensaje.html = html;
