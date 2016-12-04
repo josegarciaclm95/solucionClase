@@ -9,7 +9,7 @@ var modelo = require("./servidor/modelo.js");
 var app = exp();
 var juegofm = new modelo.JuegoFM('./cliente/js/juego-json.json');
 var juego = juegofm.makeJuego();
-//console.log(juego.toString());
+
 var MongoClient = require('mongodb');
 var ObjectID = require("mongodb").ObjectID;
 var bodyParser = require("body-parser");
