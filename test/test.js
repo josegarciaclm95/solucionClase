@@ -12,10 +12,10 @@ function encrypt(text){
 
 
 //var sleep = require("sleep");
-var url = "http://localhost:1338";
-//var url = "https://juegoprocesos.herokuapp.com";
+//var url = "http://localhost:1338";
+var url = "https://juegoprocesos.herokuapp.com";
 /***********************IMPORTANTEEEEEEEEEEEEEEEEEEEEEEEE************************** */
-var id = "5832d03a1656bd00123dd956"
+var id = "58449b0f1dc69d00118a2282"
 /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^SETEALOOOOOOOOOOOOOO^^^^^^^^^^^^^^^^^^^^^^^^*/
 
 /**
@@ -24,6 +24,8 @@ var id = "5832d03a1656bd00123dd956"
  * UN USUARIO josem - jose ACTIVO
  * UN USUARIO dani - dani ACTIVO
  * UN USUARIO jose2 - jose2 ACTIVO
+ * UN USUARIO juan - juan ACTIVO
+ * UN USUARIO pepe - pepe ACTIVO
  */
 var headers = {
     "User-Agent":'Super Agent/0.0.1',
@@ -259,7 +261,7 @@ testCrearUsuario("jose","jose"); //Nombre que ya esta en el limbo
 
 testCrearUsuario("josemariagarcia95@gmail.com","jose"); //nombre que no existe
 
-testConfirmarUsuario("jose",1479927787369)
+testConfirmarUsuario("jose",1480939237928)
 
 testDatosJuego();
 
