@@ -130,7 +130,7 @@ function eliminarUsuarioServer(nombre, pass) {
     var callback = function(data){
         if (data.n != 1) {
                 $('#nombreUsuario').attr('style', "border-radius: 5px; border:#FF0000 1px solid;");
-                $('#nombreUsuario').val('Error en servidor');
+                $('#nombreUsuario').val('Error al borrar. Comprueba que usuario y contraseña son correctos');
             } else {
                 $("#formRegistro").remove();
                 borrarSiguienteNivel();
@@ -230,6 +230,8 @@ function finJuego(text,callback){
 function resetControl() {
     borrarCookies();
     $("#control").empty();
+    $("#modificar").hide();
+    $("#eliminar").hide();
     construirLogin();
 }
 

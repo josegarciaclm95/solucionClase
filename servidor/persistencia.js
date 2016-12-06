@@ -31,9 +31,10 @@ module.exports.findSomething = function (collection,criteria,callback){
 	dbM.collection(collection).find(criteria,callback);
 }
 
-module.exports.insertOn = function(collection,object,callback){
+function insertOn(collection,object,callback){
 	dbM.collection(collection).insert(object,callback);
 }
+module.exports.insertOn = insertOn;
 
 module.exports.removeOn = function(collection,criteria,callback){
     dbM.collection(collection).remove(criteria,callback);
@@ -43,7 +44,7 @@ module.exports.updateOn = function(collection,criteria,changes,options,callback)
     dbM.collection(collection).update(criteria,changes,options,callback)
 }
 
-module.exports.insertUser = function(usuario,pass){
+module.exports.insertUser = function(usuario,pass,juego){
 	usersM.insert({id_juego:usuario.idJuego, nombre:usuario.nombre, password:pass, nivel:usuario.nivel, vidas:usuario.vidas}, function(err,result){
 		if(err){
 			console.log(err);
@@ -88,6 +89,7 @@ function callBackUsuarios(err,data,response){
 			data.forEach(function(item,i){
 				var user = {}
 				user.nombre = item.nombre;
+				console.log(item)
 				dbM.collection("resultados").find({usuario:ObjectID(item._id)}).toArray(function(err,results){
 					//console.log("Llamada con i = " + i)
 					callBackResultados(err,results,user,res,response,i,max);				
@@ -102,7 +104,7 @@ function callBackUsuarios(err,data,response){
 function callBackResultados(err,results,user,res,response,i,max){
 	if(err){
 		console.log(err);
-	} else {
+	} else if(results.length != 0) {
 		user.resultados = results[0].resultados;
 		res.push(user);
 		if(i + 1 == max){

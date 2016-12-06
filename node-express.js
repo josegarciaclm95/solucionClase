@@ -185,7 +185,7 @@ app.get("/confirmarCuenta/:email/:id", function (request, response) {
 			cursorHandler.cursorWithSomethingCallback = function(users){
 				console.log("Confirmar - Existe el usuario");
 				var usuario = new modelo.Usuario(email);
-				persistencia.insertUser(usuario,users[0].password);
+				persistencia.insertUser(usuario,users[0].password,juego);
 				persistencia.removeOn("limbo",{email:email},function(){})
 				response.redirect("/");
 			}
@@ -314,7 +314,7 @@ app.post('/meterEnUsuarios/', function(request, response){
 	var pass = request.body.password;
 	var user = new modelo.Usuario(email);
 	console.log(pass)
-	persistencia.insertUser(user,encrypt(pass))
+	persistencia.insertUser(user,encrypt(pass),juego)
 });
 
 /**

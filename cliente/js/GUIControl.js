@@ -64,9 +64,15 @@ function construirRegistro(){
         });
         $("#confirmaRegBtn").on("click", function () {
             //console.log($("#nombreUsuario").val() + " - " + $("#password1").val());
-            if ($("#password2").val() != $("#password1").val()) {
+            if (!validateMail($("#nombreUsuario").val())){
+                estilosAlerta('#nombreUsuario');
+                $('#nombreUsuario').val('Formato de mail no válido')
+            } else if ($("#password2").val() != $("#password1").val()) {
                 estilosAlerta('#password2,#password1');
                 $("#formRegistro").prepend('<span id="warning" style="color:#FF0000; font-weight: bold;">Contraseñas no coinciden!!!</span>');
+            } else if ($("#password1").val() == "") {
+                estilosAlerta('#password2,#password1');
+                $("#formRegistro").prepend('<span id="warning" style="color:#FF0000; font-weight: bold;">Contraseña no puede ir en blanco!!!</span>');
             } else {
                 crearUsuario($("#nombreUsuario").val(), $("#password2").val(), false);
                 $.loadingBlockShow({
@@ -104,9 +110,15 @@ function construirFormularioModificar(){
         $("#confirmaRegBtn").text("Guardar cambios");
         $("#confirmaRegBtn").on("click", function () {
             console.log($("#nombreUsuario").val() + " - " + $("#password1").val());
-            if ($("#password2").val() != $("#password1").val()) {
+            if(!validateMail($("#nombreUsuario").val())) {
+                estilosAlerta('#nombreUsuario');
+                $("#nombreUsuario").val('Email con formato incorrecto. Inserte su email con formato abc@def.ghi');
+            } else if ($("#password2").val() != $("#password1").val()) {
                 estilosAlerta('#password2,#password1');
                 $("#formRegistro").prepend('<span id="warning" style="color:#FF0000">Contraseñas no coinciden!!!</span>');
+            } else if($("#password1").val() == "") {
+                estilosAlerta('#password2,#password1');
+                $('#password2,#password1').val('Contraseña no puede ir en blanco')
             } else {
                 modificarUsuarioServer($("#nombreUsuario").val(), $("#password1").val());
                  $("#warning").remove();
@@ -175,7 +187,6 @@ function siguienteNivel() {
         crearNivel();
     });
     $("#cerrarSesBtn").on("click", function () {
-        $("#control").empty();
         resetControl();
     });
 }
@@ -232,4 +243,11 @@ function pruebaEffects(){
              })
          })
     });
+}
+
+function validateMail(email){
+    console.log("Validando Mail");
+    var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    console.log(re.test(email))
+    return re.test(email);
 }
