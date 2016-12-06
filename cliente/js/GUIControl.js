@@ -99,6 +99,7 @@ function construirFormularioModificar(){
         $("#nombreUsuario").on("focus", function (e) {
             limpiarEstilos(this);
         });
+        $("#labelCorreo").text("Correo electrónico");
         $("#nombreUsuario").val($.cookie('nombre'));
         $("#confirmaRegBtn").text("Guardar cambios");
         $("#confirmaRegBtn").on("click", function () {
@@ -121,25 +122,91 @@ function construirFormularioEliminar() {
         $("#formRegistro").prepend('<span style="color:#FF0000">Confirma tus credenciales</span>');
         $("#camposContra2").remove();
         $("#confirmaRegBtn").text("Eliminar credenciales");
+        $("#labelCorreo").text("Correo electrónico");
         $("#confirmaRegBtn").on("click", function () {
             eliminarUsuarioServer($("#nombreUsuario").val(), $("#password1").val());
         });
     });
 }
 
+/**
+ * Borramos el elemento control (Panel de control)
+ */
+function borrarControl() {
+    $("#control").remove();
+}
+
+/**
+ * Haciendo uso de una cookie previa, presentamos la info del jugador (tras haber actualizado la cookie)
+ */
+function mostrarInfoJuego2() {
+    vidas = $.cookie("vidas");
+    var nombre = $.cookie("nombre");
+    var id = $.cookie("id");
+    var nivel = $.cookie("nivel");
+    var percen = Math.floor(((nivel - 1) / $.cookie("maxNivel")) * 100);
+    $('#datos').remove();
+    $('#cabeceraP').remove();
+    $('#cabecera').remove();
+    $('#prog').remove();
+    $('#control').append('<div id="datos"><h4>Nombre: ' + nombre + '<br />Nivel: ' + nivel + '</h4></div>');
+    $('#control').append('<div class="progress" id="prog"><div class="progress-bar progress-bar-success progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width:' + percen + '%">' + percen + '%</div></div>');
+    $("#registerGroup").remove();
+    $("#modificar").show();
+    $("#eliminar").show();
+    siguienteNivel();
+}
+
+/**
+ * Si habia una cookie previa, se llamara a este método para añadir un botón de siguiente nivel. Este refrescará el juego donde
+ * se quedó el jugador
+ */
+function siguienteNivel() {
+    $("#control").append('<button type="button" id="siguienteBtn" class="btn btn-primary btn-md" style="margin-top:5px; margin-right:5px;">Siguiente nivel</button>');
+    $("#control").append('<button type="button" id="cerrarSesBtn" class="btn btn-primary btn-md" style="margin-top:5px">Cerrar sesión</button>');
+    $("#siguienteBtn").on("click", function () {
+        $(this).remove();
+        $("#cerrarSesBtn").remove();
+        $("#juegoContainer").empty();
+        $("#juegoContainer").append('<div id="juegoId"></div>');
+        $("#backMusic").animate({volume:0},1000);
+        console.log("Nivel de cookie es ->" + $.cookie("nivel"));
+        console.log("Llamamos a crear nivel sin parametros en siguienteNivel()");
+        crearNivel();
+    });
+    $("#cerrarSesBtn").on("click", function () {
+        $("#control").empty();
+        resetControl();
+    });
+}
+
+function borrarSiguienteNivel() {
+    $("#siguienteBtn").remove();
+    $("#cerrarSesBtn").remove();
+    $('#datos').remove();
+    $('#cabeceraP').remove();
+    $('#cabecera').remove();
+    $('#prog').remove();
+}
+
 function mostrarResultados() {
     var resultadosJuego = undefined;
     console.log("LLamamos a mostrar resultados");
     peticionAjax("GET","/resultados/",false,{},function(data){
+        console.log("Ya tengo resultados");
+        console.log(data.length);
         resultadosJuego = data;
     });
-    $('#resultadosContainer').append('<h3 id="res">Resultados</h3>');
+    limpiarJuegoContainer();
+    $('#juegoContainer').append('<h3 id="res">Resultados</h3>');
     var cadena = "";
     cadena += "<table id='resultados' class='table table-bordered table-condensed'>";
     cadena += "<tr><th colspan='4' style='text-align:center;'><img style='height:150px; width:150px' src='./assets/wall-fame.png'></th></tr>";
     cadena += "<tr><th style='text-align:center'>Nombre</th><th style='text-align:center'>Partida</th><th style='text-align:center'>Nivel</th><th style='text-align:center'>Tiempo</th></tr>";
 
     for (var i in resultadosJuego) {
+        console.log(i)
+        console.log(resultadosJuego[i])
         for (var j in resultadosJuego[i].resultados) {
             for (var z in resultadosJuego[i].resultados[j]){
                 var date;
@@ -153,7 +220,7 @@ function mostrarResultados() {
         }
     }
     cadena = cadena + "</table>";
-    $('#resultadosContainer').append(cadena);
+    $('#juegoContainer').append(cadena);
 }
 
 function pruebaEffects(){

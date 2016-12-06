@@ -1,4 +1,5 @@
 body {
+    padding-top: 70px;
     background: #0B2161;
     color:#FFFFFF;
 }
@@ -49,4 +50,10 @@ p.intro.emphasis {
     color: #FF0000;
 }
 
+p.intro img{
+    max-height: 400px;
+    text-align: center;
+    vertical-align: middle;
+    display: inline;
+}
 
