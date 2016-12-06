@@ -1,26 +1,26 @@
-function limpiarLogin(){
+function limpiarLogin() {
     $("#login").remove();
 }
 
-function limpiarJuegoContainer(){
+function limpiarJuegoContainer() {
     $("#juegoContainer").empty();
 }
 
-function limpiarEstilos(selector){
+function limpiarEstilos(selector) {
     $(selector).removeAttr("style");
     $(selector).val('');
 }
 
-function loginIncorrecto(){
+function loginIncorrecto() {
     estilosAlerta('#nombreL,#claveL');
     $("#nombreL").val('Usuario o contraseña incorrectos');
 }
 
-function estilosAlerta(selector){
+function estilosAlerta(selector) {
     $(selector).attr('style', "border-radius: 5px; border:#FF0000 1px solid;")
 }
 
-function construirLogin(){
+function construirLogin() {
     limpiarLogin();
     var form = "";
     form += '<form id="login"><div class="form-group"><input type="text" class="form-control" id="nombreL" placeholder="Introduce tu email"><input type="password" class="form-control" id="claveL" placeholder="Introduce tu clave"></div>';
@@ -50,7 +50,7 @@ function construirLogin(){
     });
 }
 
-function construirRegistro(){
+function construirRegistro() {
     limpiarJuegoContainer();
     $("#juegoContainer").load('../registro.html', function () {
         $("#password1").on("focus", function (e) {
@@ -64,7 +64,7 @@ function construirRegistro(){
         });
         $("#confirmaRegBtn").on("click", function () {
             //console.log($("#nombreUsuario").val() + " - " + $("#password1").val());
-            if (!validateMail($("#nombreUsuario").val())){
+            if (!validateMail($("#nombreUsuario").val())) {
                 estilosAlerta('#nombreUsuario');
                 $('#nombreUsuario').val('Formato de mail no válido')
             } else if ($("#password2").val() != $("#password1").val()) {
@@ -93,7 +93,7 @@ function construirRegistro(){
     });
 }
 
-function construirFormularioModificar(){
+function construirFormularioModificar() {
     limpiarJuegoContainer()
     $("#juegoContainer").load('../registro.html', function () {
         $("#password1").on("focus", function (e) {
@@ -110,18 +110,18 @@ function construirFormularioModificar(){
         $("#confirmaRegBtn").text("Guardar cambios");
         $("#confirmaRegBtn").on("click", function () {
             console.log($("#nombreUsuario").val() + " - " + $("#password1").val());
-            if(!validateMail($("#nombreUsuario").val())) {
+            if (!validateMail($("#nombreUsuario").val())) {
                 estilosAlerta('#nombreUsuario');
                 $("#nombreUsuario").val('Email con formato incorrecto. Inserte su email con formato abc@def.ghi');
             } else if ($("#password2").val() != $("#password1").val()) {
                 estilosAlerta('#password2,#password1');
                 $("#formRegistro").prepend('<span id="warning" style="color:#FF0000">Contraseñas no coinciden!!!</span>');
-            } else if($("#password1").val() == "") {
+            } else if ($("#password1").val() == "") {
                 estilosAlerta('#password2,#password1');
-                $('#password2,#password1').val('Contraseña no puede ir en blanco')
+                $("#formRegistro").prepend('<span id="warning" style="color:#FF0000">Contraseña no puede ir en blanco!!!</span>');
             } else {
                 modificarUsuarioServer($("#nombreUsuario").val(), $("#password1").val());
-                 $("#warning").remove();
+                $("#warning").remove();
             }
         });
     });
@@ -181,7 +181,9 @@ function siguienteNivel() {
         $("#cerrarSesBtn").remove();
         $("#juegoContainer").empty();
         $("#juegoContainer").append('<div id="juegoId"></div>');
-        $("#backMusic").animate({volume:0},1000);
+        $("#backMusic").animate({
+            volume: 0
+        }, 1000);
         console.log("Nivel de cookie es ->" + $.cookie("nivel"));
         console.log("Llamamos a crear nivel sin parametros en siguienteNivel()");
         crearNivel();
@@ -203,7 +205,7 @@ function borrarSiguienteNivel() {
 function mostrarResultados() {
     var resultadosJuego = undefined;
     console.log("LLamamos a mostrar resultados");
-    peticionAjax("GET","/resultados/",false,{},function(data){
+    peticionAjax("GET", "/resultados/", false, {}, function (data) {
         console.log("Ya tengo resultados");
         console.log(data.length);
         resultadosJuego = data;
@@ -219,10 +221,10 @@ function mostrarResultados() {
         console.log(i)
         console.log(resultadosJuego[i])
         for (var j in resultadosJuego[i].resultados) {
-            for (var z in resultadosJuego[i].resultados[j]){
+            for (var z in resultadosJuego[i].resultados[j]) {
                 var date;
-                if(z != "idJuego" && resultadosJuego[i].resultados[j][z] != -1){
-                    cadena = cadena + "<tr><td>" + resultadosJuego[i].nombre + "</td><td>" + date +"</td><td> " + z.slice(-1) + "</td>" + "</td><td> " + resultadosJuego[i].resultados[j][z] + "</td></tr>";
+                if (z != "idJuego" && resultadosJuego[i].resultados[j][z] != -1) {
+                    cadena = cadena + "<tr><td>" + resultadosJuego[i].nombre + "</td><td>" + date + "</td><td> " + z.slice(-1) + "</td>" + "</td><td> " + resultadosJuego[i].resultados[j][z] + "</td></tr>";
                 } else {
                     date = new Date(resultadosJuego[i].resultados[j][z]);
                     date = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
@@ -234,18 +236,18 @@ function mostrarResultados() {
     $('#juegoContainer').append(cadena);
 }
 
-function pruebaEffects(){
-    $("#info1").fadeIn(3500, function(){
-         $("#info2").fadeIn(200,function(){
-             $("#info3").fadeIn(3000,function(){
-                 $("#info4").fadeIn(2000);
-                 $("#info5").fadeIn(2000);
-             })
-         })
+function pruebaEffects() {
+    $("#info1").fadeIn(3500, function () {
+        $("#info2").fadeIn(200, function () {
+            $("#info3").fadeIn(3000, function () {
+                $("#info4").fadeIn(2000);
+                $("#info5").fadeIn(2000);
+            })
+        })
     });
 }
 
-function validateMail(email){
+function validateMail(email) {
     console.log("Validando Mail");
     var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
     console.log(re.test(email))
