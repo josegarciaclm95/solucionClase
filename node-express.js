@@ -10,6 +10,8 @@ var juegofm = new modelo.JuegoFM('./cliente/js/juego-json.json');
 var juego = juegofm.makeJuego();
 
 var persistencia = require("./servidor/persistencia.js");
+persistencia.mongoConnect();
+
 var ObjectID = require("mongodb").ObjectID;
 var bodyParser = require("body-parser");
 
@@ -249,11 +251,13 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 	var tiempo = parseInt(request.params.tiempo);
 	var usuario = juego.buscarUsuarioById(id);
 	if(usuario != undefined){
+		console.log("Usuario encontrado en nivel completado")
 		usuario.agregarResultado(new modelo.Resultado(usuario.nivel,tiempo));
 		console.log(id + " - Tiempo " + tiempo + " IdJuego - " + usuario.idJuego);
 		console.log(usuario.nivel);
 		usuario.tiempo = tiempo;
 	} else {
+		console.log("Usuario NO encontrado en nivel completado")
 		usuario = new modelo.Usuario("dummy");
 	}
 	usuario.nivel += 1;

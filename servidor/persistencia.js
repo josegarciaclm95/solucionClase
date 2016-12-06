@@ -5,7 +5,7 @@ var dbM;
 var usersM;
 var resultsM;
 
-function mongoConnect(){
+module.exports.mongoConnect = function(){
 	MongoClient.connect(urlM, function (err, db) {
 		if(err){
 			console.log(err);
@@ -16,12 +16,14 @@ function mongoConnect(){
 		}
 	});
 }
-mongoConnect();
 
 module.exports.addNewResults = function (usuario){
 	dbM.collection("resultados").update(
 		{usuario:usuario.id},
-		{$push: {resultados: {idJuego:usuario.idJuego,nivel1:-1,nivel2:-1,nivel3:-1,nivel4:-1}}}
+		{$push: {resultados: {idJuego:usuario.idJuego,nivel1:-1,nivel2:-1,nivel3:-1,nivel4:-1}}},
+		function(){
+			console.log("Agregado registro de resultados")
+		}
 	);
 }
 

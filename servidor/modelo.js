@@ -10,6 +10,10 @@ function Juego(){
     };
     this.agregarUsuario = function(usuario){
         console.log(this.usuarios);
+        console.log("Id de usuario agregado")
+        console.log(usuario.id);
+        console.log("Id de juego de usuario agregado")
+        console.log(usuario.idJuego);
         var a = this.buscarUsuario(usuario.nombre);
         if(a == undefined){
             this.usuarios.push(usuario);
@@ -17,6 +21,7 @@ function Juego(){
             console.log("El usuario ya existia");
             a.nivel = 1;
             a.resultados = [];
+            a.idJuego = usuario.idJuego
         }
     };
     this.buscarUsuario = function(nombre_us){
