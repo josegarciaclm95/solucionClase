@@ -22,7 +22,7 @@ module.exports.addNewResults = function (usuario){
 		{usuario:usuario.id},
 		{$push: {resultados: {idJuego:usuario.idJuego,nivel1:-1,nivel2:-1,nivel3:-1,nivel4:-1}}},
 		function(){
-			console.log("Agregado registro de resultados")
+			console.log("\t Agregado registro de resultados")
 		}
 	);
 }
@@ -44,54 +44,54 @@ module.exports.updateOn = function(collection,criteria,changes,options,callback)
     dbM.collection(collection).update(criteria,changes,options,callback)
 }
 
-module.exports.insertUser = function(usuario,pass,juego){
+module.exports.insertUser = function(usuario,pass,juego,response){
 	usersM.insert({id_juego:usuario.idJuego, nombre:usuario.nombre, password:pass, nivel:usuario.nivel, vidas:usuario.vidas}, function(err,result){
 		if(err){
 			console.log(err);
 		} else {
 			usuario.id = result.ops[0]._id;
 			usuario.maxNivel = juego.niveles.length;
-			console.log("Id asignado a insertUser - " + usuario.id);
+			console.log("\t Id de Mongo asignado a usuario insertado - " + usuario.id);
 			juego.agregarUsuario(usuario);
-			var obj = {usuario:usuario.id, 
-						resultados:[
-								{idJuego:usuario.idJuego,nivel1:-1,nivel2:-1,nivel3:-1, nivel4:-1}
-							]
-					}
+			var obj = {
+				usuario:usuario.id, 
+				resultados:[
+						{idJuego:usuario.idJuego,nivel1:-1,nivel2:-1,nivel3:-1, nivel4:-1}
+				]
+			}
 			function consoleLogError(err,result){
 				if(err){
 					console.log(err);
 				} else {
-					console.log("Resultados inicializados en insertUser")
+					console.log("\t Resultados inicializados en insertUser")
+					if (response != undefined) response.send({result:"insertOnUsuarios",id:usuario.id});
 				}
 			}
 			insertOn("resultados",obj, consoleLogError);
-			console.log("Usuario " + usuario.nombre + " insertado");
+			console.log("\t Usuario " + usuario.nombre + " insertado");
 		}
 	});
 }
 
 module.exports.getResultados = function(response){
+	console.log("Resultados");
     dbM.collection("usuarios").find({}).toArray(function(err,data){
 		callBackUsuarios(err,data,response);
 	});
 }
 
 function callBackUsuarios(err,data,response){
+	console.log("\t Callback de usuarios en persistencia");
 	var res = [];
 	if(err){
 		console.log(err);
 	} else {
-		console.log("Callback de usuarios en persistencia");
-		console.log(data.length);
 		if(data.length != 0){
 			var max = data.length;
 			data.forEach(function(item,i){
 				var user = {}
 				user.nombre = item.nombre;
-				console.log(item)
 				dbM.collection("resultados").find({usuario:ObjectID(item._id)}).toArray(function(err,results){
-					//console.log("Llamada con i = " + i)
 					callBackResultados(err,results,user,res,response,i,max);				
 				});
 			});
@@ -102,6 +102,7 @@ function callBackUsuarios(err,data,response){
 }
 
 function callBackResultados(err,results,user,res,response,i,max){
+	console.log("\t\t Callback de usuarios en persistencia");
 	if(err){
 		console.log(err);
 	} else if(results.length != 0) {

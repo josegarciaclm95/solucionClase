@@ -49,17 +49,17 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
 app.get("/datosJuego/:id", function (request, response) {
+	console.log("Datos juego");
 	var id = request.params.id;
+	console.log("\t DatosJuego -> \t id - " + id);
 	var usuario = juego.buscarUsuarioById(id);
 	var res;
-	console.log("LLamada a datosJuego, id - " + id);
-	console.log("Usuario encontrado ");
 	if(usuario && usuario.nivel <= juego.niveles.length){
 		res = juego.niveles[usuario.nivel-1];
 	} else {
 		res = {nivel:-1, platforms:[]}	
 	}
-	console.log("Datos a devolver -> " +  JSON.stringify(res.nivel));
+	console.log("\t DatosJuego -> \t Datos a devolver -> " +  JSON.stringify(res.nivel));
 	response.send(res);
 });
 
@@ -72,6 +72,7 @@ app.get("/", function (request, response) {
 });
 
 app.post('/login/', function(request, response){
+	console.log("Login")
 	var email = request.body.email;
 	var password = request.body.password;
 	var criteria = {"nombre":email};
@@ -84,17 +85,16 @@ app.post('/login/', function(request, response){
 		} else {
 			var cursorHandler = new CursorHandler();
 			cursorHandler.emptyCursorCallback = function(users){
-				console.log("No existe el usuario " + email);
+				console.log("\t Login -> \t No existe el usuario " + email + ". Login fallido");
 				response.send({nivel:-1});
 			} 
 			cursorHandler.cursorWithSomethingCallback = function(users){
 				var u = new modelo.Usuario(users[0].nombre);
+				console.log("\t Login -> \t Usuario " + u.nombre + " existe");
 				u.id = users[0]._id;
 				u.maxNivel = juego.niveles.length;
 				persistencia.addNewResults(u);
 				juego.agregarUsuario(u);
-				console.log("Usuario " + u.nombre + " agregado en Login");
-				//console.log(u);
 				response.send(u);
 			}
 			cursor.toArray(cursorHandler.checkCursor);
@@ -104,8 +104,8 @@ app.post('/login/', function(request, response){
 });
 
 app.post("/crearUsuario/", function (request, response) {
+	console.log("Crear usuarios")
 	var email = request.body.email;
-	console.log(email)
 	var pass = request.body.password;
 	var urlD = request.body.url;
 	var criteria = {"nombre":email};
@@ -115,11 +115,11 @@ app.post("/crearUsuario/", function (request, response) {
 		} else {
 			var cursorHandler = new CursorHandler();
 			cursorHandler.cursorWithSomethingCallback = function(users){
-				console.log("El usuario ya existe en usuarios(crearUsuario)");
+				console.log("\t Crear Usuario -> \t El usuario ya existe en Usuarios");
 				response.send({result:"userExists"})
 			}
 			cursorHandler.emptyCursorCallback = function(users){
-				console.log("No existe el usuario (crearUsuario) en usuarios");
+				console.log("\t Crear Usuario -> \t El usuario no existe");
 				var criteria = {"email":email};
 				function callbackCrearUsuarioLimbo(err,cursor){
 					if(err){
@@ -129,7 +129,6 @@ app.post("/crearUsuario/", function (request, response) {
 						cursorHandlerInt.emptyCursorCallback = function(userss){
 							var time = (new Date().valueOf());
 							var url = urlD + "/confirmarCuenta/" + email + "/" + time;
-							console.log(url)
 							var html = '¡¡Bienvenido a ConquistaNiveles!! <br/>';
 							html += 'Confirme su cuenta haciendo clic en el siguiente enlace: <br/>';
 							html += '<a href='+url+'>'+url+'</a>';
@@ -146,6 +145,7 @@ app.post("/crearUsuario/", function (request, response) {
 										if(err){
 											console.log(err)
 										} else {
+											console.log("\t Crear Usuario -> \t Usuario registrado en Limbo");
 											response.send({result:"confirmEmail"})
 										}
 									})
@@ -154,7 +154,7 @@ app.post("/crearUsuario/", function (request, response) {
 							client.sendMail(mensaje, callbackSendEmail);
 						}
 						cursorHandlerInt.cursorWithSomethingCallback = function(userss){
-							console.log("El usuario ya existe en limbo(crearUsuario)");
+							console.log("\t Crear Usuario -> \t El usuario ya existe en Limbo");
 							response.send({result:"userExists"})
 						}
 						cursor.toArray(cursorHandlerInt.checkCursor)
@@ -169,7 +169,7 @@ app.post("/crearUsuario/", function (request, response) {
 });
 
 app.get("/confirmarCuenta/:email/:id", function (request, response) {
-	console.log("Llamada a confirmar cuenta")
+	console.log("Confirmar cuenta")
 	var email = request.params.email;
 	var id = parseInt(request.params.id);
 	var criteria = {email:email,tiempo:id};
@@ -178,14 +178,14 @@ app.get("/confirmarCuenta/:email/:id", function (request, response) {
 			console.log(err);
 		} else {
 			var cursorHandler = new CursorHandler();
-			cursor.emptyCursorCallback = function(users) {
-				console.log("El usuario ya existe");
+			cursorHandler.emptyCursorCallback = function(users) {
+				console.log("\t Confirmar cuenta -> \t El usuario ya se ha confirmado o no se ha registrado");
 				response.redirect("/");
 			}
 			cursorHandler.cursorWithSomethingCallback = function(users){
-				console.log("Confirmar - Existe el usuario");
+				console.log("\t Confirmar cuenta -> \t Encontrado usuario en Limbo");
 				var usuario = new modelo.Usuario(email);
-				persistencia.insertUser(usuario,users[0].password,juego);
+				persistencia.insertUser(usuario,users[0].password,juego,undefined);
 				persistencia.removeOn("limbo",{email:email},function(){})
 				response.redirect("/");
 			}
@@ -196,31 +196,37 @@ app.get("/confirmarCuenta/:email/:id", function (request, response) {
 });
 
 app.post("/modificarUsuario/", function (request, response) {
+	console.log("Modificar usuario");
 	var oldMail = request.body.old_email;
 	var newEmail = request.body.new_email;
 	var newPass = request.body.new_password;
-	console.log(oldMail + " - " + newEmail + " - " + newPass);
+	console.log("\t Modificar usuario -> Datos usuario");
+	console.log("\t\t Email viejo -> " +oldMail);
+	console.log("\t\t Email nuevo -> " +newEmail)
+	console.log("\t\t Password nueva -> " +newPass)
+	console.log("\t\t Modificar usuario -> Datos usuario");
 	var criteria = {"nombre":oldMail};
 	var changes = {"nombre":newEmail};
 	if(newPass != ""){
 		changes["password"] = encrypt(newPass);
 	}
-	console.log(criteria);
-	console.log(changes);
 	persistencia.updateOn("usuarios",criteria,{$set: changes},{},function(err,result){
 		if(err){
 			console.log(err)
 		} else {
-		juego.modificarUsuario(oldMail,newEmail);
-		response.send(result.result);
+			console.log("\t Modificar usuario -> Datos actualizados");
+			juego.modificarUsuario(oldMail,newEmail);
+			response.send(result.result);
 		}
 	});
 });
 
 app.delete("/eliminarUsuario/", function (request, response) {
+	console.log("Eliminar usuario");
 	var email = request.body.email;
 	var pass = encrypt(request.body.password);
-	console.log(email + " - " + pass)
+	console.log("\t Eliminar usuario -> \t Email -> " +email);
+	console.log("\t Eliminar usuario -> \t Password -> " +pass)
 	var criteria = {"nombre":email, "password":pass};
 	persistencia.removeOn("usuarios",criteria,function(err,result){
 		if(err){
@@ -239,25 +245,27 @@ app.get("/resultados/", function (request, response) {
 
 
 app.get('/limpiarMongo/', function(request,response){
-	persistencia.removeOn("usuarios",{},function(){})
-	persistencia.removeOn("resultados",{},function(){})
-	persistencia.removeOn("limbo",{},function(){})
-	response.send({"ok":"Todo bien"});
+	persistencia.removeOn("usuarios",{},function(){
+		persistencia.removeOn("resultados",{},function(){
+			persistencia.removeOn("limbo",{},function(){
+				response.send({"ok":"Todo bien"});
+			});
+		});
+	});	
 });
 
 app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
-	console.log("NIVEL COMPLETADO");
+	console.log("Nivel completado");
 	var id = request.params.id;
 	var tiempo = parseInt(request.params.tiempo);
 	var usuario = juego.buscarUsuarioById(id);
 	if(usuario != undefined){
-		console.log("Usuario encontrado en nivel completado")
+		console.log("\t Nivel completado -> \t Usuario encontrado en nivel completado")
 		usuario.agregarResultado(new modelo.Resultado(usuario.nivel,tiempo));
-		console.log(id + " - Tiempo " + tiempo + " IdJuego - " + usuario.idJuego);
-		console.log(usuario.nivel);
+		console.log("\t Nivel completado -> \t Usuario " + id + " - Tiempo " + tiempo + "-  IdJuego - " + usuario.idJuego);
 		usuario.tiempo = tiempo;
 	} else {
-		console.log("Usuario NO encontrado en nivel completado")
+		console.log("\t Nivel completado -> \t Usuario NO encontrado en nivel completado")
 		usuario = new modelo.Usuario("dummy");
 	}
 	usuario.nivel += 1;
@@ -276,7 +284,7 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 				console.log(err);
 			} 
 		});
-	console.log("Nuevo nivel es ->" + usuario.nivel);
+	console.log("\t Nivel completado -> \tNuevo nivel es ->" + usuario.nivel);
 	response.send({'nivel':usuario.nivel});
 });
 
@@ -297,7 +305,6 @@ app.post('/meterEnLimbo/', function(request, response){
 	var email = request.body.email;
 	var pass = request.body.password;
 	var time = (new Date()).valueOf();
-	console.log(pass)
 	function callbackInsertLimbo(err,data){
 		if(err){
 			console.log(err)
@@ -313,8 +320,8 @@ app.post('/meterEnUsuarios/', function(request, response){
 	var email = request.body.email;
 	var pass = request.body.password;
 	var user = new modelo.Usuario(email);
-	console.log(pass)
-	persistencia.insertUser(user,encrypt(pass),juego)
+	//console.log(pass)
+	persistencia.insertUser(user,encrypt(pass),juego,response);
 });
 
 /**
@@ -329,8 +336,6 @@ function CursorHandler(){
 
 	};
 	this.checkCursor = function(err,result){
-		console.log("Results en checkCursor")
-		console.log(result)
 		if(result.length == 0){
 			self.emptyCursorCallback(result);
 		} else {

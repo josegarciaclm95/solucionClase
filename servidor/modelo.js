@@ -9,16 +9,12 @@ function Juego(){
         this.niveles.push(nivel);
     };
     this.agregarUsuario = function(usuario){
-        console.log(this.usuarios);
-        console.log("Id de usuario agregado")
-        console.log(usuario.id);
-        console.log("Id de juego de usuario agregado")
-        console.log(usuario.idJuego);
         var a = this.buscarUsuario(usuario.nombre);
         if(a == undefined){
+            console.log("\t Model -> \t Agregado nuevo usuario al modelo");
             this.usuarios.push(usuario);
         } else {
-            console.log("El usuario ya existia");
+            console.log("\t Model -> \t El usuario ya existia. Se refrescan datos");
             a.nivel = 1;
             a.resultados = [];
             a.idJuego = usuario.idJuego
@@ -30,18 +26,15 @@ function Juego(){
         })[0];
     }
     this.buscarUsuarioById = function(id){
-        console.log(this.usuarios);
         return _.find(this.usuarios,function(usu){
 			return usu.id == id
 		});
     }
     this.eliminarUsuario = function(nombre_us){
-        console.log(this.usuarios);
-        console.log(this.usuarios.length);
+        console.log("\t Model -> \t Numero de usuarios " + this.usuarios.length);
         var index = this.usuarios.indexOf(this.buscarUsuario(nombre_us));
         this.usuarios.splice(index,1);
-        console.log(this.usuarios);
-        console.log(this.usuarios.length);
+        console.log("\t Model -> \t Usuario eliminado. Numero de usuarios " + this.usuarios.length);
     }
     this.modificarUsuario = function(oldMail,newEmail){
         var user = this.buscarUsuario(oldMail);
@@ -103,7 +96,6 @@ function JuegoFM(archivo){
         var j = new Juego();
         var i = 0;
         for(var x in this.array){
-            console.log(x);
             var nivel = new Nivel(x,this.array[x].platforms,this.array[x].gravity,this.array[x].starsNumber);
             j.agregarNivel(nivel);
         }

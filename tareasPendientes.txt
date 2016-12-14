@@ -1,7 +1,4 @@
-Usar cookies para que un jugador, hasta que no termine la sesion, entre sin que se le pida otra vez el nombre
-Añadirle un id al usuario con una marca temporal, aunque luego de eso se encargue la base de datos
-Libreria underscore para busquedas
-Hacer adaptaciones para usar cookies 
-Las estrellas tienen que quitar vidas
-    --Si hacemos alguna tarea de personalización, añadirlo como tarea
-
+--Pruebas de API
+--¿Mejoramos aspecto/juego o añadimos componentes?
+-- Test de siguiente nivel pasa por todos los niveles y vuelve al principio
+-- Comprobar resultados
