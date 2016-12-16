@@ -1,4 +1,6 @@
 var request = require("request");
+var colors = require('colors');
+
 var crypto = require('crypto'),
     algorithm = 'aes-256-ctr',
     password = 'd6F3Efeq';
@@ -17,6 +19,7 @@ var urlD = "http://localhost:1338";
 /***********************IMPORTANTEEEEEEEEEEEEEEEEEEEEEEEE************************** */
 var id;
 var tiempoConfir;
+var maxNiveles;
 /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^SETEALOOOOOOOOOOOOOO^^^^^^^^^^^^^^^^^^^^^^^^*/
 
 /**
@@ -33,20 +36,14 @@ var headers = {
     "Content-Type":'application/x-www-form-urlencoded'
 }
 
-console.log("==============================================")
+console.log("==============================================".rainbow)
 console.log(" Inicio de las pruebas del API REST:" + urlD);
 console.log(" 1. Crear usuario - 2. Confirmar usuario");
 console.log(" 3. Traer datos de juego");
 console.log(" 4. Login de usuario (existente/inexistente)");
 console.log(" 5. Modificar usuario - 6. Eliminar usuario");
 console.log(" 7. El usuario no puede iniciar sesión");
-console.log("============================================== \n")
-
-console.log("==============================================")
-console.log("******************IMPORTANTE******************")
-console.log("       Setear ID de usuario de pruebas        ");
-console.log("**********************************************")
-console.log("==============================================")
+console.log("============================================== \n".rainbow)
 
 /*****************************************AUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUXILIARES */
 
@@ -67,21 +64,21 @@ function preparacionPruebas(){
     var callbackPepe = function(){
             peticionAjax("POST","/meterEnUsuarios/",true,{email: "pepe", password: "pepe"}, function(data){
             testRaiz();
-            /*
             testCrearUsuario("xemagg95@gmail.com","jose"); //Nombre que ya existe
             testCrearUsuario("jose","jose"); //Nombre que ya esta en el limbo
             testCrearUsuario("josemariagarcia95@gmail.com","jose"); //nombre que no existe
-            */
-            //testConfirmarUsuario("jose",tiempoConfir)
-            
-            //testDatosJuego();
-            /*testLogin("xemagg95@gmail.com",""); //sin contrasena - no devuelve nada
+            /*
+            testConfirmarUsuario("jose",tiempoConfir)
+            testDatosJuego();
+            testLogin("xemagg95@gmail.com",""); //sin contrasena - no devuelve nada
             testLogin("juan",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
             testLogin("pepe","pepe"); // contrasena buena - devuelve user
+            testModificarUsuario("josem2","joseM","");
             testModificarUsuario("josem","joseM","");
             testModificarUsuario("dani","dani","dani1");
+            testEliminarUsuario("jose31","jose2");
             testEliminarUsuario("jose2","jose2");
-            testSiguienteNivel(666);
+            //testSimularJuego();
             testObtenerResultados();
             */
             testSimularJuego(314);
@@ -103,12 +100,12 @@ function preparacionPruebas(){
         peticionAjax("POST","/meterEnUsuarios/",true,{email: "dani", password: "dani"},callbackJose2);
     }
     var callbackJoseM = function(error, response, body){
-        console.log(body)
         tiempoConfir = JSON.parse(body).tiempo;
         peticionAjax("POST","/meterEnUsuarios/",true,{email: "josem", password: "jose"},callbackDani);
     }
     var callbackJose = function(error, response, body){
         id = JSON.parse(body).id;
+        maxNiveles = JSON.parse(body).maxNivel;
         peticionAjax("POST","/meterEnLimbo/",true,{email: "jose", password: "jose"},callbackJoseM);
     }
     var callbackXema = function(){
@@ -129,20 +126,16 @@ function testRaiz(){
         qs:{'':''}
     }
     request(options, function(error, response,body){
+        console.log("==========================================")
+        console.log("Respuesta testRaiz()");
+        console.log("--------------------------------------------------------");
         if(!error && response.statusCode == 200){
-            console.log("==========================================")
-            console.log("Respuesta testRaiz()");
-            console.log("--------------------------------------------------------");
-            console.log("Test Raiz OK");
-            console.log("========================================== \n")
+            console.log("Test Raiz OK".green);
         } else {
-            console.log("==========================================")
-            console.log("Respuesta testRaiz()");
-            console.log("--------------------------------------------------------");
-            console.log("Test Raiz ERROR");
+            console.log("Test Raiz ERROR".red);
             console.log(error)
-            console.log("========================================== \n")
         }
+        console.log("========================================== \n")
     });
 }
 
@@ -163,16 +156,16 @@ function testCrearUsuario(email, pass){
         console.log("Test crearUsuario - " + email + ", " + pass + " Resultado -> " + result);
        if(!error && response.statusCode == 200){
             if(result == "userExists"){
-                console.log("Test crearUsuario INCORRECTO. Usuario existe");
+                console.log("Test crearUsuario INCORRECTO. Usuario existe".green);
             } else if(result == "EmailNotSent") {
-                console.log("Test crearUsuario INCORRECTO. Fallo el envio del email");
+                console.log("Test crearUsuario INCORRECTO. Fallo el envio del email".green);
             } else if(result == "confirmEmail"){
-                console.log("Test crearUsuario CORRECTO. Usuario metido en Limbo. Confirme mail");
+                console.log("Test crearUsuario CORRECTO. Usuario metido en Limbo. Confirme mail".green);
             }
         } else {
-            console.log("Test crearUsuario ERROR");
+            console.log("Test crearUsuario ERROR".red);
             console.log(response.statusCode);
-            console.log(response.statusCode);
+            console.log(error)
         }
          console.log("========================================== ")
     });
@@ -186,16 +179,18 @@ function testConfirmarUsuario(email,id){
         qs:{'':''}
     }
     request(options, function(error, response, body){
+        console.log("========================================== ")
+        console.log("Respuesta testConfirmarUsuario() con datos - Email " + email + " id " + id);
+        console.log("--------------------------------------------------------");
        if(!error && response.statusCode == 200){
-            //console.log("Body crear" + body);
-            console.log("========================================== ")
-	        console.log("Respuesta testConfirmarUsuario() con datos - Email " + email + " id " + id);
-	        console.log("--------------------------------------------------------");
-            console.log("Test confirmarUsuario - " + email + ", " + id + " Resultado ->  OK");
-            console.log("========================================== \n")
+            var output = "Test confirmarUsuario - " + email + ", " + id + " Resultado ->  OK";
+            console.log(output.green);
         } else {
+            console.log("Test confirmarUsuario ERROR".red);
             console.log(response.statusCode);
+            console.log(error)
         } 
+        console.log("========================================== \n")
     });
 }
 
@@ -209,16 +204,25 @@ function testDatosJuego(){
         qs:{'':''}
     }
     request(options, function(error, response,body){
+        console.log("==========================================")
+        console.log("Respuesta testDatosJuego()");
+        console.log("--------------------------------------------------------");
         if(!error && response.statusCode == 200){
-            console.log("==========================================")
-	        console.log("Respuesta testDatosJuego()");
-	        console.log("--------------------------------------------------------");
-            console.log(body);
-            console.log("Test testDatosJuego - Nivel " + JSON.parse(body).nivel + " Numero de plataformas " + JSON.parse(body).platforms.length + " OK");
-            console.log("========================================== \n")
+            var result = JSON.parse(body).nivel;
+            var output;
+            if(result != -1){
+                output = "Test testDatosJuego - Nivel " + JSON.parse(body).nivel + " Numero de plataformas " + JSON.parse(body).platforms.length + " CORRECTO";
+                console.log(output.green);
+            } else {
+                output = "Test testDatosJuego - Nivel " + JSON.parse(body).nivel + " Numero de plataformas " + JSON.parse(body).platforms.length + " INCORRECTO";
+                console.log(output.green);
+            }
         } else {
+            console.log("Test testDatosJuego ERROR".red);
             console.log(response.statusCode);
+            console.log(error)
         }
+        console.log("========================================== \n")
     });
 }
 
@@ -231,18 +235,25 @@ function testLogin(email, pass){
         qs:{'':''}
     }
     request.post(options, function(error, response, body){
+    console.log("==========================================")
+    console.log("Respuesta testLogin() - Email " + email + " Password " + pass);
+    console.log("--------------------------------------------------------");
        if(!error && response.statusCode == 200){
-            //console.log("Body login" + body);
-            console.log("==========================================")
-	        console.log("Respuesta testLogin() - Email " + email + " Password " + pass);
-	        console.log("--------------------------------------------------------");
-            console.log("Test Login - " + email + ", " + pass + " Nivel -> " + JSON.parse(body).nivel + " OK");
-            console.log("========================================== \n")
+           var result = JSON.parse(body).nivel;
+           var output;
+           if(result != 1){
+               output = "Test Login - " + email + ", " + pass + "  INCORRECTO. USUARIO NO EXISTE / CONTRASEÑA INCORRECTA";
+               console.log(output.green);
+           } else {
+               output = "Test Login - " + email + ", " + pass + " CORRECTO";
+               console.log(output.green);
+           }
         } else {
+            console.log("Test Login ERROR".red);
+            console.log(response.statusCode);
             console.log(error)
-            //console.log(response)
-            //console.log(response.statusCode);
-        } 
+        }
+        console.log("========================================== \n") 
     });
 }
 
@@ -255,16 +266,28 @@ function testModificarUsuario(old_email, new_email, new_pass){
         qs:{'':''}
     }
     request.post(options, function(error, response, body){
+        console.log("==========================================")
+	    console.log("Respuesta testModificar() - Email viejo " + old_email + " Email Nuevo " + new_email +  " Password nueva " + new_pass);
+	    console.log("--------------------------------------------------------");
        if(!error && response.statusCode == 200){
-            console.log("==========================================")
-	        console.log("Respuesta testModificar() - Email viejo " + old_email + " Email Nuevo " + new_email +  " Password nueva " + new_pass);
-	        console.log("--------------------------------------------------------");
-            //console.log("Body modificar" + body);
-            console.log("Test Modificar - " + old_email + " to " + new_email + ' , Password ' + new_pass + " nModified -> " + JSON.parse(body).nModified + " OK");
-            console.log("========================================== \n")
+            var nModified = JSON.parse(body).nModified;
+            var ok = JSON.parse(body).ok;
+            if(ok != 1){
+                var output = "Test Modificar ERROR. NO OK";
+                console.log(output.red);
+            } else if (nModified != 1){
+                var output = "Test Modificar ERROR. NO SE HA REALIZADO MODIFICACIÓN";
+                console.log(output.red);
+            } else {
+                var output = "Test Modificar CORRECTO. EMAIL VIEJO " + old_email + " - EMAIL NUEVO " + new_email + " - CONTRASEÑA NUEVA " + new_pass;
+                console.log(output.green);
+            }
         } else {
+            console.log("Test Modificar ERROR".red);
             console.log(response.statusCode);
+            console.log(error)
         } 
+        console.log("========================================== \n")
     });
 }
 
@@ -277,18 +300,29 @@ function testEliminarUsuario(email,pass){
         qs:{'':''}
     }
     request(options, function(error, response, body){
-       if(!error && response.statusCode == 200){
-            console.log("==========================================")
-	        console.log("Respuesta testEliminar() - Email " + email +  " Password " + pass);
-	        console.log("--------------------------------------------------------");
-            //console.log("Body elminar" + body);
-            console.log("Test Eliminar - " + email + ' , Password ' + pass + " nModified -> " + JSON.parse(body).n + " OK");
-            console.log("========================================== \n")
+        console.log("==========================================")
+        console.log("Respuesta testEliminar() - Email " + email +  " Password " + pass);
+        console.log("--------------------------------------------------------");
+        if(!error && response.statusCode == 200){
+            var n = JSON.parse(body).n;
+            var ok = JSON.parse(body).ok;
+            if(ok != 1){
+                var output = "Test Eliminar ERROR. NO OK";
+                console.log(output.red);
+            } else if (n != 1){
+                var output = "Test Eliminar ERROR. NO SE HA REALIZADO LA ELIMINACIÓN. COMPRUEBA QUE EL USUARIO EXISTE";
+                console.log(output.red);
+            } else {
+                var output = "Test Eliminar CORRECTO. EMAIL  " + email + " - CONTRASEÑA " + pass;
+                console.log(output.green);
+            }
             testLogin(email,pass);
         } else {
-            console.log("Error en eliminar")
+            console.log("Test Eliminar ERROR".red);
             console.log(response.statusCode);
+            console.log(error)
         } 
+        console.log("========================================== \n")
     });
 }
 
@@ -315,6 +349,17 @@ function testSiguienteNivel(tiempo){
     });
 }
 
+function testSimularJuego(){
+    var tiempoDummy = 314;
+    var options = {
+        url:urlD + '/nivelCompletado/' + id + '/' + tiempoDummy,
+        method:'GET',
+        headers:headers,
+        qs:{'':''}
+    }
+
+}
+
 function testObtenerResultados(){
     var options = {
         url:urlD + '/obtenerResultados/' + id,
@@ -339,35 +384,6 @@ function testObtenerResultados(){
 
 preparacionPruebas();
 
-/*
-testRaiz();
-
-
-testCrearUsuario("xemagg95@gmail.com","jose"); //Nombre que ya existe
-
-testCrearUsuario("jose","jose"); //Nombre que ya esta en el limbo
-
-testCrearUsuario("josemariagarcia95@gmail.com","jose"); //nombre que no existe
-
-testConfirmarUsuario("jose",1481736817877)
-
-testDatosJuego();
-
-testLogin("xemagg95@gmail.com",""); //sin contrasena - no devuelve nada
-testLogin("juan",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
-testLogin("pepe","pepe"); // contrasena buena - devuelve user
-
-testModificarUsuario("josem","joseM","");
-testModificarUsuario("dani","dani","dani1");
-
-
-testEliminarUsuario("jose2","jose2");
-
-testSiguienteNivel(666);
-
-testObtenerResultados();
-
-*/
 var i = 0;
 function testSimularJuego(tiempo){
     var maxNivel = 4;

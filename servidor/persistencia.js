@@ -64,7 +64,7 @@ module.exports.insertUser = function(usuario,pass,juego,response){
 					console.log(err);
 				} else {
 					console.log("\t Resultados inicializados en insertUser")
-					if (response != undefined) response.send({result:"insertOnUsuarios",id:usuario.id});
+					if (response != undefined) response.send({result:"insertOnUsuarios",id:usuario.id,maxNivel:usuario.maxNivel});
 				}
 			}
 			insertOn("resultados",obj, consoleLogError);
