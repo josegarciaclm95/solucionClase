@@ -2,7 +2,7 @@
 var vidas = undefined;
 var usuarioDevuelto = undefined;
 
-var urlD = "https://juegoprocesos.herokuapp.com";
+//var urlD = "http://juegoprocesos.herokuapp.com/";
 //var urlD = "http://localhost:1338";
 /**
  * Si hay alguna cookie establecida, leemos los datos asociados a ella del servidor. Si no, partimos de cero (pedimos nombre).
@@ -106,8 +106,8 @@ function crearUsuario(nombre, pass) {
     }
     var url = window.location.href;
     //url = url.slice(0, url.length - 10);
-    url = "http://localhost:1338"
-    //url = "http://juegoprocesos.herokuapp.com";
+    //url = "http://localhost:1338"
+    url = "http://juegoprocesos.herokuapp.com";
     peticionAjax("POST","/crearUsuario/",true,JSON.stringify({ email:nombre, password:pass,url:url }),callback);
 }
 
@@ -254,7 +254,7 @@ function peticionAjax(peticion,url,async,body,successCallback){
             type: peticion,
             contentType: "application/json",
             async:async,
-            url: urlD + url,
+            url: url,
             data: body,
             success: successCallback
      });
