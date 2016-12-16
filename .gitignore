@@ -4,3 +4,4 @@ node_modules
 Procfile
 cliente/js/juegoClase-refactor.js
 prueba.js
+test/resultados.txt

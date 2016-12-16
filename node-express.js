@@ -270,9 +270,13 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 		usuario = new modelo.Usuario("dummy");
 		usuario.nivel = -2;
 	}
+	var nivel = usuario.nivel;
 	usuario.nivel += 1;
+	if(usuario.nivel > juego.niveles.length){
+		usuario.nivel = 1;
+	}
 	var set = {};
-  	set["resultados.$.nivel" + (usuario.nivel-1)] = tiempo;
+  	set["resultados.$.nivel" + nivel] = tiempo;
 	persistencia.updateOn(
 		"resultados",
 		{

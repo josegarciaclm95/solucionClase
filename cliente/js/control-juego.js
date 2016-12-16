@@ -2,8 +2,8 @@
 var vidas = undefined;
 var usuarioDevuelto = undefined;
 
-//var url = "https://juegoprocesos.herokuapp.com";
-var urlD = "http://localhost:1338";
+var urlD = "https://juegoprocesos.herokuapp.com";
+//var urlD = "http://localhost:1338";
 /**
  * Si hay alguna cookie establecida, leemos los datos asociados a ella del servidor. Si no, partimos de cero (pedimos nombre).
  * CAUTION!! En estos momentos no es necesario, pero si hubiera varios clientes (app movil Android, app movil iOS)

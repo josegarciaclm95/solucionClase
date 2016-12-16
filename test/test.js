@@ -14,8 +14,8 @@ function encrypt(text){
 
 
 //var sleep = require("sleep");
-var urlD = "http://localhost:1338";
-//var url = "https://juegoprocesos.herokuapp.com";
+//var urlD = "http://localhost:1338";
+var urlD = "https://juegoprocesos.herokuapp.com";
 /***********************IMPORTANTEEEEEEEEEEEEEEEEEEEEEEEE************************** */
 var id;
 var tiempoConfir;
@@ -38,11 +38,13 @@ var headers = {
 
 console.log("==============================================".rainbow)
 console.log(" Inicio de las pruebas del API REST:" + urlD);
-console.log(" 1. Crear usuario - 2. Confirmar usuario");
+console.log(" 1. Crear usuario (email existente en limbo/emial existente en usuarios/email nuevo)");
+console.log(" 2. Confirmar usuario");
 console.log(" 3. Traer datos de juego");
-console.log(" 4. Login de usuario (existente/inexistente)");
-console.log(" 5. Modificar usuario - 6. Eliminar usuario");
-console.log(" 7. El usuario no puede iniciar sesión");
+console.log(" 4. Login de usuario (existente/inexistente/inicio por cookies)");
+console.log(" 5. Modificar usuario (usuario no existe/cambiar nombre/cambiar contraseña)");
+console.log(" 6. Eliminar usuario e intentar loguear después");
+console.log(" 7. Simular que juega todos los niveles, que vuelve a empezar y comprobar resultados");
 console.log("============================================== \n".rainbow)
 
 /*****************************************AUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUXILIARES */
@@ -67,29 +69,20 @@ function preparacionPruebas(){
             testCrearUsuario("xemagg95@gmail.com","jose"); //Nombre que ya existe
             testCrearUsuario("jose","jose"); //Nombre que ya esta en el limbo
             testCrearUsuario("josemariagarcia95@gmail.com","jose"); //nombre que no existe
-            /*
-            testConfirmarUsuario("jose",tiempoConfir)
+            testConfirmarUsuario("jose",tiempoConfir) //confirmar usuario
             testDatosJuego();
             testLogin("xemagg95@gmail.com",""); //sin contrasena - no devuelve nada
             testLogin("juan",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
             testLogin("pepe","pepe"); // contrasena buena - devuelve user
-            testModificarUsuario("josem2","joseM","");
-            testModificarUsuario("josem","joseM","");
-            testModificarUsuario("dani","dani","dani1");
-            testEliminarUsuario("jose31","jose2");
-            testEliminarUsuario("jose2","jose2");
-            //testSimularJuego();
-            testObtenerResultados();
-            */
-            testSimularJuego(314);
+            testModificarUsuario("josem2","joseM",""); //cambio de usuario que no existe
+            testModificarUsuario("josem","joseM",""); //cambio de usuario que existe (nombre)
+            testModificarUsuario("dani","dani","dani1"); //cambio de usuario que existe (contraseña)
+            testEliminarUsuario("jose31","jose2"); //eliminar usuario que no existe
+            testEliminarUsuario("jose2","jose2"); //eliminar usuario que no existe
+            testSimularJuego(314); //jugar todos los niveles, volver a empezar y recuperar resultados
         })
     }
     
-    /*
-    var callbackPepe = function(){
-        console.log("BASE PREPARADA");
-    }
-    */
     var callbackJuan = function(){
         peticionAjax("POST","/meterEnUsuarios/",true,{email: "juan", password: "juan"},callbackPepe);
     }
@@ -115,7 +108,6 @@ function preparacionPruebas(){
 
 }
 
-
 /*****************************************FIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIN DE AUXILIARES */
 
 function testRaiz(){
@@ -140,7 +132,6 @@ function testRaiz(){
 }
 
 function testCrearUsuario(email, pass){
-    //console.log(email + " " + pass)
     var options = {
         url:urlD + '/crearUsuario/',
         method:'POST',
@@ -193,8 +184,6 @@ function testConfirmarUsuario(email,id){
         console.log("========================================== \n")
     });
 }
-
-
 
 function testDatosJuego(){
     var options = {
@@ -276,8 +265,8 @@ function testModificarUsuario(old_email, new_email, new_pass){
                 var output = "Test Modificar ERROR. NO OK";
                 console.log(output.red);
             } else if (nModified != 1){
-                var output = "Test Modificar ERROR. NO SE HA REALIZADO MODIFICACIÓN";
-                console.log(output.red);
+                var output = "Test Modificar INCORRECTO. NO SE HA REALIZADO MODIFICACIÓN";
+                console.log(output.green);
             } else {
                 var output = "Test Modificar CORRECTO. EMAIL VIEJO " + old_email + " - EMAIL NUEVO " + new_email + " - CONTRASEÑA NUEVA " + new_pass;
                 console.log(output.green);
@@ -310,13 +299,13 @@ function testEliminarUsuario(email,pass){
                 var output = "Test Eliminar ERROR. NO OK";
                 console.log(output.red);
             } else if (n != 1){
-                var output = "Test Eliminar ERROR. NO SE HA REALIZADO LA ELIMINACIÓN. COMPRUEBA QUE EL USUARIO EXISTE";
-                console.log(output.red);
+                var output = "Test Eliminar INCORRECTO. NO SE HA REALIZADO LA ELIMINACIÓN. COMPRUEBA QUE EL USUARIO EXISTE";
+                console.log(output.green);
             } else {
                 var output = "Test Eliminar CORRECTO. EMAIL  " + email + " - CONTRASEÑA " + pass;
                 console.log(output.green);
-            }
-            testLogin(email,pass);
+                testLogin(email,pass);
+            } 
         } else {
             console.log("Test Eliminar ERROR".red);
             console.log(response.statusCode);
@@ -324,40 +313,6 @@ function testEliminarUsuario(email,pass){
         } 
         console.log("========================================== \n")
     });
-}
-
-function testSiguienteNivel(tiempo){
-    console.log(urlD + '/nivelCompletado/' + id + '/' + tiempo);
-    var options = {
-        url:urlD + '/nivelCompletado/' + id + '/' + tiempo,
-        method:'GET',
-        headers:headers,
-        qs:{'':''}
-    }
-    request(options, function(error, response, body){
-       if(!error && response.statusCode == 200){
-            //console.log("Body login" + body);
-            console.log("==========================================")
-	        console.log("Respuesta testSiguienteNivel() - Tiempo " + tiempo );
-	        console.log("--------------------------------------------------------");
-            console.log("Test Siguiente nivel - Nivel -> " + JSON.parse(body).nivel + " OK");
-            console.log("========================================== \n")
-        } else {
-            //console.log(response);
-            console.log(response.statusCode);
-        } 
-    });
-}
-
-function testSimularJuego(){
-    var tiempoDummy = 314;
-    var options = {
-        url:urlD + '/nivelCompletado/' + id + '/' + tiempoDummy,
-        method:'GET',
-        headers:headers,
-        qs:{'':''}
-    }
-
 }
 
 function testObtenerResultados(){
@@ -369,15 +324,16 @@ function testObtenerResultados(){
     }
     request(options, function(error, response, body){
        if(!error && response.statusCode == 200){
-            //console.log("Body login" + body);
-            console.log("==========================================")
+            var result = JSON.parse(body).length;
+            var output = "Test Obtener resultados - Numero de resultados -> " + result + " OK";
 	        console.log("Respuesta testObtenerResultados() - id " + id );
 	        console.log("--------------------------------------------------------");
-            console.log("Test Obtener resultados - Numero de resultados -> " + JSON.parse(body).length + " OK");
+            console.log(output.green);
             console.log("========================================== \n")
         } else {
-            //console.log(response);
+            console.log("Test Obtener Resultados ERROR".red);
             console.log(response.statusCode);
+            console.log(error)
         } 
     });
 }
@@ -386,7 +342,6 @@ preparacionPruebas();
 
 var i = 0;
 function testSimularJuego(tiempo){
-    var maxNivel = 4;
     var options = {
         url:urlD + '/nivelCompletado/' + id + '/' + tiempo,
         method:'GET',
@@ -395,7 +350,6 @@ function testSimularJuego(tiempo){
     }
     function callbackRequest(error, response, body){
         if(!error && response.statusCode == 200){
-            console.log(body)
             var result = JSON.parse(body).nivel;
             console.log("==========================================")
             console.log("Respuesta testSimularJuego() - id " + id );
@@ -407,9 +361,10 @@ function testSimularJuego(tiempo){
                 var output = "Test Siguiente nivel - Nivel -> " + result + " INCORRECTO";
                 console.log(output.red);
             }
-            if (i < maxNivel) {
+            if (i < maxNiveles) {
                 testSimularJuego();
             } else {
+                testObtenerResultados(tiempo);
                 console.log("========================================== \n")
             }
         } else {
