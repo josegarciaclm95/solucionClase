@@ -267,6 +267,7 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 	} else {
 		console.log("\t Nivel completado -> \t Usuario NO encontrado en nivel completado")
 		usuario = new modelo.Usuario("dummy");
+		usuario.nivel = -2;
 	}
 	usuario.nivel += 1;
 	var set = {};

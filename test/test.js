@@ -72,7 +72,7 @@ function preparacionPruebas(){
             testCrearUsuario("jose","jose"); //Nombre que ya esta en el limbo
             testCrearUsuario("josemariagarcia95@gmail.com","jose"); //nombre que no existe
             */
-            testConfirmarUsuario("jose",tiempoConfir)
+            //testConfirmarUsuario("jose",tiempoConfir)
             
             //testDatosJuego();
             /*testLogin("xemagg95@gmail.com",""); //sin contrasena - no devuelve nada
@@ -84,6 +84,7 @@ function preparacionPruebas(){
             testSiguienteNivel(666);
             testObtenerResultados();
             */
+            testSimularJuego(314);
         })
     }
     
@@ -367,3 +368,39 @@ testSiguienteNivel(666);
 testObtenerResultados();
 
 */
+var i = 0;
+function testSimularJuego(tiempo){
+    var maxNivel = 4;
+    var options = {
+        url:urlD + '/nivelCompletado/' + id + '/' + tiempo,
+        method:'GET',
+        headers:headers,
+        qs:{'':''}
+    }
+    function callbackRequest(error, response, body){
+        if(!error && response.statusCode == 200){
+            console.log(body)
+            var result = JSON.parse(body).nivel;
+            console.log("==========================================")
+            console.log("Respuesta testSimularJuego() - id " + id );
+            if(result != -1){
+                var output = "Test Siguiente nivel - Nivel -> " + result + " CORRECTO";
+                console.log(output.green);
+                i++;
+            } else {
+                var output = "Test Siguiente nivel - Nivel -> " + result + " INCORRECTO";
+                console.log(output.red);
+            }
+            if (i < maxNivel) {
+                testSimularJuego();
+            } else {
+                console.log("========================================== \n")
+            }
+        } else {
+            console.log("Test Simular juego ERROR".red);
+            console.log(error);
+            console.log(response.statusCode);
+        } 
+    }
+    request(options,callbackRequest);
+}
