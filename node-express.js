@@ -248,6 +248,7 @@ app.get('/limpiarMongo/', function(request,response){
 	persistencia.removeOn("usuarios",{},function(){
 		persistencia.removeOn("resultados",{},function(){
 			persistencia.removeOn("limbo",{},function(){
+				juego = juegofm.makeJuego();
 				response.send({"ok":"Todo bien"});
 			});
 		});

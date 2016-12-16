@@ -42,6 +42,11 @@ function Juego(){
             user.nombre = newEmail;
         }
     }
+    this.limpiar = function(){
+        console.log("\tJuego vacio")
+        this.niveles = [];
+        this.usuarios = [];
+    }
     Juego.prototype.toString = function(){
         var res = "Usuarios\n";
         this.usuarios.forEach(function(el){
