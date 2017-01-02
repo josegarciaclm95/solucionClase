@@ -20,7 +20,7 @@ var urlD = "https://juegoprocesos.herokuapp.com";
 var id;
 var tiempoConfir;
 var maxNiveles;
-/*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^SETEALOOOOOOOOOOOOOO^^^^^^^^^^^^^^^^^^^^^^^^*/
+/***********************IMPORTANTEEEEEEEEEEEEEEEEEEEEEEEE************************** */
 
 /**
  * TENEMOS UNA CUENTA ACTIVA xemagg95@gmail.com - jose

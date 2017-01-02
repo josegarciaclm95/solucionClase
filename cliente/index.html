@@ -7,11 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/estilosPropios.css">
-    <script src="js/jquery-3.1.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script src="lib/jquery-3.1.1.min.js"></script>
+    <script src="lib/bootstrap.min.js"></script>
     <script type="text/javascript" src="lib/phaser.min.js"></script>
     <script type="text/javascript" src="lib/jquery.cookie.js"></script>
-    <script src="js/jquery.loading.block.js"></script>
+    <script src="lib/jquery.loading.block.js"></script>
     <link rel="icon" type="image/png" sizes="16x16" href="./favicon.png">
 </head>
 
@@ -50,6 +50,13 @@
                         </a>
                     </li>
                 </ul>
+                <ul id="barNav_r" class="nav navbar-nav navbar-right">
+                    <li id="sonido">
+                        <a href ="#sonido" onclick="apagarMusica()">
+                            <span class="glyphicon glyphicon-volume-off" aria-hidden="true"></span> Sonido
+                        </a>
+                    </li>
+                </ul>
             </div>
             <!-- /.navbar-collapse -->
         </div>
@@ -83,9 +90,11 @@
     <script type="text/javascript" src="js/control-juego.js"></script>
     <script type="text/javascript" src="js/GUIControl.js"></script>
     <script type="text/javascript" src="js/builder-json.js"></script>
+    <script type="text/javascript" src="js/proxy.js"></script>
     <script type="text/javascript">
+        var proxy = new proxy();
         inicio();
-        window.onhashchange = function(e){
+        window.onhashchange = function (e) {
             //console.log(e)
             var newPage = e.newURL.split('#')[1]
             var oldPage = e.oldURL.split('#')[1]

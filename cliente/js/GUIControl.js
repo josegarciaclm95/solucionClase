@@ -22,32 +22,28 @@ function estilosAlerta(selector) {
 
 function construirLogin() {
     limpiarLogin();
-    var form = "";
-    form += '<form id="login"><div class="form-group"><input type="text" class="form-control" id="nombreL" placeholder="Introduce tu email"><input type="password" class="form-control" id="claveL" placeholder="Introduce tu clave"></div>';
-    form += '<button type="button" id="loginBtn" class="btn btn-primary btn-md" style="margin-bottom:10px">Entrar</button>';
-    form += '<div id="registerGroup" class="form-group" style="margin-bottom:0px"><label for="register">¿Eres nuevo? Regístrate</label><br/>';
-    form += '<button type="button" id="registrBtn" class="btn btn-primary btn-md">Registrar</button></div></form>';
-    $("#control").append(form);
-    $("#nombreL,#claveL").on("keyup", function (e) {
-        if (e.keyCode == 13) {
-            console.log($("#nombreL").val() + " - " + $("#claveL").val());
-            comprobarUsuarioMongo($("#nombreL").val(), $("#claveL").val(), false);
-        }
+    $("#control").load('../login.html', function () {
+        $("#nombreL,#claveL").on("keyup", function (e) {
+            if (e.keyCode == 13) {
+                console.log($("#nombreL").val() + " - " + $("#claveL").val());
+                proxy.comprobarUsuarioMongo($("#nombreL").val(), $("#claveL").val(), false);
+            }
+        });
+        $("#nombreL").on("focus", function (e) {
+            limpiarEstilos(this);
+        });
+        $("#claveL").on("focus", function (e) {
+            limpiarEstilos(this);
+        });
+        $("#loginBtn").on("click", function (e) {
+            proxy.comprobarUsuarioMongo($("#nombreL").val(), $("#claveL").val(), false);
+        });
+        $("#registrBtn").on("click", function (e) {
+            limpiarEstilos("#nombreL,#claveL");
+            construirRegistro();
+        });
     });
-    $("#nombreL").on("focus", function (e) {
-        limpiarEstilos(this);
-    });
-    $("#claveL").on("focus", function (e) {
-        limpiarEstilos(this);
-    });
-    $("#loginBtn").on("click", function (e) {
-        //console.log($("#nombreL").val() + " - " + $("#claveL").val());
-        comprobarUsuarioMongo($("#nombreL").val(), $("#claveL").val(), false);
-    });
-    $("#registrBtn").on("click", function (e) {
-        limpiarEstilos("#nombreL,#claveL");
-        construirRegistro();
-    });
+
 }
 
 function construirRegistro() {
@@ -94,7 +90,7 @@ function construirRegistro() {
 }
 
 function construirFormularioModificar() {
-    limpiarJuegoContainer()
+    limpiarJuegoContainer();
     $("#juegoContainer").load('../registro.html', function () {
         $("#password1").on("focus", function (e) {
             limpiarEstilos(this);
@@ -152,7 +148,6 @@ function borrarControl() {
  * Haciendo uso de una cookie previa, presentamos la info del jugador (tras haber actualizado la cookie)
  */
 function mostrarInfoJuego2() {
-    vidas = $.cookie("vidas");
     var nombre = $.cookie("nombre");
     var id = $.cookie("id");
     var nivel = $.cookie("nivel");
@@ -191,6 +186,14 @@ function siguienteNivel() {
     $("#cerrarSesBtn").on("click", function () {
         resetControl();
     });
+}
+
+function resetControl() {
+    borrarCookies();
+    $("#control").empty();
+    $("#modificar").hide();
+    $("#eliminar").hide();
+    construirLogin();
 }
 
 function borrarSiguienteNivel() {

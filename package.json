@@ -13,9 +13,12 @@
     "nodemailer": "^2.6.4",
     "nodemailer-sendgrid-transport": "^0.2.0",
     "ntwitter": "^0.5.0",
+    "selenium-webdriver": "^3.0.1",
     "underscore": "^1.7.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "dalekjs": "0.0.9"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node node-express.js"
