@@ -155,6 +155,9 @@
     }
 }
 
+.media-body {
+    padding-left: 10px;
+}
 .text-green {
     color: #16a085;
 }

@@ -7,7 +7,6 @@
  */
 
 function inicio() {
-    $("#chat-box").load("./js/tool/chat/chat.html", function(){})
     if ($.cookie('nombre') != undefined) {
         proxy.comprobarUsuarioMongo($.cookie('nombre'), undefined, true)
     } else {

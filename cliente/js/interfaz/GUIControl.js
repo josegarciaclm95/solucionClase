@@ -182,6 +182,9 @@ function siguienteNivel() {
         console.log("Nivel de cookie es ->" + $.cookie("nivel"));
         console.log("Llamamos a crear nivel sin parametros en siguienteNivel()");
         crearNivel();
+        $("#chat-box").load("./js/tool/chat/chat.html", function(){
+            $("#chat-date").text(new Date());
+        })
     });
     $("#cerrarSesBtn").on("click", function () {
         resetControl();
@@ -257,3 +260,23 @@ function validateMail(email) {
     return re.test(email);
 }
 
+function nuevoMensaje(msg){
+    var date = new Date();
+    date = date.getHours() + ":" + date.getMinutes();
+    var html = `
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="media">
+                    <div class="media-body">
+                        <h4 class="media-heading">${$.cookie("nombre")}
+                            <span class="small pull-right">${date}</span>
+                        </h4>
+                        <p>${msg}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+    `;
+    $("#chat-conversation").append(html);
+}

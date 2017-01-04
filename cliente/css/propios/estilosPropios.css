@@ -4,6 +4,10 @@ body {
     color: #FFFFFF;
 }
 
+body .media {
+   color: #000; 
+}
+
 .infoPersonaje {
     font-family: 'Raleway', sans-serif;
     font-size: 30px;
