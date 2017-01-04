@@ -1,59 +1,85 @@
 body {
     padding-top: 70px;
     background: #0B2161;
-    color:#FFFFFF;
+    color: #FFFFFF;
 }
+
 .infoPersonaje {
-    font-family: 'Raleway',sans-serif; 
-    font-size: 30px; 
-    font-weight: 800; 
-    line-height: 72px; 
+    font-family: 'Raleway', sans-serif;
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 72px;
     margin-left: 15px;
-    text-transform: uppercase; 
+    text-transform: uppercase;
 }
+
 ul {
     display: block;
     list-style-type: disc;
 }
+
 li {
     list-style: none;
 }
-li.normal{
-    font-family: 'Raleway',sans-serif; 
-    font-size: 30px; 
-    line-height: 10px; 
+
+li.normal {
+    font-family: 'Raleway', sans-serif;
+    font-size: 30px;
+    line-height: 10px;
     margin-left: 15px;
 }
+
 ul.vidas {
     list-style-type: none;
 }
+
 ul.vidas li {
     display: inline;
 }
+
 #resultadosContainer {
     font-size: 20px;
 }
+
 input {
     margin-bottom: 5px;
 }
 
-.intro{
+.intro {
     display: none;
     text-align: center;
     vertical-align: middle;
 }
+
 p.intro {
     font-size: 20px;
 }
+
 p.intro.emphasis {
     font-weight: bold;
     color: #FF0000;
 }
 
-p.intro img{
+p.intro img {
     max-height: 400px;
     text-align: center;
     vertical-align: middle;
     display: inline;
 }
 
+#chat-box {
+    padding-top: 20px;
+}
+#messages {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#messages li {
+    padding: 5px 10px;
+}
+
+#messages li:nth-child(odd) {
+    background: #f9d;
+}

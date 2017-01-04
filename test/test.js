@@ -14,8 +14,8 @@ function encrypt(text){
 
 
 //var sleep = require("sleep");
-//var urlD = "http://localhost:1338";
-var urlD = "https://juegoprocesos.herokuapp.com";
+var urlD = "http://localhost:1338";
+//var urlD = "https://juegoprocesos.herokuapp.com";
 /***********************IMPORTANTEEEEEEEEEEEEEEEEEEEEEEEE************************** */
 var id;
 var tiempoConfir;

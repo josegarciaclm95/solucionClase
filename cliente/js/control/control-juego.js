@@ -105,4 +105,14 @@ function cambiarUsuario(action){
 
 function apagarMusica(){
     $("#backMusic").animate({volume:0},100);
+    $("#sonido").addClass("active");
+    $("#sonidoControl").off("click");
+    $("#sonidoControl").on("click", encenderMusica);
+}
+
+function encenderMusica(){
+    $("#backMusic").animate({volume:1},100);
+    $("#sonido").removeClass("active");
+    $("#sonidoControl").off("click");
+    $("#sonidoControl").on("click", apagarMusica);
 }

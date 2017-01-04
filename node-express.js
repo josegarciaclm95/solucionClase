@@ -5,7 +5,11 @@ var emailUser = config.emailUser;
 var emailPass = config.emailPass;
 var exp = require("express");
 var modelo = require("./servidor/modelo.js");
+
 var app = exp();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
 var juegofm = new modelo.JuegoFM('./cliente/js/juego-json.json');
 var juego = juegofm.makeJuego();
 
@@ -47,6 +51,23 @@ app.use(exp.static(__dirname + "/cliente/"));
 app.use(bodyParser());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+
+io.on('connection', function (socket) {
+	console.log('a user connected');
+	socket.on('disconnect', function () {
+		console.log('user disconnected');
+	});
+	for (var i = 1; i <= juego.niveles.length; i++) {
+		socket.on('chat message ' + i, function (msg) {
+			console.log("nivel: " + msg.nivel)
+			console.log('message: ' + msg.msg);
+			io.emit('chat message 2', {msg:"Hola mundo desde el server", nivel:"0" });
+			io.emit('chat message 2', {msg:"Hola mundo desde el server", nivel:"1" });
+			io.emit('chat message 2', {msg:"Hola mundo desde el server", nivel:"2" });
+			io.emit('chat message 2', {msg:"Hola mundo desde el server", nivel:"3" });
+		});
+	}
+});
 
 app.get("/datosJuego/:id", function (request, response) {
 	console.log("Datos juego");
@@ -304,9 +325,6 @@ app.get('/obtenerResultados/:id', function (request, response) {
 	response.send(user.resultados);
 });
 
-console.log("Servidor escuchando en el puerto "+process.env.PORT );
-app.listen(process.env.PORT || port);
-
 app.post('/meterEnLimbo/', function(request, response){
 	var email = request.body.email;
 	var pass = request.body.password;
@@ -349,3 +367,9 @@ function CursorHandler(){
 		}
 	}
 }
+
+console.log("Servidor escuchando en el puerto "+process.env.PORT );
+//app.listen(process.env.PORT || port);
+http.listen(process.env.PORT || port, function(){
+  console.log('Listening on port ' + port);
+});

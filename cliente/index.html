@@ -5,13 +5,14 @@
     <meta charset="UTF-8" />
     <title>Conquista Niveles</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/estilosPropios.css">
-    <script src="lib/jquery-3.1.1.min.js"></script>
-    <script src="lib/bootstrap.min.js"></script>
-    <script type="text/javascript" src="lib/phaser.min.js"></script>
-    <script type="text/javascript" src="lib/jquery.cookie.js"></script>
-    <script src="lib/jquery.loading.block.js"></script>
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="css/propios/estilosPropios.css">
+    <script src="lib/jquery/jquery-3.1.1.min.js"></script>
+    <script src="lib/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="lib/phaser/phaser.min.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery.cookie.js"></script>
+    <script src="lib/jquery/jquery.loading.block.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     <link rel="icon" type="image/png" sizes="16x16" href="./favicon.png">
 </head>
 
@@ -52,8 +53,9 @@
                 </ul>
                 <ul id="barNav_r" class="nav navbar-nav navbar-right">
                     <li id="sonido">
-                        <a href ="#sonido" onclick="apagarMusica()">
-                            <span class="glyphicon glyphicon-volume-off" aria-hidden="true"></span> Sonido
+                        <a id="sonidoControl" href="#">
+                            <span class="glyphicon glyphicon-volume-off" aria-hidden="true"></span> 
+                            <strong>Sonido</strong>
                         </a>
                     </li>
                 </ul>
@@ -65,13 +67,19 @@
     </div>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-4">
                 <h1>Panel de control</h1>
                 <div id="control">
                 </div>
-                <div id="infoJuego" style="margin-top:20px"></div>
+                <div id="chat-box">
+                    <ul id="messages"></ul>
+                    <form action="">
+                        <input id="m" autocomplete="off" />
+                        <button>Send</button>
+                    </form>
+                </div>
             </div>
-            <div class="col-sm-9" id="juegoContainer">
+            <div class="col-sm-8" id="juegoContainer">
                 <p class="intro" id="info1">Kairi...
                     <p>
                         <p class="intro emphasis" id="info2">...is missing!!
@@ -86,19 +94,36 @@
     <!--
 <script type="text/javascript" src="js/juego.js"></script></body>
 -->
-    <script type="text/javascript" src="js/juegoClase.js"></script>
-    <script type="text/javascript" src="js/control-juego.js"></script>
-    <script type="text/javascript" src="js/GUIControl.js"></script>
-    <script type="text/javascript" src="js/builder-json.js"></script>
-    <script type="text/javascript" src="js/proxy.js"></script>
+    <script type="text/javascript" src="js/interfaz/juegoClase.js"></script>
+    <script type="text/javascript" src="js/interfaz/GUIControl.js"></script>
+    <script type="text/javascript" src="js/control/control-juego.js"></script>
+    <script type="text/javascript" src="js/control/proxy.js"></script>
+    <script type="text/javascript" src="js/tool/builder-json.js"></script>
+    
     <script type="text/javascript">
         var proxy = new proxy();
+        $("#sonidoControl").on("click", apagarMusica);
         inicio();
+        var socket = io();
+        socket.on("chat message 2", function (msg) {
+            console.log(msg)
+            socket.off("chat message 2");
+        });
+        socket.emit('chat message 1', {
+            msg: "Hola mundo 2",
+            nivel: 1
+        });
+        $('#messages').append($('<li>').text("Hola mundo"));
+        $('#messages').append($('<li>').text("Adios mundo"));
+        $('#messages').append($('<li>').text("Hola de nuevo mundo"));
+        //socket.off("chat message 2");
+
         window.onhashchange = function (e) {
             //console.log(e)
             var newPage = e.newURL.split('#')[1]
             var oldPage = e.oldURL.split('#')[1]
             if (!oldPage) oldPage = "inicio";
+            if (!newPage) newPage = "sonido"
             $('#' + newPage).addClass('active')
             $('#' + oldPage).removeClass('active')
         }

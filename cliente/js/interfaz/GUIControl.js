@@ -256,3 +256,4 @@ function validateMail(email) {
     console.log(re.test(email))
     return re.test(email);
 }
+
