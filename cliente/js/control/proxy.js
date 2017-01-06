@@ -3,7 +3,6 @@ function proxy() {
      * Se comprueba la validez de unos datos. El ultimo atributo indica si los datos se están comprobando
      * desde una cookie o desde el formulario de login. Si es desde cookie, no comprobamos la contrasena
      */
-    /*
     this.socket = io();
     this.setListener = function(){
         this.socket.on("chat message " + $.cookie("nivel"), nuevoMensaje);
@@ -13,8 +12,14 @@ function proxy() {
     }
     this.enviarMensaje = function(msg){
         this.socket.emit("chat message " + $.cookie("nivel"), {msg:msg, nombre:$.cookie("nombre"), nivel:$.cookie("nivel")})
+        //nuevoMensaje(msg);
     }
-    */
+    this.deleteSocket = function(){
+        proxy.socket = undefined;
+    }
+    this.restartSocket = function(){
+        proxy.socket = io();
+    }
     this.comprobarUsuarioMongo = function (nombre, pass, fromCookie) {
         if (pass == "" && !fromCookie) {
             estilosAlerta('#claveL')
@@ -41,7 +46,9 @@ function proxy() {
      */
     this.nivelCompletado = function (tiempo) {
             var callback = function (datos) {
+                proxy.removeListener();
                 $.cookie("nivel", datos.nivel);
+                proxy.setListener();
                 mostrarInfoJuego2();
             }
             $.get("/nivelCompletado/" + $.cookie("id") + "/" + tiempo, callback);

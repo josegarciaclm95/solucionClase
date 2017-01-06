@@ -59,12 +59,8 @@ io.on('connection', function (socket) {
 	});
 	for (var i = 1; i <= juego.niveles.length; i++) {
 		socket.on('chat message ' + i, function (msg) {
-			console.log("nivel: " + msg.nivel)
-			console.log('message: ' + msg.msg);
-			io.emit('chat message 2', {msg:"Hola mundo desde el server", nivel:"0" });
-			io.emit('chat message 2', {msg:"Hola mundo desde el server", nivel:"1" });
-			io.emit('chat message 2', {msg:"Hola mundo desde el server", nivel:"2" });
-			io.emit('chat message 2', {msg:"Hola mundo desde el server", nivel:"3" });
+			console.log(msg)
+			io.emit('chat message ' + msg.nivel, {msg:msg.msg, nombre:msg.nombre, nivel:msg.nivel });
 		});
 	}
 });

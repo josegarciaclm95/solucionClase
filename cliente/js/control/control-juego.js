@@ -74,6 +74,7 @@ function eliminarUsuarioServer(nombre, pass) {
  * Borramos la cookie que hubiera en el navegador
  */
 function borrarCookies() {
+    proxy.deleteSocket();
     $.removeCookie('nombre');
     $.removeCookie('id');
     $.removeCookie('nivel');
@@ -85,6 +86,7 @@ function setCookies(data) {
     $.cookie('id', data.id);
     $.cookie('nivel', data.nivel);
     $.cookie('maxNivel', data.maxNivel);
+    proxy.setListener();
 }
 
 function finJuego(text,callback){
@@ -104,14 +106,14 @@ function cambiarUsuario(action){
 }
 
 function apagarMusica(){
-    $("#backMusic").animate({volume:0},100);
+    $("audio").animate({volume:0},100);
     $("#sonido").addClass("active");
     $("#sonidoControl").off("click");
     $("#sonidoControl").on("click", encenderMusica);
 }
 
 function encenderMusica(){
-    $("#backMusic").animate({volume:1},100);
+    $("audio").animate({volume:1},100);
     $("#sonido").removeClass("active");
     $("#sonidoControl").off("click");
     $("#sonidoControl").on("click", apagarMusica);

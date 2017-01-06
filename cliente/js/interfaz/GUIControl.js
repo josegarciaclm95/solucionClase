@@ -182,13 +182,21 @@ function siguienteNivel() {
         console.log("Nivel de cookie es ->" + $.cookie("nivel"));
         console.log("Llamamos a crear nivel sin parametros en siguienteNivel()");
         crearNivel();
-        $("#chat-box").load("./js/tool/chat/chat.html", function(){
+        $("#chat-box").load("./js/tool/chat/chat.html", function () {
             $("#chat-date").text(new Date());
-        })
-    });
-    $("#cerrarSesBtn").on("click", function () {
-        resetControl();
-    });
+            var callbackEnviar = function () {
+                proxy.enviarMensaje($("#chat-msg").val());
+                $("#chat-msg").val('');
+            }
+            $("#chat-send").on("click", callbackEnviar);
+            $("#chat-msg").on("keyup", function (e) {
+                if (e.keyCode == 13) {
+                    callbackEnviar();
+                }
+            });
+        });
+    })
+    $("#cerrarSesBtn").on("click", resetControl);
 }
 
 function resetControl() {
@@ -260,7 +268,7 @@ function validateMail(email) {
     return re.test(email);
 }
 
-function nuevoMensaje(msg){
+function nuevoMensaje(msg) {
     var date = new Date();
     date = date.getHours() + ":" + date.getMinutes();
     var html = `
@@ -268,10 +276,10 @@ function nuevoMensaje(msg){
             <div class="col-lg-12">
                 <div class="media">
                     <div class="media-body">
-                        <h4 class="media-heading">${$.cookie("nombre")}
+                        <h4 class="media-heading">${msg.nombre}
                             <span class="small pull-right">${date}</span>
                         </h4>
-                        <p>${msg}</p>
+                        <p>${msg.msg}</p>
                     </div>
                 </div>
             </div>
@@ -279,4 +287,6 @@ function nuevoMensaje(msg){
         <hr>
     `;
     $("#chat-conversation").append(html);
+    var element = document.getElementById("chat-conversation");
+    element.scrollTop = element.scrollHeight;
 }

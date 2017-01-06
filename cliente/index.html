@@ -101,6 +101,7 @@
         var proxy = new proxy();
         $("#sonidoControl").on("click", apagarMusica);
         inicio();
+        /*
         var socket = io();
         socket.on("chat message 2", function (msg) {
             console.log(msg)
@@ -114,7 +115,7 @@
         $('#messages').append($('<li>').text("Adios mundo"));
         $('#messages').append($('<li>').text("Hola de nuevo mundo"));
         //socket.off("chat message 2");
-
+        */
         window.onhashchange = function (e) {
             //console.log(e)
             var newPage = e.newURL.split('#')[1]
