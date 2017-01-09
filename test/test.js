@@ -70,7 +70,7 @@ function preparacionPruebas(){
             testCrearUsuario("jose","jose"); //Nombre que ya esta en el limbo
             testCrearUsuario("josemariagarcia95@gmail.com","jose"); //nombre que no existe
             testConfirmarUsuario("jose",tiempoConfir) //confirmar usuario
-            //testDatosJuego();
+            testDatosJuego();
             testLogin("xemagg95@gmail.com",""); //sin contrasena - no devuelve nada
             testLogin("juan",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
             testLogin("pepe","pepe"); // contrasena buena - devuelve user
@@ -151,7 +151,7 @@ function testCrearUsuario(email, pass){
             } else if(result == "EmailNotSent") {
                 console.log("Test crearUsuario INCORRECTO. Fallo el envio del email".green);
             } else if(result == "confirmEmail"){
-                console.log("Test crearUsuario CORRECTO. Usuario metido en Limbo. Confirme mail".green);
+                console.log("Test crearUsuario CORRECTO. Usuario pendiente de confirmar. Confirme mail".green);
             }
         } else {
             console.log("Test crearUsuario ERROR".red);
@@ -174,6 +174,7 @@ function testConfirmarUsuario(email,id){
         console.log("Respuesta testConfirmarUsuario() con datos - Email " + email + " id " + id);
         console.log("--------------------------------------------------------");
        if(!error && response.statusCode == 200){
+           //Response aqui es la pagina entera por ser un redirect
             var output = "Test confirmarUsuario - " + email + ", " + id + " Resultado ->  OK";
             console.log(output.green);
         } else {

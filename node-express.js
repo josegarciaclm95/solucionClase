@@ -125,7 +125,7 @@ app.post("/crearUsuario/", function (request, response) {
 	var email = request.body.email;
 	var pass = request.body.password;
 	var urlD = request.body.url;
-	var criteria = {"nombre":email};
+	var criteria = {"email":email};
 	function callbackCrearUsuario(err,cursor){
 		if(err){
 			console.log(err);
@@ -137,6 +137,7 @@ app.post("/crearUsuario/", function (request, response) {
 			}
 			cursorHandler.emptyCursorCallback = function(users){
 				var time_register = (new Date().valueOf());
+				console.log("\t Crear Usuario -> \t No se ha encontrado el usuario");
 				var url = urlD + "/confirmarCuenta/" + email + "/" + time_register;
 				var html = '¡¡Bienvenido a ConquistaNiveles!! <br/> Confirme su cuenta haciendo clic en el siguiente enlace: <br/>';
 				html += '<a href='+url+'>'+url+'</a>';
@@ -148,6 +149,7 @@ app.post("/crearUsuario/", function (request, response) {
 						response.send({result:"EmailNotSent"})
 					}
 					else {
+						console.log("\t Crear Usuario -> \t Email enviado");
 						console.log('Message sent: ' + info.response);
 						persistencia.insertOn("usuarios",{email:email,password:encrypt(pass),id_registro:time_register,activo:false},function(err,data){
 							if(err){
@@ -166,73 +168,6 @@ app.post("/crearUsuario/", function (request, response) {
 	}
 	persistencia.findSomething("usuarios",criteria,callbackCrearUsuario)
 });
-
-/*
-app.post("/crearUsuario/", function (request, response) {
-	console.log("Crear usuarios")
-	var email = request.body.email;
-	var pass = request.body.password;
-	var urlD = request.body.url;
-	var criteria = {"nombre":email};
-	function callbackCrearUsuario(err,cursor){
-		if(err){
-			console.log(err);
-		} else {
-			var cursorHandler = new CursorHandler();
-			cursorHandler.cursorWithSomethingCallback = function(users){
-				console.log("\t Crear Usuario -> \t El usuario ya existe en Usuarios");
-				response.send({result:"userExists"})
-			}
-			cursorHandler.emptyCursorCallback = function(users){
-				console.log("\t Crear Usuario -> \t El usuario no existe");
-				var criteria = {"email":email};
-				function callbackCrearUsuarioLimbo(err,cursor){
-					if(err){
-						console.log(err)
-					} else {
-					var cursorHandlerInt = new CursorHandler();
-						cursorHandlerInt.emptyCursorCallback = function(userss){
-							var time = (new Date().valueOf());
-							var url = urlD + "/confirmarCuenta/" + email + "/" + time;
-							var html = '¡¡Bienvenido a ConquistaNiveles!! <br/>';
-							html += 'Confirme su cuenta haciendo clic en el siguiente enlace: <br/>';
-							html += '<a href='+url+'>'+url+'</a>';
-							mensaje.to = email;
-							mensaje.html = html;
-							function callbackSendEmail(errr,info){
-								if (errr){
-									console.log(errr);
-									response.send({result:"EmailNotSent"})
-								}
-								else {
-									console.log('Message sent: ' + info.response);
-									persistencia.insertOn("limbo",{email:email,password:encrypt(pass),tiempo:time},function(err,data){
-										if(err){
-											console.log(err)
-										} else {
-											console.log("\t Crear Usuario -> \t Usuario registrado en Limbo");
-											response.send({result:"confirmEmail"})
-										}
-									})
-								}
-							}
-							client.sendMail(mensaje, callbackSendEmail);
-						}
-						cursorHandlerInt.cursorWithSomethingCallback = function(userss){
-							console.log("\t Crear Usuario -> \t El usuario ya existe en Limbo");
-							response.send({result:"userExists"})
-						}
-						cursor.toArray(cursorHandlerInt.checkCursor)
-					}
-				}
-				persistencia.findSomething("limbo",criteria,callbackCrearUsuarioLimbo)
-			}
-			cursor.toArray(cursorHandler.checkCursor)
-		}
-	}
-	persistencia.findSomething("usuarios",criteria,callbackCrearUsuario)
-});
-*/
 
 app.get("/confirmarCuenta/:email/:id", function (request, response) {
 	console.log("Confirmar cuenta")
@@ -267,34 +202,7 @@ app.get("/confirmarCuenta/:email/:id", function (request, response) {
 	}
 	persistencia.findSomething("usuarios",criteria,callbackConfirmar)
 });
-/*
-app.get("/confirmarCuenta/:email/:id", function (request, response) {
-	console.log("Confirmar cuenta")
-	var email = request.params.email;
-	var id = parseInt(request.params.id);
-	var criteria = {email:email,tiempo:id};
-	function callbackConfirmar(err,cursor){
-		if(err){
-			console.log(err);
-		} else {
-			var cursorHandler = new CursorHandler();
-			cursorHandler.emptyCursorCallback = function(users) {
-				console.log("\t Confirmar cuenta -> \t El usuario ya se ha confirmado o no se ha registrado");
-				response.redirect("/");
-			}
-			cursorHandler.cursorWithSomethingCallback = function(users){
-				console.log("\t Confirmar cuenta -> \t Encontrado usuario en Limbo");
-				var usuario = new modelo.Usuario(email,users[0].password,juego,undefined);
-				//persistencia.insertUser(usuario,users[0].password,juego,undefined);
-				//persistencia.removeOn("limbo",{email:email},function(){})
-				response.redirect("/");
-			}
-			cursor.toArray(cursorHandler.checkCursor);
-		}
-	}
-	persistencia.findSomething("limbo",criteria,callbackConfirmar)
-});
-*/
+
 app.post("/modificarUsuario/", function (request, response) {
 	console.log("Modificar usuario");
 	var oldMail = request.body.old_email;
@@ -409,15 +317,16 @@ app.post('/meterEnUsuarios/', function(request, response){
 	var pass = request.body.password;
 	var user = new modelo.Usuario(email);
 	var time = (new Date()).valueOf();
-	var act = request.body.activo;
+	var act = JSON.parse(request.body.activo);
 	//console.log(pass)
 	
 	function callbackInsertUsuarios(err,data){
-		console.log(data);
+		//console.log(data);
 		if(err){
 			console.log(err)
 			response.send({result:err})
 		} else {
+			console.log("Usuario " + email + " con pass " + pass + " -  tiempo de registro " + time + " y activo " + act + " insertado")
 			response.send({result:"insertOnUsuarios", tiempo:time, id:data.ops[0]._id, maxNivel: juego.niveles.length});
 			//
 		}

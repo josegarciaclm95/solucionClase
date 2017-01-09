@@ -4,6 +4,7 @@ function limpiarLogin() {
 
 function limpiarJuegoContainer() {
     $("#juegoContainer").empty();
+    $("#chat-whole").remove();
 }
 
 function limpiarEstilos(selector) {
@@ -23,7 +24,7 @@ function estilosAlerta(selector) {
 function construirLogin() {
     limpiarLogin();
     $("#control").load('../login.html', function () {
-        $("#nombreL,#claveL").on("keyup", function (e) {
+        $("#claveL").on("keyup", function (e) {
             if (e.keyCode == 13) {
                 console.log($("#nombreL").val() + " - " + $("#claveL").val());
                 proxy.comprobarUsuarioMongo($("#nombreL").val(), $("#claveL").val(), false);
@@ -125,7 +126,7 @@ function construirFormularioModificar() {
 
 
 function construirFormularioEliminar() {
-    $("#juegoContainer").empty();
+    limpiarJuegoContainer();
     $("#juegoContainer").load('../registro.html', function () {
         $("#formRegistro").prepend('<span style="color:#FF0000">Confirma tus credenciales</span>');
         $("#camposContra2").remove();
@@ -174,7 +175,7 @@ function siguienteNivel() {
     $("#siguienteBtn").on("click", function () {
         $(this).remove();
         $("#cerrarSesBtn").remove();
-        $("#juegoContainer").empty();
+        limpiarJuegoContainer();
         $("#juegoContainer").append('<div id="juegoId"></div>');
         $("#backMusic").animate({
             volume: 0
