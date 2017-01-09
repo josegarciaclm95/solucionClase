@@ -1,5 +1,7 @@
 var fs=require("fs");
 var _ = require("underscore");
+//var persistencia = require("./servidor/persistencia.js");
+//persistencia.mongoConnect();
 
 function Juego(){
     this.nombre = "Niveles";
@@ -8,8 +10,8 @@ function Juego(){
     this.agregarNivel = function(nivel){
         this.niveles.push(nivel);
     };
-    this.agregarUsuario = function(usuario){
-        var a = this.buscarUsuario(usuario.nombre);
+    this.agregarUsuario = function(usuario,pass,juego,response){
+        var a = this.buscarUsuario(usuario.email);
         if(a == undefined){
             console.log("\t Model -> \t Agregado nuevo usuario al modelo");
             this.usuarios.push(usuario);
@@ -22,7 +24,7 @@ function Juego(){
     };
     this.buscarUsuario = function(nombre_us){
         return this.usuarios.filter(function(actual_element){
-            return actual_element.nombre == nombre_us;
+            return actual_element.email == nombre_us;
         })[0];
     }
     this.buscarUsuarioById = function(id){
@@ -39,7 +41,7 @@ function Juego(){
     this.modificarUsuario = function(oldMail,newEmail){
         var user = this.buscarUsuario(oldMail);
         if (user != undefined){
-            user.nombre = newEmail;
+            user.email = newEmail;
         }
     }
     this.limpiar = function(){
@@ -50,7 +52,7 @@ function Juego(){
     Juego.prototype.toString = function(){
         var res = "Usuarios\n";
         this.usuarios.forEach(function(el){
-            res += "Usuario " + el.nombre + " - Id " + el.idJuego + "\n";
+            res += "Usuario " + el.email + " - Id " + el.idJuego + "\n";
         });
         res += "Niveles\n";
         this.niveles.forEach(function(el){
@@ -67,8 +69,8 @@ function Nivel(num,coord,gravedad,numEstrellas){
     this.starsNumber = numEstrellas;
 }
 
-function Usuario(nombre){
-    this.nombre = nombre;
+function Usuario(email){
+    this.email = email;
     this.vidas = 5;
     this.idJuego = new Date().valueOf();
     this.nivel = 1;
@@ -77,7 +79,7 @@ function Usuario(nombre){
         this.resultados.push(result);
     }
     Usuario.prototype.toString = function(){
-        var r = "Usuario " + this.nombre + " - Id " + this.id + "\n";
+        var r = "Usuario " + this.email + " - Id " + this.id + "\n";
         r += "Nivel actual " + this.nivel + "\n";
         for(var i in this.resultados){
             r += this.resultados[i].toString() + "\n";
@@ -99,7 +101,6 @@ function JuegoFM(archivo){
     this.array = leerCoordenadas(archivo);
     this.makeJuego = function(){
         var j = new Juego();
-        var i = 0;
         for(var x in this.array){
             var nivel = new Nivel(x,this.array[x].platforms,this.array[x].gravity,this.array[x].starsNumber);
             j.agregarNivel(nivel);

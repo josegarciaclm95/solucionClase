@@ -7,8 +7,8 @@
  */
 
 function inicio() {
-    if ($.cookie('nombre') != undefined) {
-        proxy.comprobarUsuarioMongo($.cookie('nombre'), undefined, true)
+    if ($.cookie('email') != undefined) {
+        proxy.comprobarUsuarioMongo($.cookie('email'), undefined, true)
     } else {
         console.log("No hay una cookie");
         construirLogin();
@@ -39,7 +39,7 @@ function mostrarResultadosUsuario(datos) {
     $('#juegoId').append('<h3 id="res">Resultados</h3>');
     var cadena = "<table id='resultados' class='table table-bordered table-condensed'><tr><th>Nombre</th><th>Nivel</th><th>Tiempo</th></tr>";
     for (var i = 0; i < datos.length; i++) {
-        cadena = cadena + "<tr><td>" + $.cookie("nombre") + "</td><td> " + datos[i].nivel + "</td>" + "</td><td> " + datos[i].tiempo + "</td></tr>";
+        cadena = cadena + "<tr><td>" + $.cookie("email") + "</td><td> " + datos[i].nivel + "</td>" + "</td><td> " + datos[i].tiempo + "</td></tr>";
     }
     cadena = cadena + "</table>";
     $('#juegoId').append(cadena);
@@ -56,8 +56,8 @@ function crearUsuario(nombre, pass) {
         nombre = "jugador";
     }
     var url = '';
-    //url = "http://localhost:1338"
-    url = "http://juegoprocesos.herokuapp.com";
+    url = "http://localhost:1338"
+    //url = "http://juegoprocesos.herokuapp.com";
     proxy.crearUsuario(nombre, pass, url);
     
 }
@@ -74,15 +74,15 @@ function eliminarUsuarioServer(nombre, pass) {
  * Borramos la cookie que hubiera en el navegador
  */
 function borrarCookies() {
-    proxy.deleteSocket();
-    $.removeCookie('nombre');
+    //proxy.deleteSocket();
+    $.removeCookie('email');
     $.removeCookie('id');
     $.removeCookie('nivel');
     $.removeCookie('maxNivel');
 }
 
 function setCookies(data) {
-    $.cookie('nombre', data.nombre);
+    $.cookie('email', data.email);
     $.cookie('id', data.id);
     $.cookie('nivel', data.nivel);
     $.cookie('maxNivel', data.maxNivel);

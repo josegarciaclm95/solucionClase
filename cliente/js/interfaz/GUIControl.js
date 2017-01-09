@@ -102,7 +102,7 @@ function construirFormularioModificar() {
             limpiarEstilos(this);
         });
         $("#labelCorreo").text("Correo electrónico");
-        $("#nombreUsuario").val($.cookie('nombre'));
+        $("#nombreUsuario").val($.cookie('email'));
         $("#confirmaRegBtn").text("Guardar cambios");
         $("#confirmaRegBtn").on("click", function () {
             console.log($("#nombreUsuario").val() + " - " + $("#password1").val());
@@ -148,7 +148,7 @@ function borrarControl() {
  * Haciendo uso de una cookie previa, presentamos la info del jugador (tras haber actualizado la cookie)
  */
 function mostrarInfoJuego2() {
-    var nombre = $.cookie("nombre");
+    var nombre = $.cookie("email");
     var id = $.cookie("id");
     var nivel = $.cookie("nivel");
     var percen = Math.floor(((nivel - 1) / $.cookie("maxNivel")) * 100);

@@ -64,13 +64,13 @@ function peticionAjax(peticion,url,async,body,successCallback){
 function preparacionPruebas(){
     
     var callbackPepe = function(){
-            peticionAjax("POST","/meterEnUsuarios/",true,{email: "pepe", password: "pepe"}, function(data){
+            peticionAjax("POST","/meterEnUsuarios/",true,{email: "pepe", password: "pepe", activo:true}, function(data){
             testRaiz();
             testCrearUsuario("xemagg95@gmail.com","jose"); //Nombre que ya existe
             testCrearUsuario("jose","jose"); //Nombre que ya esta en el limbo
             testCrearUsuario("josemariagarcia95@gmail.com","jose"); //nombre que no existe
             testConfirmarUsuario("jose",tiempoConfir) //confirmar usuario
-            testDatosJuego();
+            //testDatosJuego();
             testLogin("xemagg95@gmail.com",""); //sin contrasena - no devuelve nada
             testLogin("juan",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
             testLogin("pepe","pepe"); // contrasena buena - devuelve user
@@ -79,30 +79,30 @@ function preparacionPruebas(){
             testModificarUsuario("dani","dani","dani1"); //cambio de usuario que existe (contraseña)
             testEliminarUsuario("jose31","jose2"); //eliminar usuario que no existe
             testEliminarUsuario("jose2","jose2"); //eliminar usuario que no existe
-            testSimularJuego(314); //jugar todos los niveles, volver a empezar y recuperar resultados
+            //testSimularJuego(314); //jugar todos los niveles, volver a empezar y recuperar resultados
         })
     }
     
     var callbackJuan = function(){
-        peticionAjax("POST","/meterEnUsuarios/",true,{email: "juan", password: "juan"},callbackPepe);
+        peticionAjax("POST","/meterEnUsuarios/",true,{email: "juan", password: "juan", activo:true},callbackPepe);
     }
     var callbackJose2 = function(){
-        peticionAjax("POST","/meterEnUsuarios/",true,{email: "jose2", password: "jose2"},callbackJuan);
+        peticionAjax("POST","/meterEnUsuarios/",true,{email: "jose2", password: "jose2", activo:true},callbackJuan);
     }
     var callbackDani = function(){
-        peticionAjax("POST","/meterEnUsuarios/",true,{email: "dani", password: "dani"},callbackJose2);
+        peticionAjax("POST","/meterEnUsuarios/",true,{email: "dani", password: "dani", activo:true},callbackJose2);
     }
     var callbackJoseM = function(error, response, body){
         tiempoConfir = JSON.parse(body).tiempo;
-        peticionAjax("POST","/meterEnUsuarios/",true,{email: "josem", password: "jose"},callbackDani);
+        peticionAjax("POST","/meterEnUsuarios/",true,{email: "josem", password: "jose", activo:true},callbackDani);
     }
     var callbackJose = function(error, response, body){
         id = JSON.parse(body).id;
         maxNiveles = JSON.parse(body).maxNivel;
-        peticionAjax("POST","/meterEnLimbo/",true,{email: "jose", password: "jose"},callbackJoseM);
+        peticionAjax("POST","/meterEnUsuarios/",true,{email: "jose", password: "jose",activo:false},callbackJoseM);
     }
     var callbackXema = function(){
-        peticionAjax("POST","/meterEnUsuarios/",true,{email: "xemagg95@gmail.com", password: "jose"},callbackJose);
+        peticionAjax("POST","/meterEnUsuarios/",true,{email: "xemagg95@gmail.com", password: "jose", activo:true},callbackJose);
     }
     peticionAjax("GET","/limpiarMongo/",true,{},callbackXema);
 

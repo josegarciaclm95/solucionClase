@@ -11,7 +11,7 @@ function proxy() {
         this.socket.off("chat message " +  $.cookie("nivel"));
     }
     this.enviarMensaje = function(msg){
-        this.socket.emit("chat message " + $.cookie("nivel"), {msg:msg, nombre:$.cookie("nombre"), nivel:$.cookie("nivel")})
+        this.socket.emit("chat message " + $.cookie("nivel"), {msg:msg, nombre:$.cookie("email"), nivel:$.cookie("nivel")})
         //nuevoMensaje(msg);
     }
     this.deleteSocket = function(){
@@ -95,7 +95,7 @@ function proxy() {
         }
         peticionAjax("POST", "/modificarUsuario/", true,
             JSON.stringify({
-                old_email: $.cookie('nombre'),
+                old_email: $.cookie('email'),
                 new_email: nombre,
                 new_password: pass
             }), callback);
@@ -129,3 +129,10 @@ function peticionAjax(peticion, url, async, body, successCallback) {
         success: successCallback
     });
 }
+
+function meterUsuario(nombre, pass, activo){
+    peticionAjax("POST","/meterEnUsuarios/",true,JSON.stringify({email: nombre, password: pass, activo:activo}),function(data){
+        console.log(data)
+    });
+}
+//email: nombre, password: pass, activo:activo

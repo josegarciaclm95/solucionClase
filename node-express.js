@@ -92,7 +92,7 @@ app.post('/login/', function(request, response){
 	console.log("Login")
 	var email = request.body.email;
 	var password = request.body.password;
-	var criteria = {"nombre":email};
+	var criteria = {"email":email};
 	if (password != undefined){
 		criteria["password"] = encrypt(password);
 	}
@@ -106,11 +106,11 @@ app.post('/login/', function(request, response){
 				response.send({nivel:-1});
 			} 
 			cursorHandler.cursorWithSomethingCallback = function(users){
-				var u = new modelo.Usuario(users[0].nombre);
-				console.log("\t Login -> \t Usuario " + u.nombre + " existe");
+				var u = new modelo.Usuario(users[0].email);
+				console.log("\t Login -> \t Usuario " + u.email + " existe");
 				u.id = users[0]._id;
 				u.maxNivel = juego.niveles.length;
-				persistencia.addNewResults(u);
+				//persistencia.addNewResults(u);
 				juego.agregarUsuario(u);
 				response.send(u);
 			}
@@ -120,6 +120,54 @@ app.post('/login/', function(request, response){
 	persistencia.findSomething("usuarios",criteria,callbackLogin);
 });
 
+app.post("/crearUsuario/", function (request, response) {
+	console.log("Crear usuarios")
+	var email = request.body.email;
+	var pass = request.body.password;
+	var urlD = request.body.url;
+	var criteria = {"nombre":email};
+	function callbackCrearUsuario(err,cursor){
+		if(err){
+			console.log(err);
+		} else {
+			var cursorHandler = new CursorHandler();
+			cursorHandler.cursorWithSomethingCallback = function(users){
+				console.log("\t Crear Usuario -> \t El usuario ya existe");
+				response.send({result:"userExists"})
+			}
+			cursorHandler.emptyCursorCallback = function(users){
+				var time_register = (new Date().valueOf());
+				var url = urlD + "/confirmarCuenta/" + email + "/" + time_register;
+				var html = '¡¡Bienvenido a ConquistaNiveles!! <br/> Confirme su cuenta haciendo clic en el siguiente enlace: <br/>';
+				html += '<a href='+url+'>'+url+'</a>';
+				mensaje.to = email;
+				mensaje.html = html;
+				function callbackSendEmail(errr,info){
+					if (errr){
+						console.log(errr);
+						response.send({result:"EmailNotSent"})
+					}
+					else {
+						console.log('Message sent: ' + info.response);
+						persistencia.insertOn("usuarios",{email:email,password:encrypt(pass),id_registro:time_register,activo:false},function(err,data){
+							if(err){
+								console.log(err)
+							} else {
+								console.log("\t Crear Usuario -> \t Usuario added a usuarios");
+								response.send({result:"confirmEmail"})
+							}
+						});
+					}
+				}
+				client.sendMail(mensaje, callbackSendEmail);
+			}
+			cursor.toArray(cursorHandler.checkCursor)
+		}
+	}
+	persistencia.findSomething("usuarios",criteria,callbackCrearUsuario)
+});
+
+/*
 app.post("/crearUsuario/", function (request, response) {
 	console.log("Crear usuarios")
 	var email = request.body.email;
@@ -184,7 +232,42 @@ app.post("/crearUsuario/", function (request, response) {
 	}
 	persistencia.findSomething("usuarios",criteria,callbackCrearUsuario)
 });
+*/
 
+app.get("/confirmarCuenta/:email/:id", function (request, response) {
+	console.log("Confirmar cuenta")
+	var email = request.params.email;
+	var id = parseInt(request.params.id);
+	var criteria = {email:email,id_registro:id,activo:false};
+	function callbackConfirmar(err,cursor){
+		if(err){
+			console.log(err);
+		} else {
+			var cursorHandler = new CursorHandler();
+			cursorHandler.emptyCursorCallback = function(users) {
+				console.log("\t Confirmar cuenta -> \t El usuario ya se ha confirmado o no se ha registrado");
+				response.redirect("/");
+			}
+			cursorHandler.cursorWithSomethingCallback = function(users){
+				console.log("\t Confirmar cuenta -> \t Encontrado usuario en Limbo");
+				var usuario = new modelo.Usuario(email,users[0].password,juego,undefined);
+				//persistencia.insertUser(usuario,users[0].password,juego,undefined);
+				persistencia.updateOn("usuarios",criteria,{$set: {activo:true}},{},function(err,result){
+					if(err){
+						console.log(err)
+					} else {
+						console.log("\t Confirmar cuenta -> Usuario activado");
+					}	
+				});
+				//persistencia.removeOn("limbo",{email:email},function(){})
+				response.redirect("/");
+			}
+			cursor.toArray(cursorHandler.checkCursor);
+		}
+	}
+	persistencia.findSomething("usuarios",criteria,callbackConfirmar)
+});
+/*
 app.get("/confirmarCuenta/:email/:id", function (request, response) {
 	console.log("Confirmar cuenta")
 	var email = request.params.email;
@@ -201,9 +284,9 @@ app.get("/confirmarCuenta/:email/:id", function (request, response) {
 			}
 			cursorHandler.cursorWithSomethingCallback = function(users){
 				console.log("\t Confirmar cuenta -> \t Encontrado usuario en Limbo");
-				var usuario = new modelo.Usuario(email);
-				persistencia.insertUser(usuario,users[0].password,juego,undefined);
-				persistencia.removeOn("limbo",{email:email},function(){})
+				var usuario = new modelo.Usuario(email,users[0].password,juego,undefined);
+				//persistencia.insertUser(usuario,users[0].password,juego,undefined);
+				//persistencia.removeOn("limbo",{email:email},function(){})
 				response.redirect("/");
 			}
 			cursor.toArray(cursorHandler.checkCursor);
@@ -211,7 +294,7 @@ app.get("/confirmarCuenta/:email/:id", function (request, response) {
 	}
 	persistencia.findSomething("limbo",criteria,callbackConfirmar)
 });
-
+*/
 app.post("/modificarUsuario/", function (request, response) {
 	console.log("Modificar usuario");
 	var oldMail = request.body.old_email;
@@ -222,8 +305,8 @@ app.post("/modificarUsuario/", function (request, response) {
 	console.log("\t\t Email nuevo -> " +newEmail)
 	console.log("\t\t Password nueva -> " +newPass)
 	console.log("\t\t Modificar usuario -> Datos usuario");
-	var criteria = {"nombre":oldMail};
-	var changes = {"nombre":newEmail};
+	var criteria = {"email":oldMail};
+	var changes = {"email":newEmail};
 	if(newPass != ""){
 		changes["password"] = encrypt(newPass);
 	}
@@ -244,7 +327,7 @@ app.delete("/eliminarUsuario/", function (request, response) {
 	var pass = encrypt(request.body.password);
 	console.log("\t Eliminar usuario -> \t Email -> " +email);
 	console.log("\t Eliminar usuario -> \t Password -> " +pass)
-	var criteria = {"nombre":email, "password":pass};
+	var criteria = {"email":email, "password":pass};
 	persistencia.removeOn("usuarios",criteria,function(err,result){
 		if(err){
 			console.log(err)
@@ -321,27 +404,27 @@ app.get('/obtenerResultados/:id', function (request, response) {
 	response.send(user.resultados);
 });
 
-app.post('/meterEnLimbo/', function(request, response){
-	var email = request.body.email;
-	var pass = request.body.password;
-	var time = (new Date()).valueOf();
-	function callbackInsertLimbo(err,data){
-		if(err){
-			console.log(err)
-			response.send({result:err})
-		} else {
-			response.send({result:"insertOnLimbo", tiempo:time})
-		}
-	}
-	persistencia.insertOn("limbo",{email:email,password:encrypt(pass),tiempo:time}, callbackInsertLimbo)
-});
-
 app.post('/meterEnUsuarios/', function(request, response){
 	var email = request.body.email;
 	var pass = request.body.password;
 	var user = new modelo.Usuario(email);
+	var time = (new Date()).valueOf();
+	var act = request.body.activo;
 	//console.log(pass)
-	persistencia.insertUser(user,encrypt(pass),juego,response);
+	
+	function callbackInsertUsuarios(err,data){
+		console.log(data);
+		if(err){
+			console.log(err)
+			response.send({result:err})
+		} else {
+			response.send({result:"insertOnUsuarios", tiempo:time, id:data.ops[0]._id, maxNivel: juego.niveles.length});
+			//
+		}
+	}
+	persistencia.insertOn("usuarios",{email:email,password:encrypt(pass),id_registro:time, activo:act}, callbackInsertUsuarios)
+	//persistencia.insertUser(user,encrypt(pass),juego,response);
+	//response.send({result:request.body});
 });
 
 /**

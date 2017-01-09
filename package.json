@@ -5,6 +5,7 @@
   "main": "node-express.js",
   "dependencies": {
     "body-parser": "^1.15.2",
+    "colors": "^1.1.2",
     "crypto": "0.0.3",
     "express": "^4.10.2",
     "fs": "^0.0.2",
@@ -13,7 +14,6 @@
     "nodemailer": "^2.6.4",
     "nodemailer-sendgrid-transport": "^0.2.0",
     "ntwitter": "^0.5.0",
-    "selenium-webdriver": "^3.0.1",
     "socket.io": "^1.7.2",
     "underscore": "^1.7.0"
   },
