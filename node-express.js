@@ -92,7 +92,7 @@ app.post('/login/', function(request, response){
 	console.log("Login")
 	var email = request.body.email;
 	var password = request.body.password;
-	var criteria = {"email":email};
+	var criteria = {"email":email, activo:true};
 	if (password != undefined){
 		criteria["password"] = encrypt(password);
 	}
@@ -102,7 +102,7 @@ app.post('/login/', function(request, response){
 		} else {
 			var cursorHandler = new CursorHandler();
 			cursorHandler.emptyCursorCallback = function(users){
-				console.log("\t Login -> \t No existe el usuario " + email + ". Login fallido");
+				console.log("\t Login -> \t No existe el usuario " + email + " o esta sin activar. Login fallido");
 				response.send({nivel:-1});
 			} 
 			cursorHandler.cursorWithSomethingCallback = function(users){
@@ -217,13 +217,14 @@ app.post("/modificarUsuario/", function (request, response) {
 	var changes = {"email":newEmail};
 	if(newPass != ""){
 		changes["password"] = encrypt(newPass);
+		newPass = encrypt(newPass);
 	}
 	persistencia.updateOn("usuarios",criteria,{$set: changes},{},function(err,result){
 		if(err){
 			console.log(err)
 		} else {
 			console.log("\t Modificar usuario -> Datos actualizados");
-			juego.modificarUsuario(oldMail,newEmail);
+			juego.modificarUsuario(oldMail,newEmail, newPass);
 			response.send(result.result);
 		}
 	});

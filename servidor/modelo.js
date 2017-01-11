@@ -38,16 +38,14 @@ function Juego(){
         this.usuarios.splice(index,1);
         console.log("\t Model -> \t Usuario eliminado. Numero de usuarios " + this.usuarios.length);
     }
-    this.modificarUsuario = function(oldMail,newEmail){
+    this.modificarUsuario = function(oldMail,newEmail, newPass){
         var user = this.buscarUsuario(oldMail);
         if (user != undefined){
             user.email = newEmail;
+            if(newPass != ""){
+                user.password = newPass;
+            }
         }
-    }
-    this.limpiar = function(){
-        console.log("\tJuego vacio")
-        this.niveles = [];
-        this.usuarios = [];
     }
     Juego.prototype.toString = function(){
         var res = "Usuarios\n";
@@ -71,6 +69,7 @@ function Nivel(num,coord,gravedad,numEstrellas){
 
 function Usuario(email){
     this.email = email;
+    this.password = "";
     this.vidas = 5;
     this.idJuego = new Date().valueOf();
     this.nivel = 1;
@@ -88,11 +87,49 @@ function Usuario(email){
     }
 }
 
-function Resultado(nivel,tiempo){
+function Partida(user){
+    this.id_partida = (new Date()).valueOf();
+    this.resultados = [];
+    this.agregarResultado = function(nivel, tiempo, vidas){
+        this.resultados.push(new Resultado(nivel, tiempo, vidas));
+    }
+    this.getDatosNivel = function(nivel){
+        return this.resultados.filter(function(actual_element){
+            return actual_element.nivel == nivel;
+        })[0];
+    }
+}
+
+//partidas [{id_usuario:id, partidas:[Partida()]}]
+function Caretaker(){
+    this.partidas = {}
+    this.getPartidas = function(id){
+        return this.partidas.filter(function(actual_element){
+            return actual_element.id_usuario == id;
+        })[0].partidas;
+    } 
+    /**
+     * @param id - id de usuario.
+     * @param partida - objeto Partida.
+     * Se busca en la colección partidas en base al id de usuario y se anade la Partida a su array de Partidas
+     */
+    this.addPartida = function(id, partida){
+        this.partidas.forEach(function(actual_element){
+            if(actual_element.id_usuario == id){
+                actual_element.partidas.push(partida)
+            }
+        });
+    }
+    this.deletePartidas = function(id){
+        
+    }
+}
+function Resultado(nivel,tiempo,vidas){
     this.nivel = nivel;
     this.tiempo = tiempo;
+    this.vidas = vidas;
     Resultado.prototype.toString = function(){
-        return "Nivel " + this.nivel + " - Tiempo " + this.tiempo; 
+        return "Nivel " + this.nivel + " - Tiempo " + this.tiempo + " - Vidas " + this.vidas; 
     }
 }
 
