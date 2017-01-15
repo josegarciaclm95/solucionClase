@@ -344,7 +344,7 @@ preparacionPruebas();
 var i = 0;
 function testSimularJuego(tiempo){
     var options = {
-        url:urlD + '/nivelCompletado/' + id + '/' + tiempo,
+        url:urlD + '/nivelCompletado/' + id + '/' + tiempo + '/' + 5,
         method:'GET',
         headers:headers,
         qs:{'':''}

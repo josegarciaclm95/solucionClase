@@ -73,6 +73,9 @@ app.get("/datosJuego/:id", function (request, response) {
 	var res;
 	if(usuario && usuario.nivel <= juego.niveles.length){
 		res = juego.niveles[usuario.nivel-1];
+		if(usuario.nivel == 1){
+			juego.addPartida(usuario);
+		}
 	} else {
 		res = {nivel:-1, platforms:[]}	
 	}
@@ -264,11 +267,12 @@ app.get('/limpiarMongo/', function(request,response){
 	});	
 });
 
-app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
+app.get('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
 	console.log("Nivel completado");
 	var id = request.params.id;
 	var tiempo = parseInt(request.params.tiempo);
 	var usuario = juego.buscarUsuarioById(id);
+	var vidas = parseInt(request.params.vidas);
 	if(usuario != undefined){
 		console.log("\t Nivel completado -> \t Usuario encontrado en nivel completado")
 		usuario.agregarResultado(new modelo.Resultado(usuario.nivel,tiempo));
@@ -279,10 +283,12 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 		usuario = new modelo.Usuario("dummy");
 		usuario.nivel = -2;
 	}
+	juego.guardarPartida(usuario, tiempo, vidas)
 	var nivel = usuario.nivel;
 	usuario.nivel += 1;
 	if(usuario.nivel > juego.niveles.length){
 		usuario.nivel = 1;
+		//juego.agregarUsuario(Usuario);
 	}
 	var set = {};
   	set["resultados.$.nivel" + nivel] = tiempo;
@@ -300,7 +306,7 @@ app.get('/nivelCompletado/:id/:tiempo', function (request, response) {
 			} 
 		});
 	console.log("\t Nivel completado -> \tNuevo nivel es ->" + usuario.nivel);
-	response.send({'nivel':usuario.nivel});
+	response.send({'nivel':usuario.nivel, "caretaker":juego.gestorPartidas});
 });
 
 app.get('/obtenerResultados/:id', function (request, response) {
@@ -310,7 +316,9 @@ app.get('/obtenerResultados/:id', function (request, response) {
 		user = new modelo.Usuario("dummyRes");
 		user.resultados.push(1);
 	}
-	response.send(user.resultados);
+	console.log(juego.getPartida(user).resultados);
+	response.send(juego.getPartida(user).resultados);
+	//response.send(user.resultados);
 });
 
 app.post('/meterEnUsuarios/', function(request, response){

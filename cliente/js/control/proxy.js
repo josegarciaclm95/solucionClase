@@ -44,14 +44,14 @@ function proxy() {
     /**
      * El servidor registra los resultados del nivel actual y nos indica el siguiente nivel.
      */
-    this.nivelCompletado = function (tiempo) {
+    this.nivelCompletado = function (tiempo, vidas) {
             var callback = function (datos) {
                 proxy.removeListener();
                 $.cookie("nivel", datos.nivel);
                 proxy.setListener();
                 mostrarInfoJuego2();
             }
-            $.get("/nivelCompletado/" + $.cookie("id") + "/" + tiempo, callback);
+            $.get("/nivelCompletado/" + $.cookie("id") + "/" + tiempo + "/" + vidas, callback);
         }
         /**
          * Obtenemos los resultados de la partida actual

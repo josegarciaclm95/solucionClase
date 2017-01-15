@@ -208,7 +208,7 @@ function nextLevel(player, heaven){
     PlatformGroup = {};
     infoJuego = {};
     game.time.events.remove(timer);
-    nivelCompletado(tiempo);
+    nivelCompletado(tiempo, player.vidas);
 }
 
 function enableBodyObject(obj){
