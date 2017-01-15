@@ -202,6 +202,7 @@ function siguienteNivel() {
 
 function resetControl() {
     borrarCookies();
+    limpiarJuegoContainer();
     $("#control").empty();
     $("#modificar").hide();
     $("#eliminar").hide();
