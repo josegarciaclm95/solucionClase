@@ -166,41 +166,6 @@ app.get("/confirmarCuenta/:email/:id", function (request, response) {
 	response.setHeader("Content-type", "text/html");
 	response.send(contenido);
 });
-/*
-app.get("/confirmarCuenta/:email/:id", function (request, response) {
-	console.log("Confirmar cuenta")
-	var email = request.params.email;
-	var id = parseInt(request.params.id);
-	var criteria = {email:email,id_registro:id,activo:false};
-	function callbackConfirmar(err,cursor){
-		if(err){
-			console.log(err);
-		} else {
-			var cursorHandler = new CursorHandler();
-			cursorHandler.emptyCursorCallback = function(users) {
-				console.log("\t Confirmar cuenta -> \t El usuario ya se ha confirmado o no se ha registrado");
-				response.redirect("/");
-			}
-			cursorHandler.cursorWithSomethingCallback = function(users){
-				console.log("\t Confirmar cuenta -> \t Encontrado usuario en Limbo");
-				var usuario = new modelo.Usuario(email,users[0].password,juego,undefined);
-				//persistencia.insertUser(usuario,users[0].password,juego,undefined);
-				persistencia.updateOn("usuarios",criteria,{$set: {activo:true}},{},function(err,result){
-					if(err){
-						console.log(err)
-					} else {
-						console.log("\t Confirmar cuenta -> Usuario activado");
-					}	
-				});
-				//persistencia.removeOn("limbo",{email:email},function(){})
-				response.redirect("/");
-			}
-			cursor.toArray(cursorHandler.checkCursor);
-		}
-	}
-	persistencia.findSomething("usuarios",criteria,callbackConfirmar)
-});
-*/
 
 app.post("/modificarUsuario/", function (request, response) {
 	console.log("Modificar usuario");

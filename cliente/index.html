@@ -5,6 +5,14 @@
     <meta charset="UTF-8" />
     <title>Conquista Niveles</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:url"           content="http://juegoprocesos.herokuapp.com/" />
+    <meta property="og:type"          content="game.achievement" />
+    <meta property="og:title"         content="Conquista Niveles" />
+	<meta property="og:description"   content="Juego de plataformas basado en Phaser. Desafiate a ti mismo alcanzando el cielo sin morir en el intento" />
+	<meta property="og:image"         content="http://juegoprocesos.herokuapp.com/favicon.png" />
+    <meta property="og:image:width"   content="200px" />
+    <meta property="og:image:height"  content="200px" />
+    
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="css/propios/estilosPropios.css">
     <link rel="stylesheet" href="js/tool/chat/chat.css">
@@ -18,6 +26,17 @@
 </head>
 
 <body>
+    <div id="fb-root"></div>
+    <script>
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "//connect.facebook.net/es_ES/sdk.js#xfbml=1&version=v2.8";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
     <!--
     <audio id="backMusic" src="assets/dearlyBeloved.mp3" autoplay="true" loop="true"></audio>
     -->
@@ -26,12 +45,12 @@
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
                     aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-                <a class="navbar-brand" href="./index.html">Conquista Niveles</a>
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="./index.html">Conquista Niveles</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -86,6 +105,9 @@
                                     <img class="img-responsive" src="assets/kairi.jpg">
                                 </p>
                                 <p class="intro" id="info4">Could you find her? Reach the exit in each level to find her!!</p>
+            </div>
+            <div class="fb-share-button" data-href="http://juegoprocesos.herokuapp.com/" data-layout="button" data-size="large" data-mobile-iframe="true">
+                <a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fjuegoprocesos.herokuapp.com%2F&amp;src=sdkpreparse">Compartir</a>
             </div>
         </div>
     </div>
