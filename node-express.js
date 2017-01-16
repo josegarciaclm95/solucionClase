@@ -10,12 +10,13 @@ var app = exp();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-var juegofm = new modelo.JuegoFM('./cliente/js/juego-json.json');
+var juegofm = new modelo.JuegoFM('./servidor/juego-json.json');
 var juego = juegofm.makeJuego();
 
+/*
 var persistencia = require("./servidor/persistencia.js");
 persistencia.mongoConnect();
-
+*/
 var ObjectID = require("mongodb").ObjectID;
 var bodyParser = require("body-parser");
 
@@ -93,6 +94,22 @@ app.get("/", function (request, response) {
 
 app.post('/login/', function(request, response){
 	console.log("Login")
+	var email_name = request.body.email_name;
+	var password = request.body.password;
+	if(password != undefined){
+		password = encrypt(password);
+	}
+	if (user = juego.comprobarUsuario(email_name,password)){
+		console.log("\t Usuario " + user.email + " existe");
+		response.send(user);
+	} else {
+		console.log("\t Usuario " + email_name + " inexistente/inactivo o contrasena erronea. Login fallido");
+		response.send({nombre:"ERROR"});
+	}
+});
+/*
+app.post('/login/', function(request, response){
+	console.log("Login")
 	var email = request.body.email;
 	var password = request.body.password;
 	var criteria = {"email":email, activo:true};
@@ -122,7 +139,38 @@ app.post('/login/', function(request, response){
 	}
 	persistencia.findSomething("usuarios",criteria,callbackLogin);
 });
+*/
+app.post("/crearUsuario/", function (request, response) {
+	console.log("Crear usuarios")
+	var user_name = request.body.user_name;
+	var email = request.body.email;
+	var pass = request.body.password;
+	var urlD = request.body.url;
+	var userFound = juego.buscarUsuario(email);
+	var time_register = (new Date().valueOf());
+	if(!userFound){
+		juego.agregarUsuario(user_name,email,encrypt(pass),time_register,false, response)
+		var url = urlD + "/confirmarCuenta/" + email + "/" + time_register;
+		var html = '¡¡Bienvenido a ConquistaNiveles!! <br/> Confirme su cuenta haciendo clic en el siguiente enlace: <br/>';
+		html += '<a href='+url+'>'+url+'</a>';
+		mensaje.to = email;
+		mensaje.html = html;
+		function callbackSendEmail(errr,info){
+			if (errr){
+				console.log(errr);
+				response.send({result:"EmailNotSent"})
+			}
+			else {
+				console.log("\t Crear Usuario -> \t Email enviado");
+			}
+		}
+		client.sendMail(mensaje, callbackSendEmail);
+	} else {
+		response.send({result:"userExists"})
+	}
+});
 
+/*
 app.post("/crearUsuario/", function (request, response) {
 	console.log("Crear usuarios")
 	var email = request.body.email;
@@ -139,7 +187,7 @@ app.post("/crearUsuario/", function (request, response) {
 				response.send({result:"userExists"})
 			}
 			cursorHandler.emptyCursorCallback = function(users){
-				var time_register = (new Date().valueOf());
+				
 				console.log("\t Crear Usuario -> \t No se ha encontrado el usuario");
 				var url = urlD + "/confirmarCuenta/" + email + "/" + time_register;
 				var html = '¡¡Bienvenido a ConquistaNiveles!! <br/> Confirme su cuenta haciendo clic en el siguiente enlace: <br/>';
@@ -171,6 +219,7 @@ app.post("/crearUsuario/", function (request, response) {
 	}
 	persistencia.findSomething("usuarios",criteria,callbackCrearUsuario)
 });
+*/
 
 app.get("/confirmarCuenta/:email/:id", function (request, response) {
 	console.log("Confirmar cuenta")
@@ -257,14 +306,8 @@ app.get("/resultados/", function (request, response) {
 
 
 app.get('/limpiarMongo/', function(request,response){
-	persistencia.removeOn("usuarios",{},function(){
-		persistencia.removeOn("resultados",{},function(){
-			persistencia.removeOn("limbo",{},function(){
-				juego = juegofm.makeJuego();
-				response.send({"ok":"Todo bien"});
-			});
-		});
-	});	
+	juego.limpiarMongoPRUEBAS(response);
+	juego = juegofm.makeJuego();
 });
 
 app.get('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
@@ -322,25 +365,28 @@ app.get('/obtenerResultados/:id', function (request, response) {
 });
 
 app.post('/meterEnUsuarios/', function(request, response){
+	var user_name = request.body.user_name;
 	var email = request.body.email;
 	var pass = request.body.password;
-	var user = new modelo.Usuario(email);
-	var time = (new Date()).valueOf();
+	var urlD = request.body.url;
+	var time_register = (new Date().valueOf());
 	var act = JSON.parse(request.body.activo);
 	//console.log(pass)
-	
+	juego.insertarUsuarioPRUEBAS(user_name,email,encrypt(pass),time_register,act,response);
+	/*
+
 	function callbackInsertUsuarios(err,data){
 		//console.log(data);
 		if(err){
 			console.log(err)
 			response.send({result:err})
 		} else {
-			console.log("Usuario " + email + " con pass " + pass + " -  tiempo de registro " + time + " y activo " + act + " insertado")
-			response.send({result:"insertOnUsuarios", tiempo:time, id:data.ops[0]._id, maxNivel: juego.niveles.length});
-			//
+			console.log("Usuario " + email + " con pass " + pass + " -  tiempo de registro " + time_register + " y activo " + act + " insertado")
+			response.send({result:"insertOnUsuarios", tiempo:time_register, id:data.ops[0]._id, maxNivel: juego.niveles.length});
 		}
 	}
-	persistencia.insertOn("usuarios",{email:email,password:encrypt(pass),id_registro:time, activo:act}, callbackInsertUsuarios)
+	persistencia.insertOn("usuarios",{user_name: newUser.user_name, email:newUser.email, password: encrypt(newUser.password), id_registro: newUser.time_register, activo:newUser.activo}, callbackInsertUsuarios)
+	*/
 	//persistencia.insertUser(user,encrypt(pass),juego,response);
 	//response.send({result:request.body});
 });

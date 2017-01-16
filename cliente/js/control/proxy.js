@@ -3,7 +3,7 @@ function proxy() {
      * Se comprueba la validez de unos datos. El ultimo atributo indica si los datos se están comprobando
      * desde una cookie o desde el formulario de login. Si es desde cookie, no comprobamos la contrasena
      */
-    this.socket = io();
+    //this.socket = io();
     this.setListener = function(){
         this.socket.on("chat message " + $.cookie("nivel"), nuevoMensaje);
     }
@@ -17,7 +17,7 @@ function proxy() {
     this.deleteSocket = function(){
         proxy.socket = undefined;
     }
-    this.restartSocket = function(){
+    this.startSocket = function(){
         proxy.socket = io();
     }
     this.comprobarUsuarioMongo = function (nombre, pass, fromCookie) {
@@ -30,13 +30,14 @@ function proxy() {
                     borrarCookies();
                     loginIncorrecto();
                 } else {
+                    this.startSocket();
                     setCookies(data);
                     limpiarLogin();
                     mostrarInfoJuego2();
                 }
             }
             peticionAjax("POST", "/login/", true, JSON.stringify({
-                email: nombre,
+                email_name: nombre,
                 password: pass
             }), callback);
         }
@@ -64,7 +65,7 @@ function proxy() {
         $.get("/obtenerResultados/" + $.cookie("id"), callback);
     }
 
-    this.crearUsuario = function (nombre, pass, url) {
+    this.crearUsuario = function (user_name, email, pass, url) {
         var callback = function (data) {
             $.loadingBlockHide();
             if (data.result == "userExists") {
@@ -76,7 +77,8 @@ function proxy() {
             }
         }
         peticionAjax("POST", "/crearUsuario/", true, JSON.stringify({
-            email: nombre,
+            user_name:user_name,
+            email: email,
             password: pass,
             url: url
         }), callback);

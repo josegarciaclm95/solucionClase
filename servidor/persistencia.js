@@ -44,6 +44,29 @@ module.exports.updateOn = function(collection,criteria,changes,options,callback)
     dbM.collection(collection).update(criteria,changes,options,callback)
 }
 
+module.exports.insertarUsuario = function(newUser, gestorPartidas, response){
+	usersM.insert({user_name: newUser.user_name, email:newUser.email, password: newUser.password, id_registro: newUser.time_register, activo:newUser.activo}, function(err, result){
+		if(err){
+			console.log(err);
+		} else {
+			newUser.id = result.ops[0]._id;
+			console.log("\t Id de Mongo asignado a usuario insertado - " + newUser.id);
+			function consoleLogError(err,result){
+				if(err){
+					console.log(err);
+				} else {
+					console.log("\t Datos de partifas inicializados en insertarUsuario")
+					gestorPartidas.addRegistro(newUser.id);
+					console.log(gestorPartidas);
+					console.log(gestorPartidas.toString());
+					if (response != undefined) response.send({result:"insertOnUsuarios",id:newUser.id,maxNivel:newUser.maxNivel});
+				}
+			}
+			insertOn("partidas",{id_usuario:newUser.id, partidas:[]}, consoleLogError);
+		}
+	})
+}
+/*
 module.exports.insertUser = function(usuario,pass,juego,response){
 	usersM.insert({id_juego:usuario.idJuego, nombre:usuario.nombre, password:pass, nivel:usuario.nivel, vidas:usuario.vidas}, function(err,result){
 		if(err){
@@ -71,7 +94,7 @@ module.exports.insertUser = function(usuario,pass,juego,response){
 			console.log("\t Usuario " + usuario.nombre + " insertado");
 		}
 	});
-}
+}*/
 
 module.exports.getResultados = function(response){
 	console.log("Resultados");
@@ -113,4 +136,3 @@ function callBackResultados(err,results,user,res,response,i,max){
 		}
 	}
 }
-

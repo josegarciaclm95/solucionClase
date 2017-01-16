@@ -65,20 +65,20 @@ function preparacionPruebas(){
     
     var callbackPepe = function(){
             peticionAjax("POST","/meterEnUsuarios/",true,{email: "pepe", password: "pepe", activo:true}, function(data){
-            testRaiz();
+            //testRaiz();
             testCrearUsuario("xemagg95@gmail.com","jose"); //Nombre que ya existe
-            testCrearUsuario("jose","jose"); //Nombre que ya esta en el limbo
-            testCrearUsuario("josemariagarcia95@gmail.com","jose"); //nombre que no existe
-            testConfirmarUsuario("jose",tiempoConfir) //confirmar usuario
-            testDatosJuego();
+            //testCrearUsuario("jose","jose"); //Nombre que ya esta en el limbo
+            //testCrearUsuario("josemariagarcia95@gmail.com","jose"); //nombre que no existe
+            //testConfirmarUsuario("jose",tiempoConfir) //confirmar usuario
+            //testDatosJuego();
             testLogin("xemagg95@gmail.com",""); //sin contrasena - no devuelve nada
             testLogin("juan",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
             testLogin("pepe","pepe"); // contrasena buena - devuelve user
-            testModificarUsuario("josem2","joseM",""); //cambio de usuario que no existe
-            testModificarUsuario("josem","joseM",""); //cambio de usuario que existe (nombre)
-            testModificarUsuario("dani","dani","dani1"); //cambio de usuario que existe (contraseña)
-            testEliminarUsuario("jose31","jose2"); //eliminar usuario que no existe
-            testEliminarUsuario("jose2","jose2"); //eliminar usuario que no existe
+            //testModificarUsuario("josem2","joseM",""); //cambio de usuario que no existe
+            //testModificarUsuario("josem","joseM",""); //cambio de usuario que existe (nombre)
+            //testModificarUsuario("dani","dani","dani1"); //cambio de usuario que existe (contraseña)
+            //testEliminarUsuario("jose31","jose2"); //eliminar usuario que no existe
+            //testEliminarUsuario("jose2","jose2"); //eliminar usuario que no existe
             //testSimularJuego(314); //jugar todos los niveles, volver a empezar y recuperar resultados
         })
     }
@@ -220,7 +220,7 @@ function testLogin(email, pass){
     var options = {
         url:urlD + '/login/',
         method:'POST',
-        form:{email:email,password:pass},
+        form:{email_name:email,password:pass},
         headers:headers,
         qs:{'':''}
     }
@@ -229,10 +229,10 @@ function testLogin(email, pass){
     console.log("Respuesta testLogin() - Email " + email + " Password " + pass);
     console.log("--------------------------------------------------------");
        if(!error && response.statusCode == 200){
-           var result = JSON.parse(body).nivel;
+           var result = JSON.parse(body).nombre;
            var output;
-           if(result != 1){
-               output = "Test Login - " + email + ", " + pass + "  INCORRECTO. USUARIO NO EXISTE / CONTRASEÑA INCORRECTA";
+           if(result == "ERROR"){
+               output = "Test Login - " + email + ", " + pass + "  INCORRECTO. USUARIO NO EXISTE/NO ACTIVO - CONTRASEÑA INCORRECTA";
                console.log(output.green);
            } else {
                output = "Test Login - " + email + ", " + pass + " CORRECTO";

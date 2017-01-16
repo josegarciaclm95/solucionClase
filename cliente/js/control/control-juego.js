@@ -48,17 +48,19 @@ function mostrarResultadosUsuario(datos) {
 //Funciones de comunicación
 /**
  * Registramos al usuario
+ * @param user_name - nombre de usuario (nick)
  * @param nombre - email validado
  * @param pass - contrasena introducida
  */
-function crearUsuario(nombre, pass) {
-    if (nombre == "") {
-        nombre = "jugador";
+function crearUsuario(user_name, email, pass) {
+    console.log(user_name + " - " + email + " - " + pass);
+    if (user_name == "") {
+        user_name = "jugador";
     }
     var url = '';
     url = "http://localhost:1338"
     //url = "http://juegoprocesos.herokuapp.com";
-    proxy.crearUsuario(nombre, pass, url);
+    proxy.crearUsuario(user_name, email, pass, url);
     
 }
 

@@ -50,20 +50,23 @@ function construirLogin() {
 function construirRegistro() {
     limpiarJuegoContainer();
     $("#juegoContainer").load('../registro.html', function () {
+        $("#userName").on("focus", function (e) {
+            limpiarEstilos(this);
+        });
         $("#password1").on("focus", function (e) {
             limpiarEstilos(this);
         });
         $("#password2").on("focus", function (e) {
             limpiarEstilos(this);
         });
-        $("#nombreUsuario").on("focus", function (e) {
+        $("#correoUsuario").on("focus", function (e) {
             limpiarEstilos(this);
         });
         $("#confirmaRegBtn").on("click", function () {
             //console.log($("#nombreUsuario").val() + " - " + $("#password1").val());
-            if (!validateMail($("#nombreUsuario").val())) {
-                estilosAlerta('#nombreUsuario');
-                $('#nombreUsuario').val('Formato de mail no válido')
+            if (!validateMail($("#correoUsuario").val())) {
+                estilosAlerta('#correoUsuario');
+                $('#correoUsuario').val('Formato de mail no válido')
             } else if ($("#password2").val() != $("#password1").val()) {
                 estilosAlerta('#password2,#password1');
                 $("#formRegistro").prepend('<span id="warning" style="color:#FF0000; font-weight: bold;">Contraseñas no coinciden!!!</span>');
@@ -71,10 +74,10 @@ function construirRegistro() {
                 estilosAlerta('#password2,#password1');
                 $("#formRegistro").prepend('<span id="warning" style="color:#FF0000; font-weight: bold;">Contraseña no puede ir en blanco!!!</span>');
             } else {
-                crearUsuario($("#nombreUsuario").val(), $("#password2").val(), false);
+                crearUsuario($("#userName").val(),$("#correoUsuario").val(), $("#password2").val());
                 $.loadingBlockShow({
                     imgPath: 'assets/default.svg',
-                    text: 'Un momento pls, que esto tarda ...',
+                    text: 'Un momento por favor. Esta operación es un poco más lenta ...',
                     style: {
                         position: 'fixed',
                         width: '100%',
@@ -202,6 +205,7 @@ function siguienteNivel() {
 
 function resetControl() {
     borrarCookies();
+    proxy.deleteSocket();
     limpiarJuegoContainer();
     $("#control").empty();
     $("#modificar").hide();

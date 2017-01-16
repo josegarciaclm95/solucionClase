@@ -1,31 +1,64 @@
 var fs=require("fs");
 var _ = require("underscore");
-//var persistencia = require("./servidor/persistencia.js");
-//persistencia.mongoConnect();
+
+var persistencia = require("./persistencia.js");
+persistencia.mongoConnect();
 
 function Juego(){
     this.nombre = "Niveles";
     this.niveles = [];
     this.usuarios = [];
     this.gestorPartidas = new Caretaker();
+    var self = this;
     this.agregarNivel = function(nivel){
         this.niveles.push(nivel);
     };
-    this.agregarUsuario = function(usuario,pass,juego,response){
-        var a = this.buscarUsuario(usuario.email);
+    
+    /**
+     * Creación de usuario. Se instancia un usuario y se anade en el modelo y en mongo.
+     * @param  {} user_name - nombre de usuario 
+     * @param  {} email - email del usuario. Usado para la confirmacion. 
+     * @param  {} pass - contrasena cifrada
+     * @param  {} time_register - tiempo de registro. Usado para la confirmacion. 
+     * @param  {} activo - flag indicando si el usuario está activo 
+     * @param  {} response - objecto response asociado a la request
+     */
+    this.agregarUsuario = function(user_name,email,pass,time_register,activo, response){
+        var a = this.buscarUsuario(email);
         if(a == undefined){
             console.log("\t\t Model -> \t Agregado nuevo usuario al modelo");
-            this.usuarios.push(usuario);
-            this.gestorPartidas.addRegistro(usuario.id);
+            var newUser = new Usuario(user_name, email, pass, time_register, activo);
+            newUser.maxNivel = this.niveles.length;
+            this.usuarios.push(newUser);
+            //this.gestorPartidas.addRegistro(usuario.id);
+            persistencia.insertarUsuario(newUser, this.gestorPartidas, response);
         } else {
             console.log("\t\t Model -> \t El usuario ya existia. Se refrescan datos");
-            a.nivel = 1;
-            a.resultados = [];
-            a.idJuego = usuario.idJuego
-            this.gestorPartidas.addRegistro(a.id);
         }
         console.log(this.gestorPartidas.toString());
     };
+
+    /** 
+     * Comprobación de que el usuario existe, tiene el nombre y email correspondiente, esta activo y su contrasena 
+     * es correcto
+     * @param  {} email_name
+     * @param  {} password
+     */
+    this.comprobarUsuario = function(email_name, password){
+        console.log("\t Model -> \t Comprobando usuario");
+        var usuario = this.buscarUsuario(email_name);
+        if(usuario == undefined) {
+            console.log("\t El usuario no se encuentra")
+            return undefined;
+        } else if ((usuario.activo) && ((usuario.password == password) || (password == undefined))){
+           console.log("\t Usuario encontrado y correcto")
+            return usuario;
+        } else {
+            console.log("\t Usuario inactivo o con contrasena incorrecta")
+           return undefined;
+        }
+    }
+
     this.addPartida = function(usuario){
         this.gestorPartidas.addPartida(usuario);
         console.log(this.gestorPartidas.toString());
@@ -40,7 +73,7 @@ function Juego(){
     };
     this.buscarUsuario = function(nombre_us){
         return this.usuarios.filter(function(actual_element){
-            return actual_element.email == nombre_us;
+            return (actual_element.email == nombre_us) || (actual_element.user_name == nombre_us);
         })[0];
     }
     this.buscarUsuarioById = function(id){
@@ -74,6 +107,33 @@ function Juego(){
         });
         return res;
     }
+    this.insertarUsuarioPRUEBAS = function(user_name,email,pass,time_register,act,response){
+        var newUser = new Usuario(user_name,email,pass,time_register,act);
+        this.usuarios.push(newUser);
+        function callbackInsertUsuarios(err,data){
+		//console.log(data);
+		    if(err){
+			    console.log(err)
+			    response.send({result:err})
+		    } else {
+			    console.log("Usuario " + email + " con pass " + pass + " -  tiempo de registro " + time_register + " y activo " + act + " insertado")
+			    response.send({result:"insertOnUsuarios", tiempo:time_register, id:data.ops[0]._id, maxNivel: self.niveles.length});
+		    }
+	    }
+	    persistencia.insertOn("usuarios",{user_name: newUser.user_name, email:newUser.email, password: newUser.password, id_registro: newUser.time_register, activo:newUser.activo}, callbackInsertUsuarios)
+    }
+
+    this.limpiarMongoPRUEBAS = function(response){
+        persistencia.removeOn("usuarios",{},function(){
+		    persistencia.removeOn("resultados",{},function(){
+			    persistencia.removeOn("limbo",{},function(){
+				    persistencia.removeOn("partidas",{},function(){
+                    response.send({"ok":"Todo bien"});
+                })
+			});
+		});
+	});	
+    }
 }
     
 function Nivel(num,coord,gravedad,numEstrellas){
@@ -83,17 +143,13 @@ function Nivel(num,coord,gravedad,numEstrellas){
     this.starsNumber = numEstrellas;
 }
 
-function Usuario(email){
+function Usuario(user_name, email, pass, time_register, activo){
+    this.user_name = user_name;
     this.email = email;
-    this.password = "";
-    this.vidas = 5;
-    this.idJuego = new Date().valueOf();
+    this.password = pass;
     this.id_partida_actual = "";
-    this.nivel = 1;
-    this.resultados = []
-    this.agregarResultado = function (result){
-        this.resultados.push(result);
-    }
+    this.time_register = time_register;
+    this.activo = activo;
     Usuario.prototype.toString = function(){
         var r = "Usuario " + this.email + " - Id " + this.id + "\n";
         r += "Nivel actual " + this.nivel + "\n";

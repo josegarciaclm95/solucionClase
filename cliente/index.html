@@ -101,21 +101,6 @@
         var proxy = new proxy();
         $("#sonidoControl").on("click", apagarMusica);
         inicio();
-        /*
-        var socket = io();
-        socket.on("chat message 2", function (msg) {
-            console.log(msg)
-            socket.off("chat message 2");
-        });
-        socket.emit('chat message 1', {
-            msg: "Hola mundo 2",
-            nivel: 1
-        });
-        $('#messages').append($('<li>').text("Hola mundo"));
-        $('#messages').append($('<li>').text("Adios mundo"));
-        $('#messages').append($('<li>').text("Hola de nuevo mundo"));
-        //socket.off("chat message 2");
-        */
         window.onhashchange = function (e) {
             //console.log(e)
             var newPage = e.newURL.split('#')[1]
