@@ -87,3 +87,29 @@ p.intro img {
 #messages li:nth-child(odd) {
     background: #f9d;
 }
+
+#welcome, #bad-welcome {
+    background: #088A08;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 200%;
+}
+
+#welcome p, #bad-welcome p {
+    width: 40%;
+    font-size: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#welcome h1, #bad-welcome h1 {
+    font-weight: bold;
+}
+
+#welcome button, #bad-welcome button  {
+    font-size: 150%;
+}
+
+#bad-welcome {
+    background: #DF3A01;
+}

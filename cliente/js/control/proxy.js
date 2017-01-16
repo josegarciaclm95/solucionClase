@@ -4,6 +4,7 @@ function proxy() {
      * desde una cookie o desde el formulario de login. Si es desde cookie, no comprobamos la contrasena
      */
     //this.socket = io();
+    var self = this;
     this.setListener = function(){
         this.socket.on("chat message " + $.cookie("nivel"), nuevoMensaje);
     }
@@ -25,12 +26,12 @@ function proxy() {
             estilosAlerta('#claveL')
         } else {
             var callback = function (data) {
-                if (data.nivel == -1) {
+                if (data.user_name == "ERROR") {
                     console.log("El usuario no existe");
                     borrarCookies();
                     loginIncorrecto();
                 } else {
-                    this.startSocket();
+                    self.startSocket();
                     setCookies(data);
                     limpiarLogin();
                     mostrarInfoJuego2();

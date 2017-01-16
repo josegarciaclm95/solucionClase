@@ -38,6 +38,26 @@ function Juego(){
         console.log(this.gestorPartidas.toString());
     };
 
+    this.confirmarUsuario = function (email, time_register) {
+        var a = this.buscarUsuario(email);
+        if (a == undefined) {
+            return false;
+        } else if (!a.activo && a.time_register == time_register) {
+            a.activo = true;
+            var criteria = {email:email,id_registro:time_register,activo:false};
+            persistencia.updateOn("usuarios", criteria, { $set: { activo: true } }, {}, function (err, result) {
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log("\t\t Persistencia -> Usuario activado");
+                }
+            });
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /** 
      * Comprobación de que el usuario existe, tiene el nombre y email correspondiente, esta activo y su contrasena 
      * es correcto
@@ -148,6 +168,7 @@ function Usuario(user_name, email, pass, time_register, activo){
     this.email = email;
     this.password = pass;
     this.id_partida_actual = "";
+    this.nivel = 1;
     this.time_register = time_register;
     this.activo = activo;
     Usuario.prototype.toString = function(){

@@ -77,6 +77,7 @@ function eliminarUsuarioServer(nombre, pass) {
  */
 function borrarCookies() {
     //proxy.deleteSocket();
+    $.removeCookie('user_name');
     $.removeCookie('email');
     $.removeCookie('id');
     $.removeCookie('nivel');
@@ -84,6 +85,7 @@ function borrarCookies() {
 }
 
 function setCookies(data) {
+    $.cookie('user_name', data.user_name);
     $.cookie('email', data.email);
     $.cookie('id', data.id);
     $.cookie('nivel', data.nivel);

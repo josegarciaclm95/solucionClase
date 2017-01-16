@@ -91,6 +91,18 @@ app.get("/", function (request, response) {
 	response.setHeader("Content-type", "text/html");
 	response.send(contenido);
 });
+app.get("/welcome", function (request, response) {
+	console.log("Inicio de página");
+	var contenido = fs.readFileSync("./cliente/welcome.html");
+	response.setHeader("Content-type", "text/html");
+	response.send(contenido);
+});
+app.get("/bad-welcome", function (request, response) {
+	console.log("Inicio de página");
+	var contenido = fs.readFileSync("./cliente/bad_welcome.html");
+	response.setHeader("Content-type", "text/html");
+	response.send(contenido);
+});
 
 app.post('/login/', function(request, response){
 	console.log("Login")
@@ -104,42 +116,10 @@ app.post('/login/', function(request, response){
 		response.send(user);
 	} else {
 		console.log("\t Usuario " + email_name + " inexistente/inactivo o contrasena erronea. Login fallido");
-		response.send({nombre:"ERROR"});
+		response.send({user_name:"ERROR"});
 	}
 });
-/*
-app.post('/login/', function(request, response){
-	console.log("Login")
-	var email = request.body.email;
-	var password = request.body.password;
-	var criteria = {"email":email, activo:true};
-	if (password != undefined){
-		criteria["password"] = encrypt(password);
-	}
-	function callbackLogin(err,cursor){
-		if(err){
-			console.log(err)
-		} else {
-			var cursorHandler = new CursorHandler();
-			cursorHandler.emptyCursorCallback = function(users){
-				console.log("\t Login -> \t No existe el usuario " + email + " o esta sin activar. Login fallido");
-				response.send({nivel:-1});
-			} 
-			cursorHandler.cursorWithSomethingCallback = function(users){
-				var u = new modelo.Usuario(users[0].email);
-				console.log("\t Login -> \t Usuario " + u.email + " existe");
-				u.id = users[0]._id;
-				u.maxNivel = juego.niveles.length;
-				//persistencia.addNewResults(u);
-				juego.agregarUsuario(u);
-				response.send(u);
-			}
-			cursor.toArray(cursorHandler.checkCursor);
-		}
-	}
-	persistencia.findSomething("usuarios",criteria,callbackLogin);
-});
-*/
+
 app.post("/crearUsuario/", function (request, response) {
 	console.log("Crear usuarios")
 	var user_name = request.body.user_name;
@@ -170,57 +150,23 @@ app.post("/crearUsuario/", function (request, response) {
 	}
 });
 
-/*
-app.post("/crearUsuario/", function (request, response) {
-	console.log("Crear usuarios")
-	var email = request.body.email;
-	var pass = request.body.password;
-	var urlD = request.body.url;
-	var criteria = {"email":email};
-	function callbackCrearUsuario(err,cursor){
-		if(err){
-			console.log(err);
-		} else {
-			var cursorHandler = new CursorHandler();
-			cursorHandler.cursorWithSomethingCallback = function(users){
-				console.log("\t Crear Usuario -> \t El usuario ya existe");
-				response.send({result:"userExists"})
-			}
-			cursorHandler.emptyCursorCallback = function(users){
-				
-				console.log("\t Crear Usuario -> \t No se ha encontrado el usuario");
-				var url = urlD + "/confirmarCuenta/" + email + "/" + time_register;
-				var html = '¡¡Bienvenido a ConquistaNiveles!! <br/> Confirme su cuenta haciendo clic en el siguiente enlace: <br/>';
-				html += '<a href='+url+'>'+url+'</a>';
-				mensaje.to = email;
-				mensaje.html = html;
-				function callbackSendEmail(errr,info){
-					if (errr){
-						console.log(errr);
-						response.send({result:"EmailNotSent"})
-					}
-					else {
-						console.log("\t Crear Usuario -> \t Email enviado");
-						console.log('Message sent: ' + info.response);
-						persistencia.insertOn("usuarios",{email:email,password:encrypt(pass),id_registro:time_register,activo:false},function(err,data){
-							if(err){
-								console.log(err)
-							} else {
-								console.log("\t Crear Usuario -> \t Usuario added a usuarios");
-								response.send({result:"confirmEmail"})
-							}
-						});
-					}
-				}
-				client.sendMail(mensaje, callbackSendEmail);
-			}
-			cursor.toArray(cursorHandler.checkCursor)
-		}
+app.get("/confirmarCuenta/:email/:id", function (request, response) {
+	console.log("Confirmar cuenta")
+	var email = request.params.email;
+	var id = parseInt(request.params.id);
+	var contenido;
+	if(juego.confirmarUsuario(email,id)){
+		console.log("\t Confirmar cuenta -> Usuario activado");
+		response.setHeader("Location", "/welcome");
+	} else {
+		console.log("\t Confirmar cuenta -> \t El usuario ya se ha confirmado o no se ha registrado");
+		response.setHeader("Location", "/bad-welcome");
 	}
-	persistencia.findSomething("usuarios",criteria,callbackCrearUsuario)
+	response.statusCode = 302; 
+	response.setHeader("Content-type", "text/html");
+	response.send(contenido);
 });
-*/
-
+/*
 app.get("/confirmarCuenta/:email/:id", function (request, response) {
 	console.log("Confirmar cuenta")
 	var email = request.params.email;
@@ -254,6 +200,7 @@ app.get("/confirmarCuenta/:email/:id", function (request, response) {
 	}
 	persistencia.findSomething("usuarios",criteria,callbackConfirmar)
 });
+*/
 
 app.post("/modificarUsuario/", function (request, response) {
 	console.log("Modificar usuario");
