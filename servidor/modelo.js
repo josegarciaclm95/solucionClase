@@ -17,6 +17,7 @@ function Juego(){
     }
     this.newUsuario = function(user_name, email, pass, time_register, activo, id){
         var newUser = new Usuario(user_name, email, pass, time_register, activo);
+        console.log(newUser)
         newUser.maxNivel = this.niveles.length;
         newUser.id = id;
         self.usuarios.push(newUser);
@@ -77,18 +78,22 @@ function Juego(){
     this.comprobarUsuario = function(email_name, password){
         console.log("\t Model -> \t Comprobando usuario");
         var usuario = this.buscarUsuario(email_name);
+        console.log(usuario);
         if(usuario == undefined) {
             console.log("\t El usuario no se encuentra")
             return undefined;
         } else if ((usuario.activo) && ((usuario.password == password) || (password == undefined))){
            console.log("\t Usuario encontrado y correcto")
+           this.addRegistro(usuario.id);
             return usuario;
         } else {
             console.log("\t Usuario inactivo o con contrasena incorrecta")
            return undefined;
         }
     }
-
+    this.addRegistro = function(id){
+        this.gestorPartidas.addRegistro(id);
+    }
     this.addPartida = function(usuario){
         this.gestorPartidas.addPartida(usuario);
         console.log(this.gestorPartidas.toString());
@@ -182,12 +187,8 @@ function Usuario(user_name, email, pass, time_register, activo){
     this.time_register = time_register;
     this.activo = activo;
     Usuario.prototype.toString = function(){
-        var r = "Usuario " + this.email + " - Id " + this.id + "\n";
-        r += "Nivel actual " + this.nivel + "\n";
-        /*
-        for(var i in this.resultados){
-            r += this.resultados[i].toString() + "\n";
-        }*/
+        var r = "Usuario " + user_name + " con email " +  this.email + " - Id " + this.id + "\n";
+        r += "Registrado con id  " + this.time_register + + " y activo = " + this.activo +  "\n";
         return r;
     }
 }
@@ -269,8 +270,7 @@ function Caretaker(){
         if(partida = this.getPartida(usuario.id, usuario.id_partida_actual)){
             console.log("\t\t Model -> \t\t\t AddPartida - Partida encontrada");
             partida.resultados.push(new Resultado(usuario.nivel,tiempo,vidas))
-            persistencia.addNuevoResultado(usuario, tiempo, vidas);
-            response.send({'nivel':usuario.nivel});
+            persistencia.addNuevoResultado(usuario, tiempo, vidas, response);
         }
     }
     this.deletePartidas = function(id){

@@ -23,6 +23,11 @@ var explosions;
 var PlatformGroup = {};
 var infoJuego = {};
 var builderObject;
+var bolt;
+var xVelocity = 250; 
+var yVelocity = 400;
+var bubble;
+var shield; 
 
 function crearNivel(){
     console.log('Llamada a /datosJuego/'+$.cookie("id"));
@@ -52,9 +57,14 @@ function preload() {
     game.load.image('ground', 'assets/platform.png');
     game.load.image('ground2', 'assets/platform2.png');
     game.load.image('star', 'assets/star.png');
+    game.load.image('bolt', 'assets/bolt.png');
+    game.load.image('bubble', 'assets/bubble.png');
+    game.load.image('shield', 'assets/shield.png');
+
     game.load.spritesheet('dude', 'assets/sora.png', 60, 56);
     game.load.spritesheet('boom','assets/explosion.png',100,100);
     game.load.spritesheet('rain', 'assets/rain.png', 17, 17);
+    
     //game.load.spritesheet('boom','assets/explosion2.png',269,264);
 }
 
@@ -83,6 +93,7 @@ function create() {
     //Adding de grupos de plataformas y configutacion de las mismas
     PlatformGroup.platforms = game.add.group();
     PlatformGroup.cielo = game.add.group();
+
     enableBodyObject(PlatformGroup);
     
     var ground = PlatformGroup.platforms.create(0, game.world.height - 110, 'ground');
@@ -119,6 +130,16 @@ function create() {
     tiempoText = game.add.text(game.world.width-170,22,'Tiempo:0',{ fontSize: '32px', fill: '#000' });
     tiempo = 0;
     timer = game.time.events.loop(Phaser.Timer.SECOND,updateTiempo,this);
+
+    bolt = game.add.sprite(100, game.world.height - 230, 'bolt');
+    game.physics.enable(bolt,Phaser.Physics.ARCADE);
+    bolt.body.gravity.y = 350;
+
+    bubble = game.add.image(-10, -10, 'bubble');
+    bubble.visible = false;
+    shield = game.add.sprite(220, 200, 'shield');
+    game.physics.enable(shield,Phaser.Physics.ARCADE);
+    shield.body.gravity.y = 350;
 }
 
 function setupExplosions(expl){
@@ -141,19 +162,23 @@ function setPlayer(){
 function update() {
 
     game.physics.arcade.collide(player, PlatformGroup.platforms);
+    game.physics.arcade.collide(bolt, PlatformGroup.platforms);
+    game.physics.arcade.collide(shield, PlatformGroup.platforms);
 
     game.physics.arcade.overlap(stars, PlatformGroup.platforms ,killStar,null,this);
     game.physics.arcade.overlap(player, stars, collectStar, null, this);
     game.physics.arcade.overlap(player, PlatformGroup.cielo, nextLevel, null, this);
+    game.physics.arcade.overlap(player, bolt, fastenPlayer, null, this);
+    game.physics.arcade.overlap(player, shield, protectPlayer, null, this);
 
     player.body.velocity.x = 0;
 
     if (cursors.left.isDown) {
-        player.body.velocity.x = -250;
+        player.body.velocity.x = -xVelocity;
         player.animations.play('left');
     }
     else if (cursors.right.isDown) {
-        player.body.velocity.x = 250;
+        player.body.velocity.x = xVelocity;
         player.animations.play('right');
     }
     else {
@@ -161,8 +186,20 @@ function update() {
         player.frame = 1;
     }
     if (cursors.up.isDown && player.body.touching.down) {
-        player.body.velocity.y = -400;
+        player.body.velocity.y = -yVelocity;
     }
+}
+
+function fastenPlayer(player, bolt){
+    bolt.kill();
+    xVelocity += 100;
+    yVelocity += 100;
+}
+
+function protectPlayer(player, shield){
+    shield.kill();
+    bubble.visible = true;
+    player.addChild(bubble);
 }
 
 function killStar(star,platform){
@@ -182,12 +219,18 @@ function crearNuevaEstrella(){
 }
 
 function collectStar(player, star) {
+    console.log(player);
+    console.log(player.children)
     star.kill();
     var explosion = explosions.getFirstExists(false);
     explosion.reset(star.body.x-30, star.body.y-50);
     explosion.play('boom', 30, false, true);
     crearNuevaEstrella();
-    player.vidas -= 1;
+    if(player.children.length == 0){
+            player.vidas -= 1;
+    } else if(player.children[0].key != "bubble"){
+        player.vidas -= 1;
+    } 
     scoreText.text = 'Vidas: ' + player.vidas;
     if (player.vidas==0){
         player.kill();
@@ -208,6 +251,8 @@ function nextLevel(player, heaven){
     PlatformGroup = {};
     infoJuego = {};
     game.time.events.remove(timer);
+    xVelocity = 250;
+    yVelocity = 400;
     nivelCompletado(tiempo, player.vidas);
 }
 

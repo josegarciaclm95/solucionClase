@@ -19,7 +19,8 @@ module.exports.mongoConnect = function(juego){
 				} else {
 					cursor.forEach(function(actual){
 						console.log("\t\t Model -> \t Agregado nuevo usuario al modelo");
-            			juego.newUsuario(actual.user_name, actual.email, actual.pass, actual.time_register, actual.activo, actual._id)
+
+            			juego.newUsuario(actual.user_name, actual.email, actual.password, actual.time_register, actual.activo, actual._id)
 					})
 				}
 			});
@@ -27,7 +28,7 @@ module.exports.mongoConnect = function(juego){
 	});
 }
 
-module.exports.addNuevoResultado = function(usuario, tiempo, vidas){
+module.exports.addNuevoResultado = function(usuario, tiempo, vidas, response){
 	dbM.collection("partidas").update(
 		{id_usuario:usuario.id},
 		{$push: {partidas:{id_partida:usuario.id_partida_actual, nivel:usuario.nivel, tiempo: tiempo, vidas: vidas}}},
@@ -40,6 +41,7 @@ module.exports.addNuevoResultado = function(usuario, tiempo, vidas){
 				if (usuario.nivel > usuario.maxNivel) {
 					usuario.nivel = 1;
 				}
+				response.send({'nivel':usuario.nivel});
 				console.log("\t Agregado registro de resultados")
 			}
 		})
@@ -75,9 +77,9 @@ module.exports.insertarUsuario = function(newUser, gestorPartidas, response){
 					console.log(err);
 				} else {
 					console.log("\t Datos de partifas inicializados en insertarUsuario")
-					gestorPartidas.addRegistro(newUser.id);
-					console.log(gestorPartidas);
-					console.log(gestorPartidas.toString());
+					//gestorPartidas.addRegistro(newUser.id);
+					//console.log(gestorPartidas);
+					//console.log(gestorPartidas.toString());
 					if (response != undefined) response.send({result:"insertOnUsuarios",id:newUser.id,maxNivel:newUser.maxNivel});
 				}
 			}

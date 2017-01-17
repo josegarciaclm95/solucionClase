@@ -51,7 +51,8 @@ function proxy() {
                 proxy.removeListener();
                 $.cookie("nivel", datos.nivel);
                 proxy.setListener();
-                mostrarInfoJuego2();
+                console.log()
+                mostrarInfoJuego2($.cookie("nivel"));
             }
             $.get("/nivelCompletado/" + $.cookie("id") + "/" + tiempo + "/" + vidas, callback);
         }

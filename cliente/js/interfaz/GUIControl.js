@@ -153,7 +153,6 @@ function borrarControl() {
  */
 function mostrarInfoJuego2() {
     var nombre = $.cookie("email");
-    var id = $.cookie("id");
     var nivel = $.cookie("nivel");
     var percen = Math.floor(((nivel - 1) / $.cookie("maxNivel")) * 100);
     $('#datos').remove();
@@ -177,6 +176,7 @@ function siguienteNivel() {
     $("#control").append('<button type="button" id="cerrarSesBtn" class="btn btn-primary btn-md" style="margin-top:5px">Cerrar sesión</button>');
     $("#siguienteBtn").on("click", function () {
         $(this).remove();
+        $("#social").hide();
         $("#cerrarSesBtn").remove();
         limpiarJuegoContainer();
         $("#juegoContainer").append('<div id="juegoId"></div>');

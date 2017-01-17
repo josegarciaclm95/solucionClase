@@ -112,6 +112,7 @@ app.post('/login/', function(request, response){
 	if(password != undefined){
 		password = encrypt(password);
 	}
+	console.log(password)
 	if (user = juego.comprobarUsuario(email_name,password)){
 		console.log("\t Usuario " + user.email + " existe");
 		response.send(user);
