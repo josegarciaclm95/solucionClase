@@ -12,6 +12,7 @@ var io = require('socket.io')(http);
 
 var juegofm = new modelo.JuegoFM('./servidor/juego-json.json');
 var juego = juegofm.makeJuego();
+juego.connectMongo();
 
 /*
 var persistencia = require("./servidor/persistencia.js");
@@ -226,42 +227,19 @@ app.get('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
 	console.log("Nivel completado");
 	var id = request.params.id;
 	var tiempo = parseInt(request.params.tiempo);
-	var usuario = juego.buscarUsuarioById(id);
 	var vidas = parseInt(request.params.vidas);
+	var usuario = juego.buscarUsuarioById(id);
 	if(usuario != undefined){
 		console.log("\t Nivel completado -> \t Usuario encontrado en nivel completado")
-		usuario.agregarResultado(new modelo.Resultado(usuario.nivel,tiempo));
+		juego.guardarPartida(usuario, tiempo, vidas, response)
+		//usuario.agregarResultado(new modelo.Resultado(usuario.nivel,tiempo));
 		console.log("\t Nivel completado -> \t Usuario " + id + " - Tiempo " + tiempo + "-  IdJuego - " + usuario.idJuego);
-		usuario.tiempo = tiempo;
 	} else {
 		console.log("\t Nivel completado -> \t Usuario NO encontrado en nivel completado")
 		usuario = new modelo.Usuario("dummy");
 		usuario.nivel = -2;
 	}
-	juego.guardarPartida(usuario, tiempo, vidas)
-	var nivel = usuario.nivel;
-	usuario.nivel += 1;
-	if(usuario.nivel > juego.niveles.length){
-		usuario.nivel = 1;
-		//juego.agregarUsuario(Usuario);
-	}
-	var set = {};
-  	set["resultados.$.nivel" + nivel] = tiempo;
-	persistencia.updateOn(
-		"resultados",
-		{
-			usuario:ObjectID(id),
-			"resultados.idJuego":usuario.idJuego
-		},
-		{$set : set},
-		{upsert:false, multi:false},
-		function(err,result){
-			if(err){
-				console.log(err);
-			} 
-		});
 	console.log("\t Nivel completado -> \tNuevo nivel es ->" + usuario.nivel);
-	response.send({'nivel':usuario.nivel, "caretaker":juego.gestorPartidas});
 });
 
 app.get('/obtenerResultados/:id', function (request, response) {
@@ -285,22 +263,6 @@ app.post('/meterEnUsuarios/', function(request, response){
 	var act = JSON.parse(request.body.activo);
 	//console.log(pass)
 	juego.insertarUsuarioPRUEBAS(user_name,email,encrypt(pass),time_register,act,response);
-	/*
-
-	function callbackInsertUsuarios(err,data){
-		//console.log(data);
-		if(err){
-			console.log(err)
-			response.send({result:err})
-		} else {
-			console.log("Usuario " + email + " con pass " + pass + " -  tiempo de registro " + time_register + " y activo " + act + " insertado")
-			response.send({result:"insertOnUsuarios", tiempo:time_register, id:data.ops[0]._id, maxNivel: juego.niveles.length});
-		}
-	}
-	persistencia.insertOn("usuarios",{user_name: newUser.user_name, email:newUser.email, password: encrypt(newUser.password), id_registro: newUser.time_register, activo:newUser.activo}, callbackInsertUsuarios)
-	*/
-	//persistencia.insertUser(user,encrypt(pass),juego,response);
-	//response.send({result:request.body});
 });
 
 /**

@@ -5,7 +5,7 @@ var dbM;
 var usersM;
 var resultsM;
 
-module.exports.mongoConnect = function(){
+module.exports.mongoConnect = function(juego){
 	MongoClient.connect(urlM, function (err, db) {
 		if(err){
 			console.log(err);
@@ -13,23 +13,42 @@ module.exports.mongoConnect = function(){
 			console.log("Conectados en persistencia");
 			dbM = db;
 			usersM = dbM.collection("usuarios");
+			usersM.find().toArray(function(err, cursor){
+				if(err){
+					console.log(err)
+				} else {
+					cursor.forEach(function(actual){
+						console.log("\t\t Model -> \t Agregado nuevo usuario al modelo");
+            			juego.newUsuario(actual.user_name, actual.email, actual.pass, actual.time_register, actual.activo, actual._id)
+					})
+				}
+			});
 		}
 	});
 }
 
-module.exports.addNewResults = function (usuario){
-	dbM.collection("resultados").update(
-		{usuario:usuario.id},
-		{$push: {resultados: {idJuego:usuario.idJuego,nivel1:-1,nivel2:-1,nivel3:-1,nivel4:-1}}},
-		function(){
-			console.log("\t Agregado registro de resultados")
-		}
-	);
+module.exports.addNuevoResultado = function(usuario, tiempo, vidas){
+	dbM.collection("partidas").update(
+		{id_usuario:usuario.id},
+		{$push: {partidas:{id_partida:usuario.id_partida_actual, nivel:usuario.nivel, tiempo: tiempo, vidas: vidas}}},
+		function(err, doc){
+			if(err){
+				console.log(err);
+			} else {
+				var nivel = usuario.nivel;
+				usuario.nivel += 1;
+				if (usuario.nivel > usuario.maxNivel) {
+					usuario.nivel = 1;
+				}
+				console.log("\t Agregado registro de resultados")
+			}
+		})
 }
 
-module.exports.findSomething = function (collection,criteria,callback){
+function findSomething(collection,criteria,callback){
 	dbM.collection(collection).find(criteria,callback);
 }
+module.exports.findSomething = findSomething;
 
 function insertOn(collection,object,callback){
 	dbM.collection(collection).insert(object,callback);
@@ -66,35 +85,6 @@ module.exports.insertarUsuario = function(newUser, gestorPartidas, response){
 		}
 	})
 }
-/*
-module.exports.insertUser = function(usuario,pass,juego,response){
-	usersM.insert({id_juego:usuario.idJuego, nombre:usuario.nombre, password:pass, nivel:usuario.nivel, vidas:usuario.vidas}, function(err,result){
-		if(err){
-			console.log(err);
-		} else {
-			usuario.id = result.ops[0]._id;
-			usuario.maxNivel = juego.niveles.length;
-			console.log("\t Id de Mongo asignado a usuario insertado - " + usuario.id);
-			juego.agregarUsuario(usuario);
-			var obj = {
-				usuario:usuario.id, 
-				resultados:[
-						{idJuego:usuario.idJuego,nivel1:-1,nivel2:-1,nivel3:-1, nivel4:-1}
-				]
-			}
-			function consoleLogError(err,result){
-				if(err){
-					console.log(err);
-				} else {
-					console.log("\t Resultados inicializados en insertUser")
-					if (response != undefined) response.send({result:"insertOnUsuarios",id:usuario.id,maxNivel:usuario.maxNivel});
-				}
-			}
-			insertOn("resultados",obj, consoleLogError);
-			console.log("\t Usuario " + usuario.nombre + " insertado");
-		}
-	});
-}*/
 
 module.exports.getResultados = function(response){
 	console.log("Resultados");

@@ -40,9 +40,13 @@ function mostrarResultadosUsuario(datos) {
     var cadena = "<table id='resultados' class='table table-bordered table-condensed'><tr><th>Nombre</th><th>Nivel</th><th>Tiempo</th></tr>";
     for (var i = 0; i < datos.length; i++) {
         cadena = cadena + "<tr><td>" + $.cookie("email") + "</td><td> " + datos[i].nivel + "</td>" + "</td><td> " + datos[i].tiempo + "</td></tr>";
+        if(datos[i].nivel == $.cookie("nivel")){
+            $("twitter-button").attr("data-text", "¡He hecho el nivel  " + $.cookie("nivel") + " en " + datos[i].tiempo + " segundos");
+        }
     }
     cadena = cadena + "</table>";
     $('#juegoId').append(cadena);
+    $("#social").show();
 }
 
 //Funciones de comunicación

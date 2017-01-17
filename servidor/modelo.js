@@ -2,7 +2,6 @@ var fs=require("fs");
 var _ = require("underscore");
 
 var persistencia = require("./persistencia.js");
-persistencia.mongoConnect();
 
 function Juego(){
     this.nombre = "Niveles";
@@ -13,7 +12,16 @@ function Juego(){
     this.agregarNivel = function(nivel){
         this.niveles.push(nivel);
     };
-    
+    this.connectMongo = function(){
+        persistencia.mongoConnect(self);
+    }
+    this.newUsuario = function(user_name, email, pass, time_register, activo, id){
+        var newUser = new Usuario(user_name, email, pass, time_register, activo);
+        newUser.maxNivel = this.niveles.length;
+        newUser.id = id;
+        self.usuarios.push(newUser);
+        return newUser;
+    }
     /**
      * Creación de usuario. Se instancia un usuario y se anade en el modelo y en mongo.
      * @param  {} user_name - nombre de usuario 
@@ -27,17 +35,19 @@ function Juego(){
         var a = this.buscarUsuario(email);
         if(a == undefined){
             console.log("\t\t Model -> \t Agregado nuevo usuario al modelo");
-            var newUser = new Usuario(user_name, email, pass, time_register, activo);
-            newUser.maxNivel = this.niveles.length;
-            this.usuarios.push(newUser);
-            //this.gestorPartidas.addRegistro(usuario.id);
+            var newUser = self.newUsuario(user_name, email, pass, time_register, activo);
             persistencia.insertarUsuario(newUser, this.gestorPartidas, response);
         } else {
             console.log("\t\t Model -> \t El usuario ya existia. Se refrescan datos");
         }
         console.log(this.gestorPartidas.toString());
     };
-
+    
+    /**
+     * Comprobamos que el usuario de mail email esta a la espera de ser confirmado.
+     * @param  {} email - email del usuario
+     * @param  {} time_register - id unico generado al registrarse
+     */
     this.confirmarUsuario = function (email, time_register) {
         var a = this.buscarUsuario(email);
         if (a == undefined) {
@@ -83,8 +93,8 @@ function Juego(){
         this.gestorPartidas.addPartida(usuario);
         console.log(this.gestorPartidas.toString());
     }
-    this.guardarPartida = function(usuario, tiempo, vidas){
-        this.gestorPartidas.addResultados(usuario, tiempo, vidas);
+    this.guardarPartida = function(usuario, tiempo, vidas, response){
+        this.gestorPartidas.addResultados(usuario, tiempo, vidas, response);
         console.log(this.gestorPartidas.toString());
     };
     this.getPartida = function(usuario){
@@ -230,7 +240,8 @@ function Caretaker(){
                 return actual_element.id_partida == id_partida;
             })[0];
         } else {
-            console.log(parts);              
+            console.log("\t\t Model -> \t GetPartida no ha encontrado nada")
+            //console.log(parts);              
         }
     }
     /**
@@ -254,11 +265,12 @@ function Caretaker(){
      * @param tiempo - tiempo en acabar el nivel.
      * @param vidas - vidas al acabar el nivel.
      */
-    this.addResultados = function(usuario, tiempo, vidas){
+    this.addResultados = function(usuario, tiempo, vidas, response){
         if(partida = this.getPartida(usuario.id, usuario.id_partida_actual)){
-            console.log("Add resultados. if");
-            console.log(partida)
+            console.log("\t\t Model -> \t\t\t AddPartida - Partida encontrada");
             partida.resultados.push(new Resultado(usuario.nivel,tiempo,vidas))
+            persistencia.addNuevoResultado(usuario, tiempo, vidas);
+            response.send({'nivel':usuario.nivel});
         }
     }
     this.deletePartidas = function(id){
