@@ -93,13 +93,13 @@ app.get("/", function (request, response) {
 	response.send(contenido);
 });
 app.get("/welcome", function (request, response) {
-	console.log("Inicio de página");
+	console.log("Bienvenida usuario");
 	var contenido = fs.readFileSync("./cliente/welcome.html");
 	response.setHeader("Content-type", "text/html");
 	response.send(contenido);
 });
 app.get("/bad-welcome", function (request, response) {
-	console.log("Inicio de página");
+	console.log("Problema al confirmar");
 	var contenido = fs.readFileSync("./cliente/bad_welcome.html");
 	response.setHeader("Content-type", "text/html");
 	response.send(contenido);
@@ -112,7 +112,6 @@ app.post('/login/', function(request, response){
 	if(password != undefined){
 		password = encrypt(password);
 	}
-	console.log(password)
 	if (user = juego.comprobarUsuario(email_name,password)){
 		console.log("\t Usuario " + user.email + " existe");
 		response.send(user);
@@ -156,7 +155,7 @@ app.get("/confirmarCuenta/:email/:id", function (request, response) {
 	console.log("Confirmar cuenta")
 	var email = request.params.email;
 	var id = parseInt(request.params.id);
-	var contenido;
+	//var contenido;
 	if(juego.confirmarUsuario(email,id)){
 		console.log("\t Confirmar cuenta -> Usuario activado");
 		response.setHeader("Location", "/welcome");
@@ -166,7 +165,7 @@ app.get("/confirmarCuenta/:email/:id", function (request, response) {
 	}
 	response.statusCode = 302; 
 	response.setHeader("Content-type", "text/html");
-	response.send(contenido);
+	response.send({});
 });
 
 app.post("/modificarUsuario/", function (request, response) {
@@ -250,7 +249,7 @@ app.get('/obtenerResultados/:id', function (request, response) {
 		user = new modelo.Usuario("dummyRes");
 		user.resultados.push(1);
 	}
-	console.log(juego.getPartida(user).resultados);
+	//console.log(juego.getPartida(user).resultados);
 	response.send(juego.getPartida(user).resultados);
 	//response.send(user.resultados);
 });

@@ -23,7 +23,7 @@ module.exports.mongoConnect = function(juego){
             			juego.newUsuario(actual.user_name, actual.email, actual.password, actual.time_register, actual.activo, actual._id)
 						dbM.collection("partidas").find({id_usuario: ObjectID(actual._id)}).toArray(function(err, cursor){
 							if(err){
-								console.log(cursor);
+								console.log(err);
 							} else {
 								cursor.forEach(function(partida){
 									juego.adaptarPartida(actual._id, partida.partidas);
@@ -85,8 +85,8 @@ module.exports.insertarUsuario = function(user_name, email, pass, time_register,
 				if(err){
 					console.log(err);
 				} else {
-					console.log("\t Datos de partifas inicializados en insertarUsuario")
-					if (response != undefined) response.send({result:"insertOnUsuarios",id:newUser.id,maxNivel:newUser.maxNivel});
+					console.log("\t Datos de partidas inicializados en insertarUsuario")
+					if (response != undefined) response.send({result:"insertOnUsuarios", tiempo:newUser.time_register, d:newUser.id,maxNivel:newUser.maxNivel});
 				}
 			}
 			insertOn("partidas",{id_usuario:newUser.id, partidas:[]}, consoleLogError);

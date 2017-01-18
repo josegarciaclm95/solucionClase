@@ -49,6 +49,7 @@ function Juego(){
      */
     this.confirmarUsuario = function (email, time_register) {
         var a = this.buscarUsuario(email);
+        console.log(a);
         if (a == undefined) {
             return false;
         } else if (!a.activo && a.time_register == time_register) {
@@ -94,14 +95,11 @@ function Juego(){
     }
     this.addPartida = function(usuario){
         this.gestorPartidas.addPartida(usuario);
-        //console.log(this.gestorPartidas.toString());
     }
     this.guardarPartida = function(usuario, tiempo, vidas, response){
         this.gestorPartidas.addResultados(usuario, tiempo, vidas, response);
-        //console.log(this.gestorPartidas.toString());
     };
     this.getPartida = function(usuario){
-        //console.log(this.gestorPartidas.toString());
         return this.gestorPartidas.getPartida(usuario.id, usuario.id_partida_actual);
     };
     this.buscarUsuario = function(nombre_us){
@@ -132,9 +130,6 @@ function Juego(){
     this.getResultados = function(response) {
         var results = []
         for(var i in this.usuarios){
-            //console.log(i);
-            //console.log(this.usuarios[i])
-            //console.log(this.gestorPartidas)
             results.push({usuario:{user_name:this.usuarios[i].user_name, email: this.usuarios[i].email}, resultados: this.gestorPartidas.getPartidas(this.usuarios[i].id).partidas})
         }
         response.send(results);
@@ -161,17 +156,6 @@ function Juego(){
      * @param  {} response
      */
     this.insertarUsuarioPRUEBAS = function(user_name,email,pass,time_register,act,response){
-        var newUser = new Usuario(user_name,email,pass,time_register,act);
-        this.usuarios.push(newUser);
-        function callbackInsertUsuarios(err,data){
-		    if(err){
-			    console.log(err)
-			    response.send({result:err})
-		    } else {
-			    console.log("Usuario " + email + " con pass " + pass + " -  tiempo de registro " + time_register + " y activo " + act + " insertado")
-			    response.send({result:"insertOnUsuarios", tiempo:time_register, id:data.ops[0]._id, maxNivel: self.niveles.length});
-		    }
-	    }
         persistencia.insertarUsuario(user_name,email,pass,time_register,act, response, self)
     }
 
@@ -191,7 +175,6 @@ function Juego(){
         for(var i in partidas){
             this.gestorPartidas.adaptarPartida(id, partidas[i]);
         }
-        //console.log(this.gestorPartidas.toString());
     }
 }
     
@@ -276,7 +259,7 @@ function Caretaker(){
             console.log("\t\t Model -> \t Partida added");
         } else {
             console.log("\t\t Model -> \t No existe el registro");
-            console.log(this)
+            //console.log(this)
         }
     }
     /**

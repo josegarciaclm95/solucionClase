@@ -14,8 +14,8 @@ function encrypt(text) {
 
 
 //var sleep = require("sleep");
-//var urlD = "http://localhost:1338";
-var urlD = "https://juegoprocesos.herokuapp.com";
+var urlD = "http://localhost:1338";
+//var urlD = "https://juegoprocesos.herokuapp.com";
 /***********************IMPORTANTEEEEEEEEEEEEEEEEEEEEEEEE************************** */
 var id;
 var tiempoConfir;
@@ -72,21 +72,21 @@ function preparacionPruebas() {
             activo: true
         }, function (data) {
             testRaiz();
-            testCrearUsuario("xemagg95@gmail.com","jose"); //Nombre que ya existe
-            testCrearUsuario("jose","jose"); //Nombre que ya esta en el limbo
-            testCrearUsuario("josemariagarcia95@gmail.com","jose"); //nombre que no existe
-            testConfirmarUsuario("jose", tiempoConfir) //confirmar usuario
-            testConfirmarUsuario("pedro",45716);
-            testDatosJuego();
+            //testCrearUsuario("xemagg95@gmail.com","jose"); //Nombre que ya existe
+            //testCrearUsuario("jose","jose"); //Nombre que ya esta en el limbo
+            //testCrearUsuario("josemariagarcia95@gmail.com","jose"); //nombre que no existe
+            //testConfirmarUsuario("jose", tiempoConfir) //confirmar usuario
+            //testConfirmarUsuario("pedro",45716);
+            //testDatosJuego(); //Aqui traemos los datos de un nivel y simulamos el juego entero
             testLogin("xemagg95@gmail.com",""); //sin contrasena - no devuelve nada
-            testLogin("juan",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
-            testLogin("pepe","pepe"); // contrasena buena - devuelve user
+            //testLogin("juan",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
+            //testLogin("pepe","pepe"); // contrasena buena - devuelve user
             //testModificarUsuario("josem2","joseM",""); //cambio de usuario que no existe
             //testModificarUsuario("josem","joseM",""); //cambio de usuario que existe (nombre)
             //testModificarUsuario("dani","dani","dani1"); //cambio de usuario que existe (contraseña)
             //testEliminarUsuario("jose31","jose2"); //eliminar usuario que no existe
             //testEliminarUsuario("jose2","jose2"); //eliminar usuario que no existe
-            testSimularJuego(314); //jugar todos los niveles, volver a empezar y recuperar resultados
+            //testSimularJuego(314); //jugar todos los niveles, volver a empezar y recuperar resultados
         })
     }
 
@@ -112,7 +112,9 @@ function preparacionPruebas() {
         }, callbackJose2);
     }
     var callbackJoseM = function (error, response, body) {
+        console.log(body);
         tiempoConfir = JSON.parse(body).tiempo;
+        console.log(tiempoConfir);
         peticionAjax("POST", "/meterEnUsuarios/", true, {
             email: "josem",
             password: "jose",
@@ -189,7 +191,7 @@ function testCrearUsuario(email, pass) {
                 console.log("Test crearUsuario INCORRECTO. Usuario existe".green);
             } else if (result == "EmailNotSent") {
                 console.log("Test crearUsuario INCORRECTO. Fallo el envio del email".green);
-            } else if (result == "confirmEmail") {
+            } else if (result == "insertOnUsuarios") {
                 console.log("Test crearUsuario CORRECTO. Usuario pendiente de confirmar. Confirme mail".green);
             }
         } else {
@@ -250,6 +252,7 @@ function testDatosJuego() {
             if (result != -1) {
                 output = "Test testDatosJuego - Nivel " + JSON.parse(body).nivel + " Numero de plataformas " + JSON.parse(body).platforms.length + " CORRECTO";
                 console.log(output.green);
+                testSimularJuego(314);
             } else {
                 output = "Test testDatosJuego - Nivel " + JSON.parse(body).nivel + " Numero de plataformas " + JSON.parse(body).platforms.length + " INCORRECTO";
                 console.log(output.green);
@@ -281,7 +284,7 @@ function testLogin(email, pass) {
         console.log("Respuesta testLogin() - Email " + email + " Password " + pass);
         console.log("--------------------------------------------------------");
         if (!error && response.statusCode == 200) {
-            var result = JSON.parse(body).nombre;
+            var result = JSON.parse(body).user_name;
             var output;
             if (result == "ERROR") {
                 output = "Test Login - " + email + ", " + pass + "  INCORRECTO. USUARIO NO EXISTE/NO ACTIVO - CONTRASEÑA INCORRECTA";
