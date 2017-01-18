@@ -215,7 +215,7 @@ app.delete("/eliminarUsuario/", function (request, response) {
 });
 
 app.get("/resultados/", function (request, response) {
-	persistencia.getResultados(response);
+	juego.getResultados(response);
 });	
 
 
@@ -286,7 +286,7 @@ function CursorHandler(){
 	}
 }
 
-console.log("Servidor escuchando en el puerto "+process.env.PORT );
+console.log("Servidor escuchando en el puerto " + port);
 //app.listen(process.env.PORT || port);
 http.listen(process.env.PORT || port, function(){
   console.log('Listening on port ' + port);

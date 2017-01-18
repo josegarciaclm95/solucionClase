@@ -17,10 +17,10 @@ function Juego(){
     }
     this.newUsuario = function(user_name, email, pass, time_register, activo, id){
         var newUser = new Usuario(user_name, email, pass, time_register, activo);
-        console.log(newUser)
         newUser.maxNivel = this.niveles.length;
         newUser.id = id;
         self.usuarios.push(newUser);
+        self.addRegistro(newUser.id);
         return newUser;
     }
     /**
@@ -35,13 +35,13 @@ function Juego(){
     this.agregarUsuario = function(user_name,email,pass,time_register,activo, response){
         var a = this.buscarUsuario(email);
         if(a == undefined){
-            console.log("\t\t Model -> \t Agregado nuevo usuario al modelo");
+            console.log("\t Model -> \t Agregado nuevo usuario al modelo");
             var newUser = self.newUsuario(user_name, email, pass, time_register, activo);
-            persistencia.insertarUsuario(newUser, this.gestorPartidas, response);
+            persistencia.insertarUsuario(newUser, response);
         } else {
-            console.log("\t\t Model -> \t El usuario ya existia. Se refrescan datos");
+            console.log("\t Model -> \t El usuario ya existia. Se refrescan datos");
         }
-        console.log(this.gestorPartidas.toString());
+        //console.log(this.gestorPartidas.toString());
     };
     
     /**
@@ -96,14 +96,14 @@ function Juego(){
     }
     this.addPartida = function(usuario){
         this.gestorPartidas.addPartida(usuario);
-        console.log(this.gestorPartidas.toString());
+        //console.log(this.gestorPartidas.toString());
     }
     this.guardarPartida = function(usuario, tiempo, vidas, response){
         this.gestorPartidas.addResultados(usuario, tiempo, vidas, response);
-        console.log(this.gestorPartidas.toString());
+        //console.log(this.gestorPartidas.toString());
     };
     this.getPartida = function(usuario){
-        console.log(this.gestorPartidas.toString());
+        //console.log(this.gestorPartidas.toString());
         return this.gestorPartidas.getPartida(usuario.id, usuario.id_partida_actual);
     };
     this.buscarUsuario = function(nombre_us){
@@ -131,10 +131,17 @@ function Juego(){
             }
         }
     }
+    this.getResultados = function(response) {
+        var results = []
+        for(var i in this.usuarios){
+            results.push({usuario:{user_name:this.usuarios[i].user_name, email: this.usuarios[i].email}, resultados: this.gestorPartidas.getPartidas(this.usuarios[i].id).partidas})
+        }
+        response.send(results);
+    }
     Juego.prototype.toString = function(){
         var res = "Usuarios\n";
         this.usuarios.forEach(function(el){
-            res += "Usuario " + el.email + " - Id " + el.idJuego + "\n";
+            res += "Usuario " + el.email + " - Id " + el.id + "\n";
         });
         res += "Niveles\n";
         this.niveles.forEach(function(el){
@@ -142,11 +149,20 @@ function Juego(){
         });
         return res;
     }
+    /**
+     * Función auxiliar para la realización de pruebas. Se insertan usuarios en el modelo y en persistencia, 
+     * incluyendo las inserciones pertinentes en la coleccion partidas
+     * @param  {} user_name
+     * @param  {} email
+     * @param  {} pass
+     * @param  {} time_register
+     * @param  {} act
+     * @param  {} response
+     */
     this.insertarUsuarioPRUEBAS = function(user_name,email,pass,time_register,act,response){
         var newUser = new Usuario(user_name,email,pass,time_register,act);
         this.usuarios.push(newUser);
         function callbackInsertUsuarios(err,data){
-		//console.log(data);
 		    if(err){
 			    console.log(err)
 			    response.send({result:err})
@@ -155,7 +171,7 @@ function Juego(){
 			    response.send({result:"insertOnUsuarios", tiempo:time_register, id:data.ops[0]._id, maxNivel: self.niveles.length});
 		    }
 	    }
-	    persistencia.insertOn("usuarios",{user_name: newUser.user_name, email:newUser.email, password: newUser.password, id_registro: newUser.time_register, activo:newUser.activo}, callbackInsertUsuarios)
+        persistencia.insertarUsuario(newUser, response)
     }
 
     this.limpiarMongoPRUEBAS = function(response){
@@ -168,6 +184,13 @@ function Juego(){
 			});
 		});
 	});	
+    }
+
+    this.adaptarPartida = function(id, partidas){
+        for(var i in partidas){
+            this.gestorPartidas.adaptarPartida(id, partidas[i]);
+        }
+        //console.log(this.gestorPartidas.toString());
     }
 }
     
@@ -198,11 +221,6 @@ function Partida(){
     this.resultados = [];
     this.agregarResultado = function(nivel, tiempo, vidas){
         this.resultados.push(new Resultado(nivel, tiempo, vidas));
-    }
-    this.getDatosNivel = function(nivel){
-        return this.resultados.filter(function(actual_element){
-            return actual_element.nivel == nivel;
-        })[0];
     }
     Partida.prototype.toString = function(){
         var r = "Partida " + this.id_partida + "\n";
@@ -269,7 +287,7 @@ function Caretaker(){
     this.addResultados = function(usuario, tiempo, vidas, response){
         if(partida = this.getPartida(usuario.id, usuario.id_partida_actual)){
             console.log("\t\t Model -> \t\t\t AddPartida - Partida encontrada");
-            partida.resultados.push(new Resultado(usuario.nivel,tiempo,vidas))
+            partida.agregarResultado(usuario.nivel,tiempo,vidas);
             persistencia.addNuevoResultado(usuario, tiempo, vidas, response);
         }
     }
@@ -293,7 +311,25 @@ function Caretaker(){
         } 
         return r;
     }
+    /**
+     * Funcion auxiliar para recuperar los datos de Mongo y convertirlos a datos del modelo
+     * @param  {} id
+     * @param  {} partida - registro de mongo con los datos de una partida
+     */
+    this.adaptarPartida = function(id, partida){
+        //console.log(partida)
+        if(result = this.getPartida(id, partida.id_partida)){
+            result.agregarResultado(partida.nivel,partida.tiempo,partida.vidas);
+        } else {
+            var p = new Partida();
+            p.id_partida = partida.id_partida;
+            p.agregarResultado(partida.nivel, partida.tiempo, partida.vidas);
+            this.getPartidas(id).partidas.push(p);
+        }
+        console.log("\t Model -> \t Resultados de mongo insertados en Modelo");
+    }
 }
+
 function Resultado(nivel,tiempo,vidas){
     this.nivel = nivel;
     this.tiempo = tiempo;

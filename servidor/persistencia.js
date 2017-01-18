@@ -6,6 +6,7 @@ var usersM;
 var resultsM;
 
 module.exports.mongoConnect = function(juego){
+	console.log("Connect on Persistencia");
 	MongoClient.connect(urlM, function (err, db) {
 		if(err){
 			console.log(err);
@@ -18,10 +19,18 @@ module.exports.mongoConnect = function(juego){
 					console.log(err)
 				} else {
 					cursor.forEach(function(actual){
-						console.log("\t\t Model -> \t Agregado nuevo usuario al modelo");
-
+						console.log("\tPersistencia -> \t Agregado nuevo usuario al modelo");
             			juego.newUsuario(actual.user_name, actual.email, actual.password, actual.time_register, actual.activo, actual._id)
-					})
+						dbM.collection("partidas").find({id_usuario: ObjectID(actual._id)}).toArray(function(err, cursor){
+							if(err){
+								console.log(cursor);
+							} else {
+								cursor.forEach(function(partida){
+									juego.adaptarPartida(actual._id, partida.partidas);
+								});
+							}
+						});
+				})
 				}
 			});
 		}
@@ -65,7 +74,7 @@ module.exports.updateOn = function(collection,criteria,changes,options,callback)
     dbM.collection(collection).update(criteria,changes,options,callback)
 }
 
-module.exports.insertarUsuario = function(newUser, gestorPartidas, response){
+module.exports.insertarUsuario = function(newUser, response){
 	usersM.insert({user_name: newUser.user_name, email:newUser.email, password: newUser.password, id_registro: newUser.time_register, activo:newUser.activo}, function(err, result){
 		if(err){
 			console.log(err);
@@ -77,9 +86,6 @@ module.exports.insertarUsuario = function(newUser, gestorPartidas, response){
 					console.log(err);
 				} else {
 					console.log("\t Datos de partifas inicializados en insertarUsuario")
-					//gestorPartidas.addRegistro(newUser.id);
-					//console.log(gestorPartidas);
-					//console.log(gestorPartidas.toString());
 					if (response != undefined) response.send({result:"insertOnUsuarios",id:newUser.id,maxNivel:newUser.maxNivel});
 				}
 			}
@@ -88,12 +94,13 @@ module.exports.insertarUsuario = function(newUser, gestorPartidas, response){
 	})
 }
 
-module.exports.getResultados = function(response){
-	console.log("Resultados");
-    dbM.collection("usuarios").find({}).toArray(function(err,data){
+function getResultados (response){
+	console.log("Persistencia -> Resultados");
+	dbM.collection("usuarios").find({}).toArray(function(err,data){
 		callBackUsuarios(err,data,response);
 	});
 }
+module.exports.getResultados = getResultados;
 
 function callBackUsuarios(err,data,response){
 	console.log("\t Callback de usuarios en persistencia");
@@ -105,13 +112,14 @@ function callBackUsuarios(err,data,response){
 			var max = data.length;
 			data.forEach(function(item,i){
 				var user = {}
-				user.nombre = item.nombre;
-				dbM.collection("resultados").find({usuario:ObjectID(item._id)}).toArray(function(err,results){
+				user.user_name = item.user_name;
+				user.email = item.email;
+				dbM.collection("partidas").find({id_usuario:ObjectID(item._id)}).toArray(function(err,results){
 					callBackResultados(err,results,user,res,response,i,max);				
 				});
 			});
 		} else {
-			response.send({});
+			if(response != undefined) response.send({});
 		}
 	}
 }
@@ -121,10 +129,10 @@ function callBackResultados(err,results,user,res,response,i,max){
 	if(err){
 		console.log(err);
 	} else if(results.length != 0) {
-		user.resultados = results[0].resultados;
+		user.resultados = results[0].partidas;
 		res.push(user);
 		if(i + 1 == max){
-			response.send(res);
+			if(response != undefined) response.send(res);
 		}
 	}
 }

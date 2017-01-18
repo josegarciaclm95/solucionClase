@@ -228,27 +228,26 @@ function mostrarResultados() {
     peticionAjax("GET", "/resultados/", false, {}, function (data) {
         console.log("Ya tengo resultados");
         console.log(data.length);
+        console.log(data);
         resultadosJuego = data;
     });
     limpiarJuegoContainer();
     $('#juegoContainer').append('<h3 id="res">Resultados</h3>');
     var cadena = "";
     cadena += "<table id='resultados' class='table table-bordered table-condensed'>";
-    cadena += "<tr><th colspan='4' style='text-align:center;'><img style='height:150px; width:150px' src='./assets/wall-fame.png'></th></tr>";
+    cadena += "<tr><th colspan='5' style='text-align:center;'><img style='height:150px; width:150px' src='./assets/wall-fame.png'></th></tr>";
     cadena += "<tr><th style='text-align:center'>Nombre</th><th style='text-align:center'>Partida</th><th style='text-align:center'>Nivel</th><th style='text-align:center'>Tiempo</th></tr>";
 
     for (var i in resultadosJuego) {
         console.log(i)
         console.log(resultadosJuego[i])
         for (var j in resultadosJuego[i].resultados) {
-            for (var z in resultadosJuego[i].resultados[j]) {
-                var date;
-                if (z != "idJuego" && resultadosJuego[i].resultados[j][z] != -1) {
-                    cadena = cadena + "<tr><td>" + resultadosJuego[i].nombre + "</td><td>" + date + "</td><td> " + z.slice(-1) + "</td>" + "</td><td> " + resultadosJuego[i].resultados[j][z] + "</td></tr>";
-                } else {
-                    date = new Date(resultadosJuego[i].resultados[j][z]);
-                    date = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
-                }
+            for (var z in resultadosJuego[i].resultados[j].resultados) {
+                var date = new Date(resultadosJuego[i].resultados[j].id_partida);
+                date = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
+                cadena += "<tr><td>" + resultadosJuego[i].usuario.user_name + "</td><td>" + date + "</td><td> " 
+                    + resultadosJuego[i].resultados[j].resultados[z].nivel + "</td>" + "</td><td> " 
+                    + resultadosJuego[i].resultados[j].resultados[z].tiempo + "</td></tr>";
             }
         }
     }
