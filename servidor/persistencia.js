@@ -6,7 +6,7 @@ var usersM;
 var resultsM;
 
 module.exports.mongoConnect = function(juego){
-	console.log("Connect on Persistencia");
+	//console.log("Connect on Persistencia");
 	MongoClient.connect(urlM, function (err, db) {
 		if(err){
 			console.log(err);

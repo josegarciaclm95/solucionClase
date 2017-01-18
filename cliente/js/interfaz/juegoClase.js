@@ -116,9 +116,15 @@ function create() {
     explosions.forEach(setupExplosions, this);
 
     cursors = game.input.keyboard.createCursorKeys();
-    scoreText = game.add.text(16, 22, 'Vidas: 5', { fontSize: '32px', fill: '#000' });
+    if(infoJuego.nivel%2 == 0){
+        tiempoText = game.add.text(game.world.width-170,22,'Tiempo:0',{ fontSize: '32px', fill: '#fff' });
+        scoreText = game.add.text(16, 22, 'Vidas: 5', { fontSize: '32px', fill: '#FFF' });
+    } else {
+        tiempoText = game.add.text(game.world.width-170,22,'Tiempo:0',{ fontSize: '32px', fill: '#000' });
+        scoreText = game.add.text(16, 22, 'Vidas: 5', { fontSize: '32px', fill: '#000' });
+    }
 
-    tiempoText = game.add.text(game.world.width-170,22,'Tiempo:0',{ fontSize: '32px', fill: '#000' });
+    //tiempoText = game.add.text(game.world.width-170,22,'Tiempo:0',{ fontSize: '32px', fill: '#000' });
     tiempo = 0;
     timer = game.time.events.loop(Phaser.Timer.SECOND,updateTiempo,this);
 
