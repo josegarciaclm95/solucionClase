@@ -86,7 +86,7 @@ module.exports.insertarUsuario = function(user_name, email, pass, time_register,
 					console.log(err);
 				} else {
 					console.log("\t Datos de partidas inicializados en insertarUsuario")
-					if (response != undefined) response.send({result:"insertOnUsuarios", tiempo:newUser.time_register, d:newUser.id,maxNivel:newUser.maxNivel});
+					if (response != undefined) response.send({result:"insertOnUsuarios", tiempo:newUser.time_register, id:newUser.id,maxNivel:newUser.maxNivel});
 				}
 			}
 			insertOn("partidas",{id_usuario:newUser.id, partidas:[]}, consoleLogError);

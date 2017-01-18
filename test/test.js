@@ -14,8 +14,8 @@ function encrypt(text) {
 
 
 //var sleep = require("sleep");
-var urlD = "http://localhost:1338";
-//var urlD = "https://juegoprocesos.herokuapp.com";
+//var urlD = "http://localhost:1338";
+var urlD = "https://juegoprocesos.herokuapp.com";
 /***********************IMPORTANTEEEEEEEEEEEEEEEEEEEEEEEE************************** */
 var id;
 var tiempoConfir;
@@ -72,21 +72,25 @@ function preparacionPruebas() {
             activo: true
         }, function (data) {
             testRaiz();
-            //testCrearUsuario("xemagg95@gmail.com","jose"); //Nombre que ya existe
-            //testCrearUsuario("jose","jose"); //Nombre que ya esta en el limbo
-            //testCrearUsuario("josemariagarcia95@gmail.com","jose"); //nombre que no existe
-            //testConfirmarUsuario("jose", tiempoConfir) //confirmar usuario
-            //testConfirmarUsuario("pedro",45716);
-            //testDatosJuego(); //Aqui traemos los datos de un nivel y simulamos el juego entero
+            /*
+            testCrearUsuario("xemagg95@gmail.com","jose"); //Nombre que ya existe
+            testCrearUsuario("jose","jose"); //Nombre que ya esta en el limbo
+            testCrearUsuario("josemariagarcia95@gmail.com","jose"); //nombre que no existe
+            testConfirmarUsuario("jose", tiempoConfir) //confirmar usuario
+            testConfirmarUsuario("pedro",45716);
+            */
+            testDatosJuego(); //Aqui traemos los datos de un nivel y simulamos el juego entero
+            
+            /*
             testLogin("xemagg95@gmail.com",""); //sin contrasena - no devuelve nada
-            //testLogin("juan",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
-            //testLogin("pepe","pepe"); // contrasena buena - devuelve user
+            testLogin("juan",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
+            testLogin("pepe","pepe"); // contrasena buena - devuelve user
+            */
             //testModificarUsuario("josem2","joseM",""); //cambio de usuario que no existe
             //testModificarUsuario("josem","joseM",""); //cambio de usuario que existe (nombre)
             //testModificarUsuario("dani","dani","dani1"); //cambio de usuario que existe (contraseña)
             //testEliminarUsuario("jose31","jose2"); //eliminar usuario que no existe
             //testEliminarUsuario("jose2","jose2"); //eliminar usuario que no existe
-            //testSimularJuego(314); //jugar todos los niveles, volver a empezar y recuperar resultados
         })
     }
 
