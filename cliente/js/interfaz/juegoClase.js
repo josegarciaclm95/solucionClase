@@ -52,7 +52,8 @@ function crearNivel(){
 }
 
 function preload() {
-    game.load.image('sky', 'assets/sky2.png');
+    game.load.image('sky', 'assets/sky4.png');
+    game.load.image('night', 'assets/sky2.png');
     game.load.image('heaven', 'assets/heaven.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('ground2', 'assets/platform2.png');
@@ -72,23 +73,13 @@ function create() {
     //Creamos builder de elementos
     $("body").prepend('<audio id="gameMusic" src="assets/sorrow.mp3" autoplay="true" loop="true"></audio>');
     builderObject = new Builder(infoJuego);
-   
-    var emitter = game.add.emitter(300, 0, 400);
-    emitter.width = game.world.width;
-	emitter.angle = 30;
-    emitter.makeParticles('rain');
-	emitter.minParticleScale = 1;
-	emitter.maxParticleScale = 2;
-	emitter.setYSpeed(300, 500);
-	emitter.setXSpeed(-5, 5);
-	emitter.minRotation = 0;
-	emitter.maxRotation = 0;
-	emitter.start(false, 1600, 5, 0);
-
-    //Habilita fisica
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-
-    var sky = game.add.sprite(0, 10, 'sky');
+    
+    if(infoJuego.nivel%2 == 0){
+        var sky = game.add.sprite(0, 10, 'night');
+    } else {
+        var sky = game.add.sprite(0, 10, 'sky');
+    }
+    
     sky.scale.setTo(1.1,1.2);
     //Adding de grupos de plataformas y configutacion de las mismas
     PlatformGroup.platforms = game.add.group();
@@ -98,10 +89,10 @@ function create() {
     
     var ground = PlatformGroup.platforms.create(0, game.world.height - 110, 'ground');
     var heav = PlatformGroup.cielo.create(0, -25, 'heaven');
-    ground.scale.setTo(2, 2);
+    ground.scale.setTo(2, 4);
     heav.scale.setTo(3,1);
     ground.body.immovable = true;
-    ground.visible = false;
+    if(infoJuego.nivel%2 == 0) ground.visible = true; else ground.visible = false;
     heav.body.immovable = true;
 
     //Creamos las plataformas
@@ -140,6 +131,24 @@ function create() {
     shield = game.add.sprite(220, 200, 'shield');
     game.physics.enable(shield,Phaser.Physics.ARCADE);
     shield.body.gravity.y = 350;
+    
+    if(infoJuego.nivel%2 == 0){
+        var emitter = game.add.emitter(game.world.width/2, 0, 400);
+        emitter.width = game.world.width;
+        emitter.angle = 0;
+        emitter.makeParticles('rain');
+        emitter.minParticleScale = 1;
+        emitter.maxParticleScale = 2;
+        emitter.setYSpeed(300, 500);
+        emitter.setXSpeed(-5, 5);
+        emitter.minRotation = 0;
+        emitter.maxRotation = 0;
+        emitter.start(false, 1600, 5, 0);
+    }
+    
+    //Habilita fisica
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+
 }
 
 function setupExplosions(expl){

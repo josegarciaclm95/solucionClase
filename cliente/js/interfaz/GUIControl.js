@@ -236,24 +236,40 @@ function mostrarResultados() {
     $('#juegoContainer').append('<h3 id="res">Resultados</h3>');
     var cadena = "";
     cadena += "<table id='resultados' class='table table-bordered table-condensed'>";
-    cadena += "<tr><th colspan='5' style='text-align:center;'><img style='height:150px; width:150px' src='./assets/wall-fame.png'></th></tr>";
-    cadena += "<tr><th style='text-align:center'>Nombre</th><th style='text-align:center'>Partida</th><th style='text-align:center'>Nivel</th><th style='text-align:center'>Tiempo</th></tr>";
-    var flag = true;
+    cadena += "<tr><th colspan='5' style='text-align:center;'><img style='height:150px; width:150px' src='./assets/wall-fame.png'></th></tr></table>";
+    $('#juegoContainer').append(cadena);
+
+    cadena = "";
+    cadena += '<p>Aquí se presentan los resultados de todas las partidas realizadas. Puede hacer clic en la cabecera de'; 
+    cadena += ' cada columna para cambiar la organización (ascendente, descentente, A a Z, Z a A, etc.)</p>';
+    cadena += '<p>Tambien puede realizar busquedas mediante el cuadro Search. Estas busquedas se hacen por todos los atributos</p>'    
+    $('#juegoContainer').append(cadena);
+    var resultados = [];
     for (var i in resultadosJuego) {
         if(resultadosJuego[i].resultados.length != 0) flag = false;
         for (var j in resultadosJuego[i].resultados) {
             for (var z in resultadosJuego[i].resultados[j].resultados) {
                 var date = new Date(resultadosJuego[i].resultados[j].id_partida);
-                date = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
-                cadena += "<tr><td>" + resultadosJuego[i].usuario.user_name + "</td><td>" + date + "</td><td> " 
-                    + resultadosJuego[i].resultados[j].resultados[z].nivel + "</td>" + "</td><td> " 
-                    + resultadosJuego[i].resultados[j].resultados[z].tiempo + "</td></tr>";
+                var dia = (date.getDate() < 10) ? "0" + date.getDate() : date.getDate()
+                var mes = (date.getMonth() < 9) ? "0" + (date.getMonth()+1) : date.getMonth()+1
+                var horas = (date.getHours() < 10) ? "0" + date.getHours() : date.getHours()
+                var minutos = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes()
+                //date = date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
+                 date = dia+ "/" + mes + "/" + date.getFullYear() + " " + horas + ":" + minutos;
+                resultados.push([resultadosJuego[i].usuario.user_name,date,resultadosJuego[i].resultados[j].resultados[z].nivel, resultadosJuego[i].resultados[j].resultados[z].tiempo])
             }
         }
     }
-    if(flag) cadena += '<tr><th colspan="5" style="text-align:center;"> No hay resultados que mostrar en este momento </th></tr>';
-    cadena = cadena + "</table>";
-    $('#juegoContainer').append(cadena);
+    $('#juegoContainer').append('<table id="table" width="100%"></table>');
+    $('#table').DataTable({
+        data: resultados,
+        columns: [
+            { title: "Nombre" },
+            { title: "Fecha" },
+            { title: "Nivel" },
+            { title: "Tiempo" }
+        ]
+    });
 }
 
 function pruebaEffects() {

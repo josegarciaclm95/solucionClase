@@ -113,3 +113,33 @@ p.intro img {
 #bad-welcome {
     background: #DF3A01;
 }
+
+#table, th, td { 
+    color: #FFFFFF;
+    border: 1px solid white;
+    padding: 10px 10px;
+    font-size: 110%;
+}
+
+.sorting, .sorting_asc, .sorting_desc {
+    background: #FFFFFF;
+    color: #000;
+}
+
+#table_wrapper input, select {
+    font-weight: normal;
+    padding: 0px 10px;
+    color:black;
+}
+
+#table_wrapper a{
+    margin: 10px 10px;
+    padding: 5px 10px;
+     color: #FFF;
+     background: #088A08;
+     font-weight: bold;
+} 
+
+#table_wrapper #table_info {
+    margin: 10px 0px;
+}
