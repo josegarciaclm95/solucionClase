@@ -75,7 +75,8 @@ function proxy() {
                 $('#nombreUsuario').val('Usuario existente');
             } else {
                 $("#formRegistro").remove();
-                $("#juegoContainer").prepend('<span id="warning" style="color:#FF0000; font-weight: bold;">Confirma tu correo!!!</span>');
+                $("#juegoContainer").prepend('<span id="warning" style="font-weight: bold;">Te acabamos de mandar un mensaje con un link para confirmar tu cuenta. </span>');
+                $("#juegoContainer").prepend('<span id="warning" style="font-weight: bold;">Comprueba tu bandeja de correo electrónico. </span>');
             }
         }
         peticionAjax("POST", "/crearUsuario/", true, JSON.stringify({

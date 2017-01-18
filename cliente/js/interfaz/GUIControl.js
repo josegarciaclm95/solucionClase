@@ -209,6 +209,7 @@ function resetControl() {
     limpiarJuegoContainer();
     $("#control").empty();
     $("#modificar").hide();
+    $("#social").hide();
     $("#eliminar").hide();
     construirLogin();
 }
@@ -237,10 +238,9 @@ function mostrarResultados() {
     cadena += "<table id='resultados' class='table table-bordered table-condensed'>";
     cadena += "<tr><th colspan='5' style='text-align:center;'><img style='height:150px; width:150px' src='./assets/wall-fame.png'></th></tr>";
     cadena += "<tr><th style='text-align:center'>Nombre</th><th style='text-align:center'>Partida</th><th style='text-align:center'>Nivel</th><th style='text-align:center'>Tiempo</th></tr>";
-
+    var flag = true;
     for (var i in resultadosJuego) {
-        console.log(i)
-        console.log(resultadosJuego[i])
+        if(resultadosJuego[i].resultados.length != 0) flag = false;
         for (var j in resultadosJuego[i].resultados) {
             for (var z in resultadosJuego[i].resultados[j].resultados) {
                 var date = new Date(resultadosJuego[i].resultados[j].id_partida);
@@ -251,6 +251,7 @@ function mostrarResultados() {
             }
         }
     }
+    if(flag) cadena += '<tr><th colspan="5" style="text-align:center;"> No hay resultados que mostrar en este momento </th></tr>';
     cadena = cadena + "</table>";
     $('#juegoContainer').append(cadena);
 }

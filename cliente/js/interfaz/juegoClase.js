@@ -72,7 +72,7 @@ function create() {
     //Creamos builder de elementos
     $("body").prepend('<audio id="gameMusic" src="assets/sorrow.mp3" autoplay="true" loop="true"></audio>');
     builderObject = new Builder(infoJuego);
-   /*
+   
     var emitter = game.add.emitter(300, 0, 400);
     emitter.width = game.world.width;
 	emitter.angle = 30;
@@ -84,7 +84,7 @@ function create() {
 	emitter.minRotation = 0;
 	emitter.maxRotation = 0;
 	emitter.start(false, 1600, 5, 0);
-*/
+
     //Habilita fisica
     game.physics.startSystem(Phaser.Physics.ARCADE);
 

@@ -36,12 +36,10 @@ function Juego(){
         var a = this.buscarUsuario(email);
         if(a == undefined){
             console.log("\t Model -> \t Agregado nuevo usuario al modelo");
-            var newUser = self.newUsuario(user_name, email, pass, time_register, activo);
-            persistencia.insertarUsuario(newUser, response);
+            persistencia.insertarUsuario(user_name,email,pass,time_register,activo, response, self);
         } else {
             console.log("\t Model -> \t El usuario ya existia. Se refrescan datos");
         }
-        //console.log(this.gestorPartidas.toString());
     };
     
     /**
@@ -134,6 +132,9 @@ function Juego(){
     this.getResultados = function(response) {
         var results = []
         for(var i in this.usuarios){
+            //console.log(i);
+            //console.log(this.usuarios[i])
+            //console.log(this.gestorPartidas)
             results.push({usuario:{user_name:this.usuarios[i].user_name, email: this.usuarios[i].email}, resultados: this.gestorPartidas.getPartidas(this.usuarios[i].id).partidas})
         }
         response.send(results);
@@ -171,7 +172,7 @@ function Juego(){
 			    response.send({result:"insertOnUsuarios", tiempo:time_register, id:data.ops[0]._id, maxNivel: self.niveles.length});
 		    }
 	    }
-        persistencia.insertarUsuario(newUser, response)
+        persistencia.insertarUsuario(user_name,email,pass,time_register,act, response, self)
     }
 
     this.limpiarMongoPRUEBAS = function(response){

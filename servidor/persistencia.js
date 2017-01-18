@@ -74,12 +74,12 @@ module.exports.updateOn = function(collection,criteria,changes,options,callback)
     dbM.collection(collection).update(criteria,changes,options,callback)
 }
 
-module.exports.insertarUsuario = function(newUser, response){
-	usersM.insert({user_name: newUser.user_name, email:newUser.email, password: newUser.password, id_registro: newUser.time_register, activo:newUser.activo}, function(err, result){
+module.exports.insertarUsuario = function(user_name, email, pass, time_register, activo, response, juego){
+	usersM.insert({user_name:user_name, email:email, password: pass, id_registro: time_register, activo:activo}, function(err, result){
 		if(err){
 			console.log(err);
 		} else {
-			newUser.id = result.ops[0]._id;
+			var newUser = juego.newUsuario(user_name, email, pass, time_register, activo, result.ops[0]._id)
 			console.log("\t Id de Mongo asignado a usuario insertado - " + newUser.id);
 			function consoleLogError(err,result){
 				if(err){
