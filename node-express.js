@@ -173,26 +173,15 @@ app.post("/modificarUsuario/", function (request, response) {
 	var oldMail = request.body.old_email;
 	var newEmail = request.body.new_email;
 	var newPass = request.body.new_password;
+	var newUserName = request.body.new_user_name;
 	console.log("\t Modificar usuario -> Datos usuario");
 	console.log("\t\t Email viejo -> " +oldMail);
 	console.log("\t\t Email nuevo -> " +newEmail)
+	console.log("\t\t UserName nuevo -> " +newUserName)
 	console.log("\t\t Password nueva -> " +newPass)
 	console.log("\t\t Modificar usuario -> Datos usuario");
-	var criteria = {"email":oldMail};
-	var changes = {"email":newEmail};
-	if(newPass != ""){
-		changes["password"] = encrypt(newPass);
-		newPass = encrypt(newPass);
-	}
-	persistencia.updateOn("usuarios",criteria,{$set: changes},{},function(err,result){
-		if(err){
-			console.log(err)
-		} else {
-			console.log("\t Modificar usuario -> Datos actualizados");
-			juego.modificarUsuario(oldMail,newEmail, newPass);
-			response.send(result.result);
-		}
-	});
+
+	juego.modificarUsuario(newUserName, oldMail, newEmail, encrypt(newPass), response)
 });
 
 app.delete("/eliminarUsuario/", function (request, response) {
@@ -201,16 +190,7 @@ app.delete("/eliminarUsuario/", function (request, response) {
 	var pass = encrypt(request.body.password);
 	console.log("\t Eliminar usuario -> \t Email -> " +email);
 	console.log("\t Eliminar usuario -> \t Password -> " +pass)
-	var criteria = {"email":email, "password":pass};
-	persistencia.removeOn("usuarios",criteria,function(err,result){
-		if(err){
-			console.log(err)
-		} else {
-			console.log("Usuario eliminado")
-			juego.eliminarUsuario(email);
-			response.send(result.result);
-		}
-	});	
+	juego.eliminarUsuario(email, pass, response)
 });
 
 app.get("/resultados/", function (request, response) {
@@ -265,25 +245,6 @@ app.post('/meterEnUsuarios/', function(request, response){
 	juego.insertarUsuarioPRUEBAS(user_name,email,encrypt(pass),time_register,act,response);
 });
 
-/**
- * CURSOR HANDLER. Clase para facilitar la refactorizacion de los metodos que trabajan con cursores
- */
-function CursorHandler(){
-	var self = this;
-	this.emptyCursorCallback = function(users){
-
-	};
-	this.cursorWithSomethingCallback = function(users){
-
-	};
-	this.checkCursor = function(err,result){
-		if(result.length == 0){
-			self.emptyCursorCallback(result);
-		} else {
-			self.cursorWithSomethingCallback(result);
-		}
-	}
-}
 
 console.log("Servidor escuchando en el puerto " + port);
 //app.listen(process.env.PORT || port);

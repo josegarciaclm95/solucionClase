@@ -256,7 +256,8 @@ function mostrarResultados() {
                 var minutos = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes()
                 //date = date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
                  date = dia+ "/" + mes + "/" + date.getFullYear() + " " + horas + ":" + minutos;
-                resultados.push([resultadosJuego[i].usuario.user_name,date,resultadosJuego[i].resultados[j].resultados[z].nivel, resultadosJuego[i].resultados[j].resultados[z].tiempo])
+                 var nombre = (resultadosJuego[i].usuario.user_name == null) ? resultadosJuego[i].usuario.email : resultadosJuego[i].usuario.user_name;
+                resultados.push([nombre,date,resultadosJuego[i].resultados[j].resultados[z].nivel, resultadosJuego[i].resultados[j].resultados[z].tiempo])
             }
         }
     }

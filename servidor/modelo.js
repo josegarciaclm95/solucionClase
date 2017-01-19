@@ -77,7 +77,7 @@ function Juego(){
     this.comprobarUsuario = function(email_name, password){
         console.log("\t Model -> \t Comprobando usuario");
         var usuario = this.buscarUsuario(email_name);
-        console.log(usuario);
+        //console.log(usuario);
         if(usuario == undefined) {
             console.log("\t El usuario no se encuentra")
             return undefined;
@@ -112,19 +112,56 @@ function Juego(){
 			return usu.id == id
 		});
     }
-    this.eliminarUsuario = function(nombre_us){
+    this.eliminarUsuario = function(email, pass, response){
         console.log("\t\t Model -> \t Numero de usuarios " + this.usuarios.length);
-        var index = this.usuarios.indexOf(this.buscarUsuario(nombre_us));
-        this.usuarios.splice(index,1);
-        console.log("\t\t Model -> \t Usuario eliminado. Numero de usuarios " + this.usuarios.length);
+        var index = this.usuarios.findIndex(function(actual_element){
+            return (actual_element.email == email) || (actual_element.user_name == email);
+        });
+        if(index != -1){
+            var criteria = {"email":email, "password":pass};
+            var id = this.usuarios[index].id;
+            this.usuarios.splice(index,1);
+            persistencia.removeOn("usuarios",criteria,function(err,result){
+		        if(err){
+			        console.log(err)
+		        } else {
+			        console.log("Usuario eliminado")
+			        response.send(result.result);
+		        }
+	        });	
+            this.gestorPartidas.deletePartidas(id);
+            console.log("\t\t Model -> \t Usuario eliminado. Numero de usuarios " + this.usuarios.length);
+        } else {
+            response.send({"ok":-1, "n":-1});
+        }
     }
-    this.modificarUsuario = function(oldMail,newEmail, newPass){
+    this.modificarUsuario = function (newUserName, oldMail, newEmail, newPass, response) {
+        var criteria = { "email": oldMail };
+        var changes = {};
         var user = this.buscarUsuario(oldMail);
-        if (user != undefined){
-            user.email = newEmail;
-            if(newPass != ""){
-                user.password = newPass;
+        if (user != undefined) {
+            if (newEmail != "") {
+                user.email = newEmail;
+                changes["email"] = newEmail;
             }
+            if (newUserName != "") {
+                user.user_name = newUserName;
+                changes["user_name"] = newUserName;
+            }
+            if (newPass != "") {
+                user.password = newPass;
+                changes["password"] = newUserName;
+            }
+            persistencia.updateOn("usuarios", criteria, { $set: changes }, {}, function (err, result) {
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log("\t Modificar usuario -> Datos actualizados");
+                    response.send(result.result);
+                }
+            });
+        } else {
+            response.send({"ok":-1, "nModified":-1});
         }
     }
     this.getResultados = function(response) {

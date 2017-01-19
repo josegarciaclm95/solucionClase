@@ -14,8 +14,8 @@ function encrypt(text) {
 
 
 //var sleep = require("sleep");
-//var urlD = "http://localhost:1338";
-var urlD = "https://juegoprocesos.herokuapp.com";
+var urlD = "http://localhost:1338";
+//var urlD = "https://juegoprocesos.herokuapp.com";
 /***********************IMPORTANTEEEEEEEEEEEEEEEEEEEEEEEE************************** */
 var id;
 var tiempoConfir;
@@ -86,11 +86,12 @@ function preparacionPruebas() {
             testLogin("juan",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
             testLogin("pepe","pepe"); // contrasena buena - devuelve user
             
-            //testModificarUsuario("josem2","joseM",""); //cambio de usuario que no existe
-            //testModificarUsuario("josem","joseM",""); //cambio de usuario que existe (nombre)
-            //testModificarUsuario("dani","dani","dani1"); //cambio de usuario que existe (contraseña)
-            //testEliminarUsuario("jose31","jose2"); //eliminar usuario que no existe
-            //testEliminarUsuario("jose2","jose2"); //eliminar usuario que no existe
+            testModificarUsuario("", "josem2","joseM",""); //cambio de usuario que no existe
+            testModificarUsuario("", "josem","joseM",""); //cambio de usuario que existe (nombre)
+            testModificarUsuario("daniel27", "dani","","dani1"); //cambio de usuario que existe (contraseña)
+            
+            testEliminarUsuario("jose31","jose2"); //eliminar usuario que no existe
+            testEliminarUsuario("jose2","jose2"); //eliminar usuario que no existe
         })
     }
 
@@ -110,6 +111,7 @@ function preparacionPruebas() {
     }
     var callbackDani = function () {
         peticionAjax("POST", "/meterEnUsuarios/", true, {
+            user_name:"daniel",
             email: "dani",
             password: "dani",
             activo: true
@@ -306,14 +308,15 @@ function testLogin(email, pass) {
     });
 }
 
-function testModificarUsuario(old_email, new_email, new_pass) {
+function testModificarUsuario(new_user_name,old_email, new_email, new_pass) {
     var options = {
         url: urlD + '/modificarUsuario/',
         method: 'POST',
         form: {
             old_email: old_email,
             new_email: new_email,
-            new_password: new_pass
+            new_password: new_pass,
+            new_user_name: new_user_name
         },
         headers: headers,
         qs: {
@@ -322,7 +325,7 @@ function testModificarUsuario(old_email, new_email, new_pass) {
     }
     request.post(options, function (error, response, body) {
         console.log("==========================================")
-        console.log("Respuesta testModificar() - Email viejo " + old_email + " Email Nuevo " + new_email + " Password nueva " + new_pass);
+        console.log("Respuesta testModificar() - Email viejo " + old_email + " Email Nuevo " + new_email + "User Name nuevo " + new_user_name + " Password nueva " + new_pass);
         console.log("--------------------------------------------------------");
         if (!error && response.statusCode == 200) {
             var nModified = JSON.parse(body).nModified;
@@ -334,7 +337,7 @@ function testModificarUsuario(old_email, new_email, new_pass) {
                 var output = "Test Modificar INCORRECTO. NO SE HA REALIZADO MODIFICACIÓN";
                 console.log(output.green);
             } else {
-                var output = "Test Modificar CORRECTO. EMAIL VIEJO " + old_email + " - EMAIL NUEVO " + new_email + " - CONTRASEÑA NUEVA " + new_pass;
+                var output = "Test Modificar CORRECTO. EMAIL VIEJO " + old_email + " - EMAIL NUEVO " + new_email + "- USERNAME NUEVO " + new_user_name + " - CONTRASEÑA NUEVA " + new_pass;
                 console.log(output.green);
             }
         } else {
