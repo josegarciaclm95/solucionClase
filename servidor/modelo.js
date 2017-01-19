@@ -150,7 +150,7 @@ function Juego(){
             }
             if (newPass != "") {
                 user.password = newPass;
-                changes["password"] = newUserName;
+                changes["password"] = newPass;
             }
             persistencia.updateOn("usuarios", criteria, { $set: changes }, {}, function (err, result) {
                 if (err) {

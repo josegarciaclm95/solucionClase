@@ -86,23 +86,25 @@ function proxy() {
             url: url
         }), callback);
     }
-    this.modificarUsuario = function (nombre, pass) {
+    this.modificarUsuario = function (user_name, email, pass) {
         var callback = function (data) {
             if (data.nModified != 1) {
-                estilosAlerta('#nombreUsuario');
+                estilosAlerta('#nombreUsuario, #correoUsuario');
                 $('#nombreUsuario').val('Usuario existente');
             } else {
                 $("#juegoContainer").prepend('<span id="warning" style="color:#04B404">Yay!!! Todo ha ido bien</span>');
                 $("#formRegistro").remove();
                 borrarSiguienteNivel();
                 resetControl();
+                $("#juegoContainer").prepend('<span id="warning" style="font-weight: bold;">Modificación realizada correctamente. </span>');
             }
         }
         peticionAjax("POST", "/modificarUsuario/", true,
             JSON.stringify({
                 old_email: $.cookie('email'),
-                new_email: nombre,
-                new_password: pass
+                new_email: email,
+                new_password: pass,
+                new_user_name: user_name
             }), callback);
     }
 

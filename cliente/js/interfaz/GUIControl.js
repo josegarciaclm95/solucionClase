@@ -10,6 +10,7 @@ function limpiarJuegoContainer() {
 function limpiarEstilos(selector) {
     $(selector).removeAttr("style");
     $(selector).val('');
+    $("#warning").remove();
 }
 
 function loginIncorrecto() {
@@ -102,17 +103,22 @@ function construirFormularioModificar() {
         $("#password2").on("focus", function (e) {
             limpiarEstilos(this);
         });
-        $("#nombreUsuario").on("focus", function (e) {
+        $("#userName").on("focus", function (e) {
+            limpiarEstilos(this);
+        });
+        $("#correoUsuario").on("focus", function (e) {
             limpiarEstilos(this);
         });
         $("#labelCorreo").text("Correo electrónico");
-        $("#nombreUsuario").val($.cookie('email'));
+        $("#userName").val($.cookie('user_name'));
+        $("#correoUsuario").val($.cookie('email'));
         $("#confirmaRegBtn").text("Guardar cambios");
+
         $("#confirmaRegBtn").on("click", function () {
-            console.log($("#nombreUsuario").val() + " - " + $("#password1").val());
-            if (!validateMail($("#nombreUsuario").val())) {
-                estilosAlerta('#nombreUsuario');
-                $("#nombreUsuario").val('Email con formato incorrecto. Inserte su email con formato abc@def.ghi');
+            console.log($("#userName").val() + " - " + $("#password1").val());
+            if (!validateMail($("#correoUsuario").val())) {
+                estilosAlerta('#correoUsuario');
+                $("#correoUsuario").val('Email con formato incorrecto. Inserte su email con formato abc@def.ghi');
             } else if ($("#password2").val() != $("#password1").val()) {
                 estilosAlerta('#password2,#password1');
                 $("#formRegistro").prepend('<span id="warning" style="color:#FF0000">Contraseñas no coinciden!!!</span>');
@@ -120,7 +126,7 @@ function construirFormularioModificar() {
                 estilosAlerta('#password2,#password1');
                 $("#formRegistro").prepend('<span id="warning" style="color:#FF0000">Contraseña no puede ir en blanco!!!</span>');
             } else {
-                modificarUsuarioServer($("#nombreUsuario").val(), $("#password1").val());
+                modificarUsuarioServer($("#userName").val(), $("#correoUsuario").val(), $("#password1").val());
                 $("#warning").remove();
             }
         });
@@ -131,12 +137,14 @@ function construirFormularioModificar() {
 function construirFormularioEliminar() {
     limpiarJuegoContainer();
     $("#juegoContainer").load('../registro.html', function () {
-        $("#formRegistro").prepend('<span style="color:#FF0000">Confirma tus credenciales</span>');
+        $("#formRegistro").prepend('<span style="color:#FF0000; font-weight:bold">Confirma tus credenciales. Vas a eliminar tus datos</span>');
         $("#camposContra2").remove();
+        $("labelUserName").remove();
+        $("#userName").remove();
         $("#confirmaRegBtn").text("Eliminar credenciales");
         $("#labelCorreo").text("Correo electrónico");
         $("#confirmaRegBtn").on("click", function () {
-            eliminarUsuarioServer($("#nombreUsuario").val(), $("#password1").val());
+            eliminarUsuarioServer($("#correoUsuario").val(), $("#password1").val());
         });
     });
 }

@@ -68,8 +68,8 @@ function crearUsuario(user_name, email, pass) {
     
 }
 
-function modificarUsuarioServer(nombre, pass) {
-    proxy.modificarUsuario(nombre,pass);
+function modificarUsuarioServer(user_name, email, pass) {
+    proxy.modificarUsuario(user_name, email, pass);
 }
 
 function eliminarUsuarioServer(nombre, pass) {

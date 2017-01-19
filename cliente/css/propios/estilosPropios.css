@@ -116,7 +116,7 @@ p.intro img {
 
 #table, th, td { 
     color: #FFFFFF;
-    border: 1px solid white;
+    border: 1px solid darkblue;
     padding: 10px 10px;
     font-size: 110%;
 }
