@@ -1,0 +1,64 @@
+{
+    "nivel1": {
+        "gravity": 50,
+        "starsNumber": 2,
+        "platforms": []
+    },
+    "nivel2": {
+        "gravity": 50,
+        "starsNumber": 2,
+        "platforms": [
+            {
+                "asset": "ground2",
+                "x": 750,
+                "y": 400
+            },
+            {
+                "asset": "ground2",
+                "x": 600,
+                "y": 300
+            },
+            {
+                "asset": "ground2",
+                "x": 700,
+                "y": 200
+            },
+            {
+                "asset": "ground2",
+                "x": 600,
+                "y": 100
+            }
+        ]
+    },
+    "nivel3": {
+        "gravity": 50,
+        "starsNumber": 2,
+        "platforms": [
+            {
+                "asset": "ground2",
+                "x": 200,
+                "y": 375
+            },
+            {
+                "asset": "ground2",
+                "x": 100,
+                "y": 275
+            },
+            {
+                "asset": "ground2",
+                "x": 0,
+                "y": 175
+            },
+            {
+                "asset": "ground2",
+                "x": 200,
+                "y": 75
+            }
+        ]
+    },
+    "nivel4": {
+        "gravity": 50,
+        "starsNumber": 2,
+        "platforms": []
+    }
+}

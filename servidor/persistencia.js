@@ -1,6 +1,8 @@
 var MongoClient = require('mongodb');
 var ObjectID = require("mongodb").ObjectID;
 var urlM = 'mongodb://josemaria:procesos1617@ds031617.mlab.com:31617/usuariosjuego';
+//Comentar linea anterior y descomentar siguiente para pasar tests
+//var urlM = 'mongodb://josemaria:procesos1617@ds153709.mlab.com:53709/tests';
 var dbM;
 var usersM;
 var resultsM;

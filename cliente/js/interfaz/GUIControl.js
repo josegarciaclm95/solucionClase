@@ -193,7 +193,8 @@ function siguienteNivel() {
         }, 1000);
         console.log("Nivel de cookie es ->" + $.cookie("nivel"));
         console.log("Llamamos a crear nivel sin parametros en siguienteNivel()");
-        crearNivel();
+        //crearNivel();
+        onStart();
         $("#chat-box").load("./js/tool/chat/chat.html", function () {
             $("#chat-date").text(new Date());
             var callbackEnviar = function () {

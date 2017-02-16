@@ -117,6 +117,7 @@ function proxy() {
                 $("#formRegistro").remove();
                 borrarSiguienteNivel();
                 resetControl();
+                $("#juegoContainer").prepend('<span id="warning" style="font-weight: bold;">Eliminación realizada correctamente. </span>');
             }
         }
         peticionAjax("DELETE", "/eliminarUsuario/", true, JSON.stringify({

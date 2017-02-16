@@ -10,7 +10,7 @@ var app = exp();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-var juegofm = new modelo.JuegoFM('./servidor/juego-json.json');
+var juegofm = new modelo.JuegoFM('./servidor/prueba.json');
 var juego = juegofm.makeJuego();
 juego.connectMongo();
 
@@ -88,7 +88,7 @@ app.get("/datosJuego/:id", function (request, response) {
 
 app.get("/", function (request, response) {
 	console.log("Inicio de página");
-	var contenido = fs.readFileSync("./cliente/index.html");
+	var contenido = fs.readFileSync("./cliente/index_juego.html");
 	response.setHeader("Content-type", "text/html");
 	response.send(contenido);
 });

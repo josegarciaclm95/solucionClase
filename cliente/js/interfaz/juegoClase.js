@@ -28,6 +28,7 @@ var xVelocity = 250;
 var yVelocity = 400;
 var bubble;
 var shield; 
+var num_star = 0;
 
 function crearNivel(){
     console.log('Llamada a /datosJuego/'+$.cookie("id"));
@@ -108,11 +109,12 @@ function create() {
         var star = stars.create(i * (game.world.width/infoJuego.starsNumber), 0, 'star');
         game.physics.enable(star,Phaser.Physics.ARCADE);
         star.body.gravity.y = game.rnd.integerInRange(50,200);
+        num_star++;
         //star.body.velocity.x = game.rnd.integerInRange(-200,200);
     }
 
     explosions = game.add.group();
-    explosions.createMultiple(30, 'boom');
+    explosions.createMultiple(100, 'boom');
     explosions.forEach(setupExplosions, this);
 
     cursors = game.input.keyboard.createCursorKeys();
@@ -219,6 +221,7 @@ function protectPlayer(player, shield){
 
 function killStar(star,platform){
     star.kill();
+    num_star--;
     var explosion = explosions.getFirstExists(false);
     explosion.reset(star.body.x-30, star.body.y-50);
     explosion.play('boom', 30, false, true);
@@ -231,6 +234,16 @@ function crearNuevaEstrella(){
     game.physics.enable(strella,Phaser.Physics.ARCADE)
     strella.body.gravity.y = game.rnd.integerInRange(50,200);
     //strella.body.velocity.x = game.rnd.integerInRange(-200,200);
+}
+
+function evalEmotions(emotionResults){
+    console.log(emotionResults);
+    console.log(stars);
+    if(emotionResults.browFurrow > 50 && num_star < 25){
+        for(var i = 0; i < 10; i++){
+            crearNuevaEstrella();
+        }
+    }
 }
 
 function collectStar(player, star) {
@@ -251,6 +264,8 @@ function collectStar(player, star) {
         player.kill();
         game.time.events.remove(timer);
         game.destroy();
+        onStop();
+        num_star = 0;
         finJuego("Lo siento,  has perdido",mostrarInfoJuego2);
     }
 }
@@ -265,9 +280,11 @@ function nextLevel(player, heaven){
     player.kill();
     PlatformGroup = {};
     infoJuego = {};
+    num_star = 0;
     game.time.events.remove(timer);
     xVelocity = 250;
     yVelocity = 400;
+    onStop();
     nivelCompletado(tiempo, player.vidas);
 }
 

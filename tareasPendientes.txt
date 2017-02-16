@@ -1,4 +1,0 @@
---Pruebas de API
---¿Mejoramos aspecto/juego o añadimos componentes?
--- Test de siguiente nivel pasa por todos los niveles y vuelve al principio
--- Comprobar resultados
