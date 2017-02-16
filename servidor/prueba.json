@@ -2,7 +2,11 @@
     "nivel1": {
         "gravity": 50,
         "starsNumber": 2,
-        "platforms": []
+        "platforms": [{
+                "asset": "ground",
+                "x": 200,
+                "y": 200
+            }]
     },
     "nivel2": {
         "gravity": 50,
@@ -59,6 +63,10 @@
     "nivel4": {
         "gravity": 50,
         "starsNumber": 2,
-        "platforms": []
+        "platforms": [{
+                "asset": "ground",
+                "x": 200,
+                "y": 200
+            }]
     }
 }
