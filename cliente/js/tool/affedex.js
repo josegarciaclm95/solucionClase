@@ -21,7 +21,6 @@ detector.addEventListener("onInitializeSuccess", function () {
     $("#face_video_canvas").css("display", "block");
     $("#face_video").css("display", "none");
     time = Date.now();
-    crearNivel();
 });
 
 function log(node_name, msg) {

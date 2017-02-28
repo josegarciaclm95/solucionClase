@@ -94,7 +94,7 @@ function setCookies(data) {
     $.cookie('id', data.id);
     $.cookie('nivel', data.nivel);
     $.cookie('maxNivel', data.maxNivel);
-    proxy.setListener();
+    //proxy.setListener();
 }
 
 function finJuego(text,callback){

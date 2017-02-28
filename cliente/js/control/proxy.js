@@ -31,9 +31,13 @@ function proxy() {
                     borrarCookies();
                     loginIncorrecto();
                 } else {
-                    self.startSocket();
+                    //self.startSocket();
                     setCookies(data);
-                    limpiarLogin();
+                    console.log(data);
+                    $("#myModal").css("display","none");
+                    $("#myBtn").css("display","none");
+                    $(".info").css("display","none");
+                    //limpiarLogin();
                     mostrarInfoJuego2();
                 }
             }

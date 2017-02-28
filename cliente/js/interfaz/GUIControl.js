@@ -1,5 +1,7 @@
 function limpiarLogin() {
-    $("#login").remove();
+    //$("#login").remove();
+    //$("#myModal").css("display","none");
+    
 }
 
 function limpiarJuegoContainer() {
@@ -24,7 +26,7 @@ function estilosAlerta(selector) {
 
 function construirLogin() {
     limpiarLogin();
-    $("#control").load('../login.html', function () {
+    $("#modal-login").load('../login.html', function () {
         $("#claveL").on("keyup", function (e) {
             if (e.keyCode == 13) {
                 console.log($("#nombreL").val() + " - " + $("#claveL").val());
@@ -184,7 +186,7 @@ function siguienteNivel() {
     $("#control").append('<button type="button" id="cerrarSesBtn" class="btn btn-primary btn-md" style="margin-top:5px">Cerrar sesión</button>');
     $("#siguienteBtn").on("click", function () {
         $(this).remove();
-        $("#social").hide();
+        //$("#social").hide();
         $("#cerrarSesBtn").remove();
         limpiarJuegoContainer();
         $("#juegoContainer").append('<div id="juegoId"></div>');
@@ -193,8 +195,8 @@ function siguienteNivel() {
         }, 1000);
         console.log("Nivel de cookie es ->" + $.cookie("nivel"));
         console.log("Llamamos a crear nivel sin parametros en siguienteNivel()");
-        //crearNivel();
-        onStart();
+        crearNivel();
+        //onStart();
         $("#chat-box").load("./js/tool/chat/chat.html", function () {
             $("#chat-date").text(new Date());
             var callbackEnviar = function () {

@@ -8,17 +8,14 @@
 var game;
 var juego;
 var player;
-var badguy;
 var platforms;
-var cielo;
 var cursors;
-var stars;
+var apples;
 var score = 0;
 var vidasText;
 var tiempoText;
 var scoreText;
 var timer;
-var lastKeyPress = undefined;
 var explosions;
 var PlatformGroup = {};
 var infoJuego = {};
@@ -28,7 +25,7 @@ var xVelocity = 250;
 var yVelocity = 400;
 var bubble;
 var shield; 
-var num_star = 0;
+var num_apples = 0;
 
 function crearNivel(){
     console.log('Llamada a /datosJuego/'+$.cookie("id"));
@@ -58,7 +55,7 @@ function preload() {
     game.load.image('heaven', 'assets/heaven.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('ground2', 'assets/platform2.png');
-    game.load.image('star', 'assets/star.png');
+    game.load.image('apple', 'assets/apple.png');
     game.load.image('bolt', 'assets/bolt.png');
     game.load.image('bubble', 'assets/bubble.png');
     game.load.image('shield', 'assets/shield.png');
@@ -66,8 +63,6 @@ function preload() {
     game.load.spritesheet('dude', 'assets/sora.png', 60, 56);
     game.load.spritesheet('boom','assets/explosion.png',100,100);
     game.load.spritesheet('rain', 'assets/rain.png', 17, 17);
-    
-    //game.load.spritesheet('boom','assets/explosion2.png',269,264);
 }
 
 function create() {
@@ -102,20 +97,22 @@ function create() {
     //Seteamos jugador
     setPlayer();
 
-    stars = game.add.group();
-    stars.enableBody = true;
+    apples = game.add.group();
+    apples.enableBody = true;
 
     for (var i = 0; i <infoJuego.starsNumber; i++) {
-        var star = stars.create(i * (game.world.width/infoJuego.starsNumber), 0, 'star');
-        game.physics.enable(star,Phaser.Physics.ARCADE);
-        star.body.gravity.y = game.rnd.integerInRange(50,200);
-        num_star++;
+        var apple = apples.create(i * (game.world.width/infoJuego.starsNumber), 0, 'apple');
+        game.physics.enable(apple,Phaser.Physics.ARCADE);
+        apple.body.gravity.y = game.rnd.integerInRange(50,200);
+        num_apples++;
         //star.body.velocity.x = game.rnd.integerInRange(-200,200);
     }
 
+    /*
     explosions = game.add.group();
     explosions.createMultiple(100, 'boom');
     explosions.forEach(setupExplosions, this);
+    */
 
     cursors = game.input.keyboard.createCursorKeys();
     if(infoJuego.nivel%2 == 0){
@@ -156,7 +153,7 @@ function create() {
     
     //Habilita fisica
     game.physics.startSystem(Phaser.Physics.ARCADE);
-
+	console.log("Final de create");
 }
 
 function setupExplosions(expl){
@@ -165,7 +162,7 @@ function setupExplosions(expl){
 
 function setPlayer(){
     player = game.add.sprite(38, game.world.height - 230, 'dude');
-    player.vidas = 5;
+    player.apples = 0;
     game.physics.arcade.enable(player);
 
     player.body.bounce.y = 0.2; //Bouncing of the sprite when jumping. 1 = keeps bouncing a lot. 0.2 = jump is more natural
@@ -177,13 +174,13 @@ function setPlayer(){
 }
 
 function update() {
-
+	console.log("Llego a upDate");
     game.physics.arcade.collide(player, PlatformGroup.platforms);
     game.physics.arcade.collide(bolt, PlatformGroup.platforms);
     game.physics.arcade.collide(shield, PlatformGroup.platforms);
 
-    game.physics.arcade.overlap(stars, PlatformGroup.platforms ,killStar,null,this);
-    game.physics.arcade.overlap(player, stars, collectStar, null, this);
+    game.physics.arcade.overlap(apples, PlatformGroup.platforms ,killStar,null,this);
+    game.physics.arcade.overlap(player, apples, collectStar, null, this);
     game.physics.arcade.overlap(player, PlatformGroup.cielo, nextLevel, null, this);
     game.physics.arcade.overlap(player, bolt, fastenPlayer, null, this);
     game.physics.arcade.overlap(player, shield, protectPlayer, null, this);
@@ -221,56 +218,57 @@ function protectPlayer(player, shield){
 
 function killStar(star,platform){
     star.kill();
-    num_star--;
-    var explosion = explosions.getFirstExists(false);
-    explosion.reset(star.body.x-30, star.body.y-50);
-    explosion.play('boom', 30, false, true);
-    crearNuevaEstrella();
+    num_apples--;
+    //var explosion = explosions.getFirstExists(false);
+    //explosion.reset(star.body.x-30, star.body.y-50);
+    //explosion.play('boom', 30, false, true);
+    crearNuevaManzana();
 }
 
-function crearNuevaEstrella(){
+function crearNuevaManzana(){
     var j=Math.floor(Math.random()*765+1);
-    var strella = stars.create(j, 0, 'star');
+    var strella = apples.create(j, 0, 'apple');
     game.physics.enable(strella,Phaser.Physics.ARCADE)
     strella.body.gravity.y = game.rnd.integerInRange(50,200);
-    //strella.body.velocity.x = game.rnd.integerInRange(-200,200);
 }
 
 function evalEmotions(emotionResults){
     console.log(emotionResults);
-    console.log(stars);
-    if(emotionResults.browFurrow > 50 && num_star < 25){
+    console.log(apples);
+    if(emotionResults.browFurrow > 50 && num_apples < 25){
         for(var i = 0; i < 10; i++){
-            crearNuevaEstrella();
+            crearNuevaManzana();
         }
     }
 }
 
 function collectStar(player, star) {
+	console.log("Llego a collectStar");
     console.log(player);
-    console.log(player.children)
     star.kill();
-    var explosion = explosions.getFirstExists(false);
-    explosion.reset(star.body.x-30, star.body.y-50);
-    explosion.play('boom', 30, false, true);
-    crearNuevaEstrella();
+    //var explosion = explosions.getFirstExists(false);
+    //explosion.reset(star.body.x-30, star.body.y-50);
+    //explosion.play('boom', 30, false, true);
+    crearNuevaManzana();
     if(player.children.length == 0){
-            player.vidas -= 1;
+            //player.vidas -= 1;
     } else if(player.children[0].key != "bubble"){
-        player.vidas -= 1;
+        //player.vidas -= 1;
     } 
-    scoreText.text = 'Vidas: ' + player.vidas;
-    if (player.vidas==0){
+    player.apples++;
+    scoreText.text = 'Manzanas: ' + player.apples;
+    if (player.apples==5){
         player.kill();
         game.time.events.remove(timer);
         game.destroy();
         onStop();
-        num_star = 0;
-        finJuego("Lo siento,  has perdido",mostrarInfoJuego2);
+        num_apples = 0;
+        finJuego("¡ENHORABUENA!",mostrarInfoJuego2);
     }
 }
 
 function updateTiempo(){
+	console.log("Llego a updateTiempo");
     tiempo++;
     tiempoText.setText('Tiempo: '+tiempo);
 }
@@ -280,7 +278,7 @@ function nextLevel(player, heaven){
     player.kill();
     PlatformGroup = {};
     infoJuego = {};
-    num_star = 0;
+    num_apples = 0;
     game.time.events.remove(timer);
     xVelocity = 250;
     yVelocity = 400;
