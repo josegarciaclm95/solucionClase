@@ -80,7 +80,6 @@ function eliminarUsuarioServer(nombre, pass) {
  * Borramos la cookie que hubiera en el navegador
  */
 function borrarCookies() {
-    //proxy.deleteSocket();
     $.removeCookie('user_name');
     $.removeCookie('email');
     $.removeCookie('id');
@@ -94,7 +93,6 @@ function setCookies(data) {
     $.cookie('id', data.id);
     $.cookie('nivel', data.nivel);
     $.cookie('maxNivel', data.maxNivel);
-    //proxy.setListener();
 }
 
 function finJuego(text,callback){

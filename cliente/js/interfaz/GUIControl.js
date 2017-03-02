@@ -6,7 +6,6 @@ function limpiarLogin() {
 
 function limpiarJuegoContainer() {
     $("#juegoContainer").empty();
-    $("#chat-whole").remove();
 }
 
 function limpiarEstilos(selector) {
@@ -197,26 +196,12 @@ function siguienteNivel() {
         console.log("Llamamos a crear nivel sin parametros en siguienteNivel()");
         crearNivel();
         //onStart();
-        $("#chat-box").load("./js/tool/chat/chat.html", function () {
-            $("#chat-date").text(new Date());
-            var callbackEnviar = function () {
-                proxy.enviarMensaje($("#chat-msg").val());
-                $("#chat-msg").val('');
-            }
-            $("#chat-send").on("click", callbackEnviar);
-            $("#chat-msg").on("keyup", function (e) {
-                if (e.keyCode == 13) {
-                    callbackEnviar();
-                }
-            });
-        });
     })
     $("#cerrarSesBtn").on("click", resetControl);
 }
 
 function resetControl() {
     borrarCookies();
-    proxy.deleteSocket();
     limpiarJuegoContainer();
     $("#control").empty();
     $("#modificar").hide();
@@ -300,27 +285,4 @@ function validateMail(email) {
     var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
     console.log(re.test(email))
     return re.test(email);
-}
-
-function nuevoMensaje(msg) {
-    var date = new Date();
-    date = date.getHours() + ":" + date.getMinutes();
-    var html = `
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="media">
-                    <div class="media-body">
-                        <h4 class="media-heading">${msg.nombre}
-                            <span class="small pull-right">${date}</span>
-                        </h4>
-                        <p>${msg.msg}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <hr>
-    `;
-    $("#chat-conversation").append(html);
-    var element = document.getElementById("chat-conversation");
-    element.scrollTop = element.scrollHeight;
 }

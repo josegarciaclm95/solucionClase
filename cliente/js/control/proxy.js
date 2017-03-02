@@ -5,22 +5,6 @@ function proxy() {
      */
     //this.socket = io();
     var self = this;
-    this.setListener = function(){
-        this.socket.on("chat message " + $.cookie("nivel"), nuevoMensaje);
-    }
-    this.removeListener = function(){
-        this.socket.off("chat message " +  $.cookie("nivel"));
-    }
-    this.enviarMensaje = function(msg){
-        this.socket.emit("chat message " + $.cookie("nivel"), {msg:msg, nombre:$.cookie("email"), nivel:$.cookie("nivel")})
-        //nuevoMensaje(msg);
-    }
-    this.deleteSocket = function(){
-        proxy.socket = undefined;
-    }
-    this.startSocket = function(){
-        proxy.socket = io();
-    }
     this.comprobarUsuarioMongo = function (nombre, pass, fromCookie) {
         if (pass == "" && !fromCookie) {
             estilosAlerta('#claveL')
@@ -31,7 +15,6 @@ function proxy() {
                     borrarCookies();
                     loginIncorrecto();
                 } else {
-                    //self.startSocket();
                     setCookies(data);
                     console.log(data);
                     $("#myModal").css("display","none");
@@ -52,9 +35,7 @@ function proxy() {
      */
     this.nivelCompletado = function (tiempo, vidas) {
             var callback = function (datos) {
-                proxy.removeListener();
                 $.cookie("nivel", datos.nivel);
-                proxy.setListener();
                 console.log()
                 mostrarInfoJuego2($.cookie("nivel"));
             }
