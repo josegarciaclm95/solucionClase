@@ -25,7 +25,7 @@ function estilosAlerta(selector) {
 
 function construirLogin() {
     limpiarLogin();
-    $("#modal-login").load('../login.html', function () {
+    $("#modal-login").load('../html/login.html', function () {
         $("#claveL").on("keyup", function (e) {
             if (e.keyCode == 13) {
                 console.log($("#nombreL").val() + " - " + $("#claveL").val());
@@ -51,7 +51,7 @@ function construirLogin() {
 
 function construirRegistro() {
     limpiarJuegoContainer();
-    $("#juegoContainer").load('../registro.html', function () {
+    $("#juegoContainer").load('../html/registro.html', function () {
         $("#userName").on("focus", function (e) {
             limpiarEstilos(this);
         });

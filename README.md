@@ -17,8 +17,9 @@ Solución de la clase de Procesos de Jose Maria Garcia Garcia.
         * jasmine-2.5.2
         * jQuery
         * Phaser
+    * html
+        * Trozos de HTML usados en varias partes (login, registro, welcome)
     * index.html
-    * Trozos de HTML usados en varias partes (login, registro, welcome)
     * SpecRunner.html
  * Servidor
     * Modelo

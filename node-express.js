@@ -80,13 +80,13 @@ app.get("/", function (request, response) {
 });
 app.get("/welcome", function (request, response) {
 	console.log("Bienvenida usuario");
-	var contenido = fs.readFileSync("./cliente/welcome.html");
+	var contenido = fs.readFileSync("./cliente/html/welcome.html");
 	response.setHeader("Content-type", "text/html");
 	response.send(contenido);
 });
 app.get("/bad-welcome", function (request, response) {
 	console.log("Problema al confirmar");
-	var contenido = fs.readFileSync("./cliente/bad_welcome.html");
+	var contenido = fs.readFileSync("./cliente/html/bad_welcome.html");
 	response.setHeader("Content-type", "text/html");
 	response.send(contenido);
 });
