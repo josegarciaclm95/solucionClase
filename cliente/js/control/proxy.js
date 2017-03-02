@@ -78,10 +78,10 @@ function proxy() {
                 $('#nombreUsuario').val('Usuario existente');
             } else {
                 $("#juegoContainer").prepend('<span id="warning" style="color:#04B404">Yay!!! Todo ha ido bien</span>');
+                $("#juegoContainer").prepend('<span id="warning" style="font-weight: bold;">Modificación realizada correctamente. </span>');
                 $("#formRegistro").remove();
                 borrarSiguienteNivel();
                 resetControl();
-                $("#juegoContainer").prepend('<span id="warning" style="font-weight: bold;">Modificación realizada correctamente. </span>');
             }
         }
         peticionAjax("POST", "/modificarUsuario/", true,

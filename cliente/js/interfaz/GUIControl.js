@@ -50,8 +50,9 @@ function construirLogin() {
 }
 
 function construirRegistro() {
+    $("#intro-row").empty();
     limpiarJuegoContainer();
-    $("#juegoContainer").load('../html/registro.html', function () {
+    $("#intro-row").load('../html/registro.html', function () {
         $("#userName").on("focus", function (e) {
             limpiarEstilos(this);
         });
@@ -97,7 +98,7 @@ function construirRegistro() {
 
 function construirFormularioModificar() {
     limpiarJuegoContainer();
-    $("#juegoContainer").load('../registro.html', function () {
+    $("#juegoContainer").load('../html/registro.html', function () {
         $("#password1").on("focus", function (e) {
             limpiarEstilos(this);
         });
@@ -123,9 +124,6 @@ function construirFormularioModificar() {
             } else if ($("#password2").val() != $("#password1").val()) {
                 estilosAlerta('#password2,#password1');
                 $("#formRegistro").prepend('<span id="warning" style="color:#FF0000">Contraseñas no coinciden!!!</span>');
-            } else if ($("#password1").val() == "") {
-                estilosAlerta('#password2,#password1');
-                $("#formRegistro").prepend('<span id="warning" style="color:#FF0000">Contraseña no puede ir en blanco!!!</span>');
             } else {
                 modificarUsuarioServer($("#userName").val(), $("#correoUsuario").val(), $("#password1").val());
                 $("#warning").remove();
@@ -134,10 +132,14 @@ function construirFormularioModificar() {
     });
 }
 
-
+/*
+else if ($("#password1").val() == "") {
+                estilosAlerta('#password2,#password1');
+                $("#formRegistro").prepend('<span id="warning" style="color:#FF0000">Contraseña no puede ir en blanco!!!</span>');
+                */
 function construirFormularioEliminar() {
     limpiarJuegoContainer();
-    $("#juegoContainer").load('../registro.html', function () {
+    $("#juegoContainer").load('../html/registro.html', function () {
         $("#formRegistro").prepend('<span style="color:#FF0000; font-weight:bold">Confirma tus credenciales. Vas a eliminar tus datos</span>');
         $("#camposContra2").remove();
         $("labelUserName").remove();
@@ -207,7 +209,8 @@ function resetControl() {
     $("#modificar").hide();
     $("#social").hide();
     $("#eliminar").hide();
-    construirLogin();
+    location.reload();
+    //construirLogin();
 }
 
 function borrarSiguienteNivel() {
@@ -266,17 +269,6 @@ function mostrarResultados() {
             { title: "Nivel" },
             { title: "Tiempo" }
         ]
-    });
-}
-
-function pruebaEffects() {
-    $("#info1").fadeIn(3500, function () {
-        $("#info2").fadeIn(200, function () {
-            $("#info3").fadeIn(3000, function () {
-                $("#info4").fadeIn(2000);
-                $("#info5").fadeIn(2000);
-            })
-        })
     });
 }
 
