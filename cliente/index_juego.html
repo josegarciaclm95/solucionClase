@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8" />
@@ -19,7 +19,7 @@
 
 <body>
     <!--
-    <audio id="backMusic" src="assets/dearlyBeloved.mp3" autoplay="true" loop="true"></audio>
+    <audio id="backMusic" src="assets/audio/dearlyBeloved.mp3" autoplay="true" loop="true"></audio>
     -->
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
@@ -111,6 +111,7 @@
     <script type="text/javascript" src="js/control/control-juego.js"></script>
     <script type="text/javascript" src="js/control/proxy.js"></script>
     <script type="text/javascript" src="js/tool/builder-json.js"></script>
+    <script type="text/javascript" src="js/tool/speech.js"></script>
     <script src="https://download.affectiva.com/js/3.1/affdex.js"></script>
     <script type="text/javascript" src="js/tool/affedex.js"></script>
     <script type="text/javascript">
@@ -153,7 +154,13 @@
 				modal.style.display = "none";
 			}
 		}
-
+        var recognition = new _SpeechRecognition();
+        recognition.setGrammar(["apple","banana","pear","pineapple","orange","lemon"],"fruits","fruit");
+        recognition.onResult(onResultDemo);
+        recognition.onSpeechEnd(onSpeechEndDemo);
+        recognition.onNoMatch(onNoMatchDemo);
+        recognition.onError(onErrorDemo);
+        recognition.startRecognition();
     </script>
 </body>
 
