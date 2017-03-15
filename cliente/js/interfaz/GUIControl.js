@@ -200,6 +200,7 @@ function siguienteNivel() {
         //onStart();
     })
     $("#cerrarSesBtn").on("click", resetControl);
+    preparacionJuego();
 }
 
 function resetControl() {
@@ -277,4 +278,26 @@ function validateMail(email) {
     var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
     console.log(re.test(email))
     return re.test(email);
+}
+
+function preparacionJuego(){
+    $("#control").append("<h3> We need the following ingredients </h3>");
+    synthesis.speak("We need the following ingredients");
+    $("#control").append("<img src='../../assets/fruits/apple.png'></img> <h3> x<span id='appNum'>3</span> Apples </h3>");
+    synthesis.speak("Three apples");
+    $("#control").append("<img src='../../assets/fruits/banana.png'></img> <h3> x<span id='banNum'>2</span> Bananas </h3>");
+    synthesis.speak("Two bananas");
+    $("#control").append("<h3 id='trans'>Be careful! Fruits spoil with time</h3>");
+    $("#control").append("<h3 id='special' style='display:none;'>Traducción: ¡Ten cuidado! La fruta caduca con el tiempo</h3>");
+    synthesis.speak("Be careful! Fruits spoil with time");
+    $("#trans").mouseenter(function(event){
+        console.log("Entre");
+        clearTimeout($('#special').data('timeoutId'));
+        $('#special').show(200);
+    }).mouseleave(function(){
+        var timeoutId = setTimeout(function(){
+            $('#special').hide(200);
+        }, 1000);
+    $('#special').data('timeoutId', timeoutId); 
+    });
 }

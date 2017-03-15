@@ -215,11 +215,12 @@ function Juego(){
     }
 }
     
-function Nivel(num,coord,gravedad,numEstrellas){
+function Nivel(num,coord,gravedad,numManzanas, numBananas){
     this.nivel = parseInt(num[5]);
     this.platforms = coord;
     this.gravity = gravedad;
-    this.starsNumber = numEstrellas;
+    this.applesNumber = numManzanas;
+    this.bananasNumber = numBananas;
 }
 
 function Usuario(user_name, email, pass, time_register, activo){
@@ -366,7 +367,7 @@ function JuegoFM(archivo){
     this.makeJuego = function(){
         var j = new Juego();
         for(var x in this.array){
-            var nivel = new Nivel(x,this.array[x].platforms,this.array[x].gravity,this.array[x].starsNumber);
+            var nivel = new Nivel(x,this.array[x].platforms,this.array[x].gravity,this.array[x].applesNumber, this.array[x].bananasNumber);
             j.agregarNivel(nivel);
         }
         return j;

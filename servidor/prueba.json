@@ -1,7 +1,8 @@
 {
     "nivel1": {
         "gravity": 50,
-        "starsNumber": 2,
+        "applesNumber": 4,
+        "bananasNumber": 4,
         "platforms": [{
                 "asset": "ground",
                 "x": 200,
@@ -10,7 +11,8 @@
     },
     "nivel2": {
         "gravity": 50,
-        "starsNumber": 2,
+        "applesNumber": 2,
+        "bananasNumber": 4,
         "platforms": [
             {
                 "asset": "ground2",
@@ -36,7 +38,8 @@
     },
     "nivel3": {
         "gravity": 50,
-        "starsNumber": 2,
+        "applesNumber": 2,
+        "bananasNumber": 4,
         "platforms": [
             {
                 "asset": "ground2",
@@ -62,7 +65,8 @@
     },
     "nivel4": {
         "gravity": 50,
-        "starsNumber": 2,
+        "applesNumber": 2,
+        "bananasNumber": 4,
         "platforms": [{
                 "asset": "ground",
                 "x": 200,

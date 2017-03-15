@@ -1,6 +1,6 @@
 body {
     padding-top: 70px;
-    background: #F7D358;
+    background: #ffff99;
     color: #000000 !important; 
     font-family: 'PT Sans', sans-serif;
     font-size: 1.8em !important;
@@ -127,4 +127,9 @@ input[type="text"], input[type="password"]{
 
 button{
     font-size: 1.1em !important;
+}
+
+#special {
+    font-weight: bold;
+    background: white;
 }

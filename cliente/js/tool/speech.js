@@ -34,6 +34,29 @@ function _SpeechRecognition(){
     }
 }   
 
+function _SpeechSynthesis(lang, fe_male_voice, pitch, rate){
+    this.synth = window.speechSynthesis;
+    this.pitch = pitch;
+    this.rate = rate;
+    var self = this;
+    this.synth.onvoiceschanged = function(){
+        self.choice = self.synth.getVoices().filter(function(voice){
+            return voice.lang === lang && voice.name.includes(fe_male_voice);
+        })[0];
+    }
+    
+    this.speak = function(text){
+        var utter = new SpeechSynthesisUtterance(text);
+        utter.voice = this.choice;
+        utter.pitch = this.pitch;
+        utter.rate = this.rate;
+        this.synth.speak(utter);
+    }
+    
+
+
+}
+
 /************** FUNCIONES DE PRUEBA PARA LOS CALLBACKS*********************/
 
 function onResultDemo(event) {
