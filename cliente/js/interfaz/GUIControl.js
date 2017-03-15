@@ -172,6 +172,11 @@ function mostrarInfoJuego2() {
     $('#prog').remove();
     $('#control').append('<div id="datos"><h4>Nombre: ' + nombre + '<br />Nivel: ' + nivel + '</h4></div>');
     $('#control').append('<div class="progress" id="prog"><div class="progress-bar progress-bar-success progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width:' + percen + '%">' + percen + '%</div></div>');
+    $('#control').append('<button id="hearMe" type="button" class="btn btn-success">Escúchame</button>');
+    $("#hearMe").on("click", function(event){
+        $("#juegoContainer").prepend('<h3>Te estamos escuchando</h3>')
+        recognition.startRecognition();
+    });
     $("#registerGroup").remove();
     $("#modificar").show();
     $("#eliminar").show();

@@ -62,6 +62,11 @@ function _SpeechSynthesis(lang, fe_male_voice, pitch, rate){
 function onResultDemo(event) {
     console.log(event);
     console.log("Tenemos resultados");
+    $("#juegoContainer").append('<h3>Tenemos algo!</h3>');
+    console.log(event);
+    $("#juegoContainer").append('<h3>Has dicho...</h3>');
+    $("#juegoContainer").append('<h3>'+ event.results[0][0].transcript +'</h3>');
+    $("#juegoContainer").append('<h3>Seguridad del resultado: '+ event.results[0][0].confidence * 100 +'</h3>');
     console.log(event.results[0][0].transcript);
     console.log('Confidence: ' + event.results[0][0].confidence);
 }

@@ -30,6 +30,9 @@ var num_apples = 0;
 var num_bananas = 0;
 var kitchen;
 
+var forbidden_actions = 0;
+var forb_act_timer = 0;
+
 function crearNivel(){
     console.log('Llamada a /datosJuego/'+$.cookie("id"));
     $.ajax({
@@ -107,7 +110,8 @@ function create() {
     apples.enableBody = true;
 
     for (var i = 0; i <infoJuego.applesNumber; i++) {
-        var apple = apples.create(game.world.randomX, 0, 'apple');
+        var apple = apples.create(game.rnd.integerInRange(0, 800), 0, 'apple');
+        
         game.physics.enable(apple,Phaser.Physics.P2JS);
         apple.body.gravity.y = game.rnd.integerInRange(50,200);
         apple.anchor.setTo(0.5, 0.6);
@@ -121,7 +125,7 @@ function create() {
     bananas.enableBody = true;
 
     for (var i = 0; i <infoJuego.bananasNumber; i++) {
-        var banana =  bananas.create(game.world.randomX, 0, 'banana');
+        var banana =  bananas.create(game.rnd.integerInRange(0, 800), 0, 'banana');
         game.physics.enable(banana,Phaser.Physics.P2JS);
         banana.body.gravity.y = game.rnd.integerInRange(50,200);
         banana.anchor.setTo(0.5, 0.6);
@@ -154,7 +158,7 @@ function create() {
     game.physics.enable(shield,Phaser.Physics.P2J);
     shield.body.gravity.y = 350;
     
-    
+    var forb_act_timer = game.time.now;
 	console.log("Final de create");
 }
 
@@ -174,6 +178,7 @@ function setPlayer(){
 }
 
 function update() {
+    
     game.physics.arcade.collide(player, PlatformGroup.platforms);
     game.physics.arcade.collide(bolt, PlatformGroup.platforms);
     game.physics.arcade.collide(shield, PlatformGroup.platforms);
@@ -219,6 +224,15 @@ function update() {
         player.body.velocity.y = -yVelocity;
         yCamera = -yVelocity;
     }
+    
+    if(cursors.up.isDown && !player.body.touching.down &&
+            !player.body.touching.up && !player.body.touching.left &&
+            !player.body.touching.right) {
+                forbidden_actions++;
+                console.log("+1");
+                console.log((game.time.now - forb_act_timer)/1000)
+    }
+    
     if (!game.camera.atLimit.x)
     {
         kitchen.tilePosition.x -= (xCamera * game.time.physicsElapsed);
@@ -228,6 +242,13 @@ function update() {
     {
         kitchen.tilePosition.y -= (yCamera * game.time.physicsElapsed);
     }
+    if(((game.time.now - forb_act_timer)/1000 >= 3) && (forbidden_actions/((game.time.now - forb_act_timer)/1000) >= 3)){
+        console.log ("Forbiden actions - " + forbidden_actions);
+        console.log ("Forbiden counter - " + (game.time.now - forb_act_timer)/1000);
+        $("#juegoContainer").prepend("<h3>Easy there buddy...</h3>")
+        forbidden_actions = 0;
+        forb_act_timer = game.time.now;
+    } 
 }
 
 function fastenPlayer(player, bolt){
@@ -256,7 +277,7 @@ function killBanana(banana,platform){
 }
 
 function crearNuevaManzana(){
-    var apple = apples.create(game.world.randomX, 0, 'apple');
+    var apple = apples.create(game.rnd.integerInRange(0, 800), 0, 'apple');
     game.physics.enable(apple,Phaser.Physics.P2J)
     apple.body.gravity.y = game.rnd.integerInRange(50,200);
     apple.anchor.setTo(0.5, 0.6);
@@ -264,7 +285,7 @@ function crearNuevaManzana(){
 }
 
 function crearNuevaBanana(){
-    var banana = bananas.create(game.world.randomX, 0, 'banana');
+    var banana = bananas.create(game.rnd.integerInRange(0, 800), 0, 'banana');
     game.physics.enable(banana,Phaser.Physics.P2J)
     banana.body.gravity.y = game.rnd.integerInRange(50,200);
     banana.anchor.setTo(0.5, 0.6);
@@ -292,7 +313,7 @@ function collectStar(player, star) {
     player.apples++;
     if ($("#appNum").text() > 0) $("#appNum").text($("#appNum").text() - 1);
     scoreText.text = 'Manzanas: ' + player.apples;
-    if (player.bananas==2 && player.apples == 3){
+    if (player.bananas >= 2 && player.apples >= 3){
         player.kill();
         game.time.events.remove(timer);
         game.destroy();
@@ -310,10 +331,10 @@ function collectBanana(player, banana) {
     } else if(player.children[0].key != "bubble"){
         //player.vidas -= 1;
     } 
-    player.banana++;
+    player.bananas++;
     if ($("#banNum").text() > 0) $("#banNum").text($("#banNum").text() - 1);
     scoreTextBananas.text = 'Bananas: ' + player.bananas;
-    if (player.bananas==2 && player.apples == 3){
+    if (player.bananas >= 2 && player.apples >= 3){
         player.kill();
         game.time.events.remove(timer);
         game.destroy();
