@@ -196,7 +196,6 @@ function siguienteNivel() {
         //onStart();
     })
     $("#cerrarSesBtn").on("click", resetControl);
-    preparacionJuego();
 }
 
 function resetControl() {
@@ -221,8 +220,7 @@ function borrarSiguienteNivel() {
 
 function mostrarResultadosUsuario(datos) {
     console.log("Mostrar resultados con parametros")
-    $('#res').remove();
-    $('#resultados').remove();
+    $('#res, #ingredients, #resultados').remove();
     $('#juegoId').append('<h3 id="res">Resultados</h3>');
     var cadena = "<table id='resultados' class='table table-bordered table-condensed'><tr><th>Nombre</th><th>Nivel</th><th>Tiempo</th></tr>";
     for (var i = 0; i < datos.length; i++) {
@@ -233,7 +231,6 @@ function mostrarResultadosUsuario(datos) {
     }
     cadena = cadena + "</table>";
     $('#juegoId').append(cadena);
-    $("#social").show();
 }
 
 function mostrarResultados() {
@@ -318,14 +315,15 @@ function setModal(){
     }
 }
 function preparacionJuego(){
-    $("#control").append("<h3> We need the following ingredients </h3>");
+    $("#control").append("<div id='ingredients'></div>")
+    $("#ingredients").append("<h3> We need the following ingredients </h3>");
     synthesis.speak("We need the following ingredients");
-    $("#control").append("<img src='../../assets/food/apple.png'></img> <h3> x<span id='appNum'>3</span> Apples </h3>");
+    $("#ingredients").append("<img src='../../assets/food/apple.png'></img> <h3> x<span id='appNum'>3</span> Apples </h3>");
     synthesis.speak("Three apples");
-    $("#control").append("<img src='../../assets/food/banana.png'></img> <h3> x<span id='banNum'>2</span> Bananas </h3>");
+    $("#ingredients").append("<img src='../../assets/food/banana.png'></img> <h3> x<span id='banNum'>2</span> Bananas </h3>");
     synthesis.speak("Two bananas");
-    $("#control").append("<h3 id='trans'>Be careful! Fruits spoil with time</h3>");
-    $("#control").append("<h3 id='special' style='display:none;'>Traducción: ¡Ten cuidado! La fruta caduca con el tiempo</h3>");
+    $("#ingredients").append("<h3 id='trans'>Be careful! Fruits spoil with time</h3>");
+    $("#ingredients").append("<h3 id='special' style='display:none;'>Traducción: ¡Ten cuidado! La fruta caduca con el tiempo</h3>");
     synthesis.speak("Be careful! Fruits spoil with time");
     $("#trans").mouseenter(function(event){
         console.log("Entre");

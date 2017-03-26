@@ -7,25 +7,25 @@ var game;
 var juego;
 var player;
 var cursors;
-var apples;
-var bananas;
-var score = 0;
-var scoreBananas = 0;
-var vidasText;
-var tiempoText;
-var scoreText;
-var scoreTextBananas;
-var timer;
-var PlatformGroup = {};
 var infoJuego = {};
+var PlatformGroup = {};
+var Scores = {};
+var bananaText;
+var appleText;
+
+var timer;
+var tiempo = 0;
+var foodObjects = {};
 var builderObject;
+
 var xVelocity = 250; 
 var yVelocity = 400;
 var xCamera = xVelocity;
 var yCamera = yVelocity;
-var num_apples = 0;
-var num_bananas = 0;
+
 var kitchen;
+var garbage = ["banana-peel", "sponge", "fish-bone"];
+var mistake;
 
 var forbidden_actions = 0;
 var forb_act_timer = 0;
@@ -61,16 +61,25 @@ function preload() {
     for(var i = 0; i < ingredients.length; i++){
         game.load.image(ingredients[i].name, 'assets/food/' + ingredients[i].name + '.png');
     }
+    game.load.image('banana-peel', 'assets/garbage/banana-peel.png');
+    game.load.image('sponge', 'assets/garbage/sponge.png');
+    game.load.image('fish-bone', 'assets/garbage/fish-bone.png');
 
     //Player
     game.load.spritesheet('dude', 'assets/sora.png', 60, 56);
+
+    //Sounds
+    game.load.audio('mistake', 'assets/audio/wrong.mp3');
 }
 
 function create() {
     //Creamos builder de elementos
     //$("body").prepend('<audio id="gameMusic" src="assets/audio/sorrow.mp3" autoplay="true" loop="true"></audio>');
     builderObject = new Builder(infoJuego);
-    
+    builderObject.createScores(Scores);
+    console.log(Scores);
+
+    mistake = game.add.audio("mistake");
     //Habilita fisica
     game.physics.startSystem(Phaser.Physics.P2J);
 
@@ -99,61 +108,29 @@ function create() {
     setPlayer();
     //Para que la camara siga al jugador
     game.camera.follow(player);
-    
-    apples = game.add.group();
-    apples.enableBody = true;
 
-    for (var i = 0; i <3; i++) {
-        var apple = apples.create(game.rnd.integerInRange(0, 800), 0, 'apple');
-        
-        game.physics.enable(apple,Phaser.Physics.P2JS);
-        apple.body.gravity.y = game.rnd.integerInRange(50,200);
-        apple.anchor.setTo(0.5, 0.6);
-        apple.angle = 0.0;
-        num_apples++;
-        //apple.body.onWorldBounds = new Phaser.Signal();
-        //star.body.velocity.x = game.rnd.integerInRange(-200,200);
-       // apple.body.onWorldBounds.add(crearNuevaManzana, this);
+    foodObjects = game.add.group();
+    var ingredients = infoJuego.recipe.ingredients;
+    for(var i = 0; i < ingredients.length * 3; i++){
+        createFoodElement();
     }
-    bananas = game.add.group();
-    bananas.enableBody = true;
-
-    for (var i = 0; i <5; i++) {
-        var banana =  bananas.create(game.rnd.integerInRange(0, 800), 0, 'banana');
-        game.physics.enable(banana,Phaser.Physics.P2JS);
-        banana.body.gravity.y = game.rnd.integerInRange(50,200);
-        banana.anchor.setTo(0.5, 0.6);
-        banana.angle = 0.0;
-        num_bananas++;
-        //banana.body.onWorldBounds = new Phaser.Signal();
-        //banana.body.onWorldBounds.add(crearNuevaBanana, this);
-        //star.body.velocity.x = game.rnd.integerInRange(-200,200);
-    }
-
     cursors = game.input.keyboard.createCursorKeys();
-    tiempoText = game.add.text(game.world.width-170,22,'Tiempo:0',{ fontSize: '32px', fill: '#fff' });
-    //game.camera.follow(tiempoText);
-
-    scoreText = game.add.text(16, 22, 'Manzanas: 0', { fontSize: '32px', fill: '#FFF' });
-    scoreTextBananas = game.add.text(16, 52, 'Bananas: 0', { fontSize: '32px', fill: '#FFF' });
-    //game.camera.follow(scoreText);
-    //game.camera.follow(scoreTextBananas);
-
-    tiempo = 0;
     timer = game.time.events.loop(Phaser.Timer.SECOND,updateTiempo,this);
-    
+
+    appleText = game.add.text(game.world.width-170,22,'Tiempo:0',{ fontSize: '32px', fill: '#000' });
+    bananaText = game.add.text(20,22, 'Bananas: 0 / ' + Scores["banana"].goal, { fontSize: '32px', fill: '#000' });
+    appleText = game.add.text(20,60, 'Apples: 0 / ' + Scores["apple"].goal, { fontSize: '32px', fill: '#000' });
+
     var forb_act_timer = game.time.now;
+
+    
 	console.log("Final de create");
 }
 
 function setPlayer(){
     player = game.add.sprite(38, game.world.height - 230, 'dude');
-    player.apples = 0;
-    player.bananas = 0;
     game.physics.enable(player);
-    //game.physics.arcade.enable(player);
 
-    //player.body.bounce.y = 0.2; //Bouncing of the sprite when jumping. 1 = keeps bouncing a lot. 0.2 = jump is more natural
     player.body.gravity.y = 350; //It sets the gravity that will affect the body (the height it can reach)
     player.body.collideWorldBounds = true; //Can the sprite go beyond the game borders? If it can, it CAN'T come back.
 
@@ -162,19 +139,15 @@ function setPlayer(){
 }
 
 function update() {
-    
+    //Elementos que van a chocar entre sí
     game.physics.arcade.collide(player, PlatformGroup.platforms);
-
-    game.physics.arcade.overlap(apples, PlatformGroup.platforms ,killStar,null,this);
-    game.physics.arcade.overlap(bananas, PlatformGroup.platforms ,killBanana,null,this);
-    game.physics.arcade.overlap(player, apples, collectStar, null, this);
-    game.physics.arcade.overlap(player, bananas, collectBanana, null, this);
-
-    game.physics.arcade.overlap(player, PlatformGroup.cielo, nextLevel, null, this);
-
-    apples.forEach(function(item){
+    //Que tiene que pasar cuando dos objetos se solapen
+    game.physics.arcade.overlap(foodObjects, PlatformGroup.platforms, removeFood,null,this);
+    game.physics.arcade.overlap(player, foodObjects, collectFoodElement, null, this);
+    foodObjects.forEach(function(item){
         item.angle++;
     });
+
     player.body.velocity.x = 0;
     xCamera, yCamera = 0;
 
@@ -209,8 +182,8 @@ function update() {
             !player.body.touching.up && !player.body.touching.left &&
             !player.body.touching.right) {
                 forbidden_actions++;
-                console.log("+1");
-                console.log((game.time.now - forb_act_timer)/1000)
+                //console.log("+1");
+                //console.log((game.time.now - forb_act_timer)/1000)
     }
     
     if (!game.camera.atLimit.x)
@@ -226,95 +199,68 @@ function update() {
     if((aux/1000 >= 3) && (forbidden_actions/(aux/1000) >= 3)){
         console.log ("Forbiden actions - " + forbidden_actions);
         console.log ("Forbiden counter - " + aux/1000);
-        $("#juegoContainer").prepend("<h3>Easy there buddy...</h3>")
+        //$("#juegoContainer").prepend("<h3>Easy there buddy...</h3>")
         forbidden_actions = 0;
         forb_act_timer = game.time.now;
     } 
 }
 
-function killStar(star,platform){
-    star.kill();
-    num_apples--;
-    game.time.events.pause();
-    crearNuevaManzana();
+function removeFood(food,platform){
+    food.kill();
+    createFoodElement();
 }
 
-function killBanana(banana,platform){
-    banana.kill();
-    num_bananas--;
-    crearNuevaBanana();
+function createFoodElement(){
+    var index, element;
+    if(Math.random() <= 0.4){
+        index = Math.floor((Math.random() * infoJuego.recipe.ingredients.length));
+        element = foodObjects.create(game.rnd.integerInRange(0, 800), 10, infoJuego.recipe.ingredients[index].name);
+    } else {
+        index = Math.floor((Math.random() * garbage.length));
+        element = foodObjects.create(game.rnd.integerInRange(0, 800), 10, garbage[index]);
+    }
+    game.physics.enable(element, Phaser.Physics.P2J)
+    element.body.gravity.y = game.rnd.integerInRange(50,200);
+    element.anchor.setTo(0.5, 0.6);
+    element.angle = 0.0;
 }
 
-function crearNuevaManzana(){
-    var apple = apples.create(game.rnd.integerInRange(0, 800), 0, 'apple');
-    game.physics.enable(apple,Phaser.Physics.P2J)
-    apple.body.gravity.y = game.rnd.integerInRange(50,200);
-    apple.anchor.setTo(0.5, 0.6);
-    apple.angle = 0.0;
+function collectFoodElement(player, food){
+    if(isAValidIngredient(food.key)){
+        Scores[food.key].increaseAmount();
+        eval(food.key + "Text").text = food.key[0].toUpperCase() + food.key.slice(1) + 
+                                    ": " + Scores[food.key].amount + " / " + Scores[food.key].goal;
+        console.log(updateDoneCount());
+        console.log(Scores.length);
+        if(updateDoneCount() == _length(Scores)){
+            nextLevel();
+        }
+    } else {
+        mistake.play();
+    }
+    removeFood(food);
 }
-
-function crearNuevaBanana(){
-    var banana = bananas.create(game.rnd.integerInRange(0, 800), 0, 'banana');
-    game.physics.enable(banana,Phaser.Physics.P2J)
-    banana.body.gravity.y = game.rnd.integerInRange(50,200);
-    banana.anchor.setTo(0.5, 0.6);
-    banana.angle = 0.0;
-}
-
 
 function evalEmotions(emotionResults){
     console.log(emotionResults);
     if(emotionResults.browFurrow > 50 && num_apples < 25){
         for(var i = 0; i < 10; i++){
-            crearNuevaManzana();
+            createFoodElement();
         }
-    }
-}
-
-function collectStar(player, star) {
-    star.kill();
-    crearNuevaManzana();
-    player.apples++;
-    if ($("#appNum").text() > 0) $("#appNum").text($("#appNum").text() - 1);
-    scoreText.text = 'Manzanas: ' + player.apples;
-    if (player.bananas >= 2 && player.apples >= 3){
-        player.kill();
-        game.time.events.remove(timer);
-        game.destroy();
-        onStop();
-        num_apples = 0;
-        finJuego("¡ENHORABUENA!",showGameControls);
-    }
-}
-
-function collectBanana(player, banana) {
-    banana.kill();
-    crearNuevaBanana();
-    player.bananas++;
-    if ($("#banNum").text() > 0) $("#banNum").text($("#banNum").text() - 1);
-    scoreTextBananas.text = 'Bananas: ' + player.bananas;
-    if (player.bananas >= 2 && player.apples >= 3){
-        player.kill();
-        game.time.events.remove(timer);
-        game.destroy();
-        onStop();
-        num_apples = 0;
-        num_bananas = 0;
-        finJuego("¡ENHORABUENA!",showGameControls);
     }
 }
 
 function updateTiempo(){
     tiempo++;
-    tiempoText.setText('Tiempo: '+tiempo);
+    //tiempoText.setText('Tiempo: '+tiempo);
 }
 
-function nextLevel(player, heaven){
+function nextLevel(){
     console.log("Nivel completado");
     player.kill();
     PlatformGroup = {};
     infoJuego = {};
-    num_apples = 0;
+    Scores = {}
     game.time.events.remove(timer);
     xVelocity = 250;
     yVelocity = 400;
@@ -326,4 +272,28 @@ function enableBodyObject(obj){
     for(element in obj){
         obj[element].enableBody = true;
     }
+}
+
+function isAValidIngredient(food_name){
+    var answer = false;
+    var ingredients = infoJuego.recipe.ingredients;
+    for(var i = 0; i < ingredients.length; i++){
+        answer = answer || (ingredients[i].name == food_name);
+        if(answer)
+            return true;
+    }
+    return answer;
+}
+
+function updateDoneCount(){
+    var count = 0;
+    for(i in Scores){
+        if(Scores[i].done)
+            count++;
+    }
+    return count;
+}
+
+function _length(obj){
+    return Object.keys(obj).length;
 }

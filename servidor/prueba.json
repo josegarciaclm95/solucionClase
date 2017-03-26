@@ -5,11 +5,11 @@
             "ingredients": [
                 {
                     "name": "apple",
-                    "amount": 5
+                    "goal": 5
                 },
                 {
                     "name": "banana",
-                    "amount": 5
+                    "goal": 5
                 }
             ]
         },
@@ -27,19 +27,19 @@
             "ingredients": [
                 {
                     "name": "chocolate",
-                    "amount": 5
+                    "goal": 5
                 },
                 {
                     "name": "nuts",
-                    "amount": 8
+                    "goal": 8
                 },
                 {
                     "name": "sugar",
-                    "amount": 3
+                    "goal": 3
                 },
                 {
                     "name": "flour",
-                    "amount": 4
+                    "goal": 4
                 }
             ]
         },
