@@ -1,10 +1,7 @@
-//var urlD = "http://juegoprocesos.herokuapp.com/";
-//var urlD = "http://localhost:1338";
-/**
- * Si hay alguna cookie establecida, leemos los datos asociados a ella del servidor. Si no, partimos de cero (pedimos nombre).
- * CAUTION!! En estos momentos no es necesario, pero si hubiera varios clientes (app movil Android, app movil iOS)
- * entonces cabría la posibilidad de que se hubiera avanzado en otro sitio y habría que mantener la información actualizada
- */
+//************************//
+// En este fichero se encuentra la lógica relacionada con el control del cliente: comprobación de cookies,
+// llamadas al servidor (a través de Proxy), métodos de fin del juego, configuración del audio, etc.
+//************************//
 
 function inicio() {
     if ($.cookie('email') != undefined) {
@@ -32,23 +29,6 @@ function nivelCompletado(tiempo,vidas) {
     proxy.obtenerResultados();
 }
 
-function mostrarResultadosUsuario(datos) {
-    console.log("Mostrar resultados con parametros")
-    $('#res').remove();
-    $('#resultados').remove();
-    $('#juegoId').append('<h3 id="res">Resultados</h3>');
-    var cadena = "<table id='resultados' class='table table-bordered table-condensed'><tr><th>Nombre</th><th>Nivel</th><th>Tiempo</th></tr>";
-    for (var i = 0; i < datos.length; i++) {
-        cadena = cadena + "<tr><td>" + $.cookie("email") + "</td><td> " + datos[i].nivel + "</td>" + "</td><td> " + datos[i].tiempo + "</td></tr>";
-        if(datos[i].nivel == $.cookie("nivel")){
-            $("twitter-button").attr("data-text", "¡He hecho el nivel  " + $.cookie("nivel") + " en " + datos[i].tiempo + " segundos");
-        }
-    }
-    cadena = cadena + "</table>";
-    $('#juegoId').append(cadena);
-    $("#social").show();
-}
-
 //Funciones de comunicación
 /**
  * Registramos al usuario
@@ -63,7 +43,7 @@ function crearUsuario(user_name, email, pass) {
     }
     var url = '';
     //url = "http://localhost:1338"
-    url = "http://juegoprocesos.herokuapp.com";
+    url = "https://juegoprocesos.herokuapp.com";
     proxy.crearUsuario(user_name, email, pass, url);
     
 }
@@ -101,8 +81,7 @@ function finJuego(text,callback){
     $('#control').append('<button type="button" id="volverBtn" class="btn btn-primary btn-md">Volver a empezar</button>')
     $('#volverBtn').on('click', function () {
         $(this).remove();
-        $('#datos').remove();
-        $('#prog').remove();
+        $('#datos, #prog').remove();
         callback();
     });
 }

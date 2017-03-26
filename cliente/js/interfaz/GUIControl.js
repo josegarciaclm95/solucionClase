@@ -1,8 +1,7 @@
-function limpiarLogin() {
-    //$("#login").remove();
-    //$("#myModal").css("display","none");
-    
-}
+//**********************/
+//En este fichero se encuentra la lógica de la aplicación relacionada con la interfaz del cliente: se construyen formularios,
+// tablas de resultados, controles del juego, se manipulan estilos, etc.
+//**********************/
 
 function limpiarJuegoContainer() {
     $("#juegoContainer").empty();
@@ -24,11 +23,9 @@ function estilosAlerta(selector) {
 }
 
 function construirLogin() {
-    limpiarLogin();
     $("#modal-login").load('../html/login.html', function () {
         $("#claveL").on("keyup", function (e) {
             if (e.keyCode == 13) {
-                console.log($("#nombreL").val() + " - " + $("#claveL").val());
                 proxy.comprobarUsuarioMongo($("#nombreL").val(), $("#claveL").val(), false);
             }
         });
@@ -66,7 +63,6 @@ function construirRegistro() {
             limpiarEstilos(this);
         });
         $("#confirmaRegBtn").on("click", function () {
-            //console.log($("#nombreUsuario").val() + " - " + $("#password1").val());
             if (!validateMail($("#correoUsuario").val())) {
                 estilosAlerta('#correoUsuario');
                 $('#correoUsuario').val('Formato de mail no válido')
@@ -162,19 +158,16 @@ function borrarControl() {
 /**
  * Haciendo uso de una cookie previa, presentamos la info del jugador (tras haber actualizado la cookie)
  */
-function mostrarInfoJuego2() {
+function showGameControls() {
     var nombre = $.cookie("email");
     var nivel = $.cookie("nivel");
     var percen = Math.floor(((nivel - 1) / $.cookie("maxNivel")) * 100);
-    $('#datos').remove();
-    $('#cabeceraP').remove();
-    $('#cabecera').remove();
-    $('#prog').remove();
-    $('#control').append('<div id="datos"><h4>Nombre: ' + nombre + '<br />Nivel: ' + nivel + '</h4></div>');
+    $('#datos, #cabeceraP, #cabecera, #prog').remove();
+    $('#control').append('<div id="datos"><h4>Usuario: ' + nombre + '<br />Nivel: ' + nivel + '</h4></div>');
     $('#control').append('<div class="progress" id="prog"><div class="progress-bar progress-bar-success progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width:' + percen + '%">' + percen + '%</div></div>');
-    $('#control').append('<button id="hearMe" type="button" class="btn btn-success">Escúchame</button>');
+    $('#control').append('<button id="hearMe" type="button" style="margin-top:5px; margin-right:5px;" class="btn btn-success">Escúchame</button>');
     $("#hearMe").on("click", function(event){
-        $("#juegoContainer").prepend('<h3>Te estamos escuchando</h3>')
+        $("#juegoContainer").prepend('<h3>Te estamos escuchando</h3>');
         recognition.startRecognition();
     });
     $("#registerGroup").remove();
@@ -192,14 +185,12 @@ function siguienteNivel() {
     $("#control").append('<button type="button" id="cerrarSesBtn" class="btn btn-primary btn-md" style="margin-top:5px">Cerrar sesión</button>');
     $("#siguienteBtn").on("click", function () {
         $(this).remove();
-        //$("#social").hide();
         $("#cerrarSesBtn").remove();
-        limpiarJuegoContainer();
+        $("#juegoContainer").empty();
         $("#juegoContainer").append('<div id="juegoId"></div>');
         $("#backMusic").animate({
             volume: 0
         }, 1000);
-        console.log("Nivel de cookie es ->" + $.cookie("nivel"));
         console.log("Llamamos a crear nivel sin parametros en siguienteNivel()");
         crearNivel();
         //onStart();
@@ -226,6 +217,23 @@ function borrarSiguienteNivel() {
     $('#cabeceraP').remove();
     $('#cabecera').remove();
     $('#prog').remove();
+}
+
+function mostrarResultadosUsuario(datos) {
+    console.log("Mostrar resultados con parametros")
+    $('#res').remove();
+    $('#resultados').remove();
+    $('#juegoId').append('<h3 id="res">Resultados</h3>');
+    var cadena = "<table id='resultados' class='table table-bordered table-condensed'><tr><th>Nombre</th><th>Nivel</th><th>Tiempo</th></tr>";
+    for (var i = 0; i < datos.length; i++) {
+        cadena = cadena + "<tr><td>" + $.cookie("email") + "</td><td> " + datos[i].nivel + "</td>" + "</td><td> " + datos[i].tiempo + "</td></tr>";
+        if(datos[i].nivel == $.cookie("nivel")){
+            $("twitter-button").attr("data-text", "¡He hecho el nivel  " + $.cookie("nivel") + " en " + datos[i].tiempo + " segundos");
+        }
+    }
+    cadena = cadena + "</table>";
+    $('#juegoId').append(cadena);
+    $("#social").show();
 }
 
 function mostrarResultados() {
@@ -285,12 +293,36 @@ function validateMail(email) {
     return re.test(email);
 }
 
+function setModal(){
+    // Get the modal
+    var modal = document.getElementById('myModal');
+    // Get the button that opens the modal
+    var btn = document.getElementById("myBtn");
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+    // When the user clicks on the button, open the modal 
+    btn.onclick = function() {
+        console.log("Funcion");
+        modal.style.display = "block";
+        construirLogin();
+    }
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+}
 function preparacionJuego(){
     $("#control").append("<h3> We need the following ingredients </h3>");
     synthesis.speak("We need the following ingredients");
-    $("#control").append("<img src='../../assets/fruits/apple.png'></img> <h3> x<span id='appNum'>3</span> Apples </h3>");
+    $("#control").append("<img src='../../assets/food/apple.png'></img> <h3> x<span id='appNum'>3</span> Apples </h3>");
     synthesis.speak("Three apples");
-    $("#control").append("<img src='../../assets/fruits/banana.png'></img> <h3> x<span id='banNum'>2</span> Bananas </h3>");
+    $("#control").append("<img src='../../assets/food/banana.png'></img> <h3> x<span id='banNum'>2</span> Bananas </h3>");
     synthesis.speak("Two bananas");
     $("#control").append("<h3 id='trans'>Be careful! Fruits spoil with time</h3>");
     $("#control").append("<h3 id='special' style='display:none;'>Traducción: ¡Ten cuidado! La fruta caduca con el tiempo</h3>");

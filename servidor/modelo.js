@@ -4,7 +4,7 @@ var _ = require("underscore");
 var persistencia = require("./persistencia.js");
 
 function Juego(){
-    this.nombre = "Niveles";
+    this.nombre = "Aprende Jugando";
     this.niveles = [];
     this.usuarios = [];
     this.gestorPartidas = new Caretaker();
@@ -77,7 +77,6 @@ function Juego(){
     this.comprobarUsuario = function(email_name, password){
         console.log("\t Model -> \t Comprobando usuario");
         var usuario = this.buscarUsuario(email_name);
-        //console.log(usuario);
         if(usuario == undefined) {
             console.log("\t El usuario no se encuentra")
             return undefined;
@@ -215,12 +214,15 @@ function Juego(){
     }
 }
     
-function Nivel(num,coord,gravedad,numManzanas, numBananas){
+function Nivel(num, recipe, platforms){
     this.nivel = parseInt(num[5]);
-    this.platforms = coord;
-    this.gravity = gravedad;
-    this.applesNumber = numManzanas;
-    this.bananasNumber = numBananas;
+    this.recipe = new Recipe(recipe.name, recipe.ingredients);
+    this.platforms = platforms;
+}
+
+function Recipe(name, ingredients){
+    this.name = name;
+    this.ingredients = ingredients;
 }
 
 function Usuario(user_name, email, pass, time_register, activo){
@@ -367,7 +369,7 @@ function JuegoFM(archivo){
     this.makeJuego = function(){
         var j = new Juego();
         for(var x in this.array){
-            var nivel = new Nivel(x,this.array[x].platforms,this.array[x].gravity,this.array[x].applesNumber, this.array[x].bananasNumber);
+            var nivel = new Nivel(x,this.array[x].recipe, this.array[x].platforms);
             j.agregarNivel(nivel);
         }
         return j;

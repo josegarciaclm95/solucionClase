@@ -65,7 +65,7 @@ app.get("/datosJuego/:id", function (request, response) {
 			juego.addPartida(usuario);
 		}
 	} else {
-		res = {nivel:-1, platforms:[]}	
+		res = {nivel:-1, platforms:[], recipe:[]}	
 	}
 	console.log("\t DatosJuego -> \t Datos a devolver -> " +  JSON.stringify(res.nivel));
 	response.send(res);

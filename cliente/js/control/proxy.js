@@ -1,14 +1,15 @@
 function proxy() {
     /**
-     * Se comprueba la validez de unos datos. El ultimo atributo indica si los datos se están comprobando
-     * desde una cookie o desde el formulario de login. Si es desde cookie, no comprobamos la contrasena
+     * Se comprueba la validez de las credenciales de login. El ultimo atributo indica si los datos se están comprobando
+     * desde una cookie o desde el formulario de login. Si es desde cookie, no comprobamos la contraseña.
      */
-    //this.socket = io();
     var self = this;
     this.comprobarUsuarioMongo = function (nombre, pass, fromCookie) {
         if (pass == "" && !fromCookie) {
             estilosAlerta('#claveL')
         } else {
+            //Definimos el callback que trate los datos que devuelva el servidor
+            //El servidor puede devolver {"user_name":"ERROR"...} o {"user_name":datos validos, ....}
             var callback = function (data) {
                 if (data.user_name == "ERROR") {
                     console.log("El usuario no existe");
@@ -17,11 +18,11 @@ function proxy() {
                 } else {
                     setCookies(data);
                     console.log(data);
+                    console.log("El usuario es correcto");
                     $("#myModal").css("display","none");
                     $("#myBtn").css("display","none");
                     $(".info").css("display","none");
-                    //limpiarLogin();
-                    mostrarInfoJuego2();
+                    showGameControls();
                 }
             }
             peticionAjax("POST", "/login/", true, JSON.stringify({
@@ -37,7 +38,7 @@ function proxy() {
             var callback = function (datos) {
                 $.cookie("nivel", datos.nivel);
                 console.log()
-                mostrarInfoJuego2($.cookie("nivel"));
+                showGameControls();
             }
             $.get("/nivelCompletado/" + $.cookie("id") + "/" + tiempo + "/" + vidas, callback);
         }
