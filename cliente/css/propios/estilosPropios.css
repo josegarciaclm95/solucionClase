@@ -133,3 +133,24 @@ button{
     font-weight: bold;
     background: white;
 }
+
+#scores {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+    width: 800px;
+    overflow: hidden;
+    font-size: 1.3em;
+    background: white;
+    border-style: solid;
+    border-color: red;
+}
+
+#scores span{
+    padding-left: 10px;
+}
+
+#scores li{
+    display: inline;
+}

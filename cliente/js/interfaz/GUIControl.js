@@ -165,7 +165,7 @@ function showGameControls() {
     $('#datos, #cabeceraP, #cabecera, #prog').remove();
     $('#control').append('<div id="datos"><h4>Usuario: ' + nombre + '<br />Nivel: ' + nivel + '</h4></div>');
     $('#control').append('<div class="progress" id="prog"><div class="progress-bar progress-bar-success progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width:' + percen + '%">' + percen + '%</div></div>');
-    $('#control').append('<button id="hearMe" type="button" style="margin-top:5px; margin-right:5px;" class="btn btn-success">Escúchame</button>');
+    //$('#control').append('<button id="hearMe" type="button" style="margin-top:5px; margin-right:5px;" class="btn btn-success">Escúchame</button>');
     $("#hearMe").on("click", function(event){
         $("#juegoContainer").prepend('<h3>Te estamos escuchando</h3>');
         recognition.startRecognition();
@@ -185,7 +185,8 @@ function siguienteNivel() {
     $("#control").append('<button type="button" id="cerrarSesBtn" class="btn btn-primary btn-md" style="margin-top:5px">Cerrar sesión</button>');
     $("#siguienteBtn").on("click", function () {
         $(this).remove();
-        $("#cerrarSesBtn").remove();
+        $("#hearMe").remove();
+        //$("#cerrarSesBtn").remove();
         $("#juegoContainer").empty();
         $("#juegoContainer").append('<div id="juegoId"></div>');
         $("#backMusic").animate({
@@ -220,7 +221,7 @@ function borrarSiguienteNivel() {
 
 function mostrarResultadosUsuario(datos) {
     console.log("Mostrar resultados con parametros")
-    $('#res, #ingredients, #resultados').remove();
+    $('#res, #ingredients, #resultados, #cerrarSesBtn').remove();
     $('#juegoId').append('<h3 id="res">Resultados</h3>');
     var cadena = "<table id='resultados' class='table table-bordered table-condensed'><tr><th>Nombre</th><th>Nivel</th><th>Tiempo</th></tr>";
     for (var i = 0; i < datos.length; i++) {
@@ -335,4 +336,23 @@ function preparacionJuego(){
         }, 1000);
     $('#special').data('timeoutId', timeoutId); 
     });
+}
+
+function setScoreCounters(recipe){
+    console.log("llegamos aqui");
+    var ingredients = recipe.ingredients;
+    var html ='<ul id="scores">';
+    console.log(ingredients);
+    for(var i = 0; i < ingredients.length; i++){
+        console.log(ingredients[i]);
+        html += '<li><img width = "50px" src = "./assets/food/' + ingredients[i].name + '.png">';
+        html += '<span id="' +ingredients[i].name + 'Score">0</span> / '+ ingredients[i].goal + '</li>';
+    }
+    html+= '</ul>';
+    $("#juegoContainer").prepend(html);
+    $("#juegoContainer").prepend('<h3>Receta: ' + recipe.name + '</h3>');
+}
+
+function upperCaseFirstLetter(string){
+    return string.toUpperCase() + string.slice(1);
 }

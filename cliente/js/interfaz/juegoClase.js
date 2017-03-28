@@ -10,15 +10,13 @@ var cursors;
 var infoJuego = {};
 var PlatformGroup = {};
 var Scores = {};
-var bananaText;
-var appleText;
-
+var mistakes;
 var timer;
 var tiempo = 0;
 var foodObjects = {};
 var builderObject;
 
-var xVelocity = 250; 
+var xVelocity = 300; 
 var yVelocity = 400;
 var xCamera = xVelocity;
 var yCamera = yVelocity;
@@ -42,8 +40,9 @@ function crearNivel(){
             if(data.nivel == -1 || data == {}){
                 finJuego("Lo siento, no tenemos más niveles",resetControl);
             } else {
-                infoJuego = data;  
-                game = new Phaser.Game(800, 550, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
+                infoJuego = data;
+                setScoreCounters(infoJuego.recipe);
+                game = new Phaser.Game(800, 450, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
                 console.log("Datos recibidos correctos: " + (infoJuego.nivel != -1));
             }
         }
@@ -64,6 +63,7 @@ function preload() {
     game.load.image('banana-peel', 'assets/garbage/banana-peel.png');
     game.load.image('sponge', 'assets/garbage/sponge.png');
     game.load.image('fish-bone', 'assets/garbage/fish-bone.png');
+    game.load.image('mistake', 'assets/landscape/mistake.png');
 
     //Player
     game.load.spritesheet('dude', 'assets/sora.png', 60, 56);
@@ -83,8 +83,8 @@ function create() {
     //Habilita fisica
     game.physics.startSystem(Phaser.Physics.P2J);
 
-    kitchen = game.add.tileSprite(0, 0, 800, 550, 'kitchen');
-    kitchen.scale.setTo(1.33,1.3);
+    kitchen = game.add.tileSprite(0, 0, 800, 450, 'kitchen');
+    kitchen.scale.setTo(1.33,1.02);
     //Para que el fondo no se mueva
     kitchen.fixedToCamera = true;
 
@@ -94,7 +94,7 @@ function create() {
 
     enableBodyObject(PlatformGroup);
     //Para que el jugador se pueda mover mas alla de lo que se ve en el canvas en un momento dado
-    game.world.setBounds(0, 0, 1600, 550);
+    game.world.setBounds(0, 0, 1600, 450);
 
     var ground = PlatformGroup.platforms.create(0, game.world.height - 80, 'ground');
     ground.scale.setTo(2, 4);
@@ -117,13 +117,13 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys();
     timer = game.time.events.loop(Phaser.Timer.SECOND,updateTiempo,this);
 
-    appleText = game.add.text(game.world.width-170,22,'Tiempo:0',{ fontSize: '32px', fill: '#000' });
-    bananaText = game.add.text(20,22, 'Bananas: 0 / ' + Scores["banana"].goal, { fontSize: '32px', fill: '#000' });
-    appleText = game.add.text(20,60, 'Apples: 0 / ' + Scores["apple"].goal, { fontSize: '32px', fill: '#000' });
+    tiempoText = game.add.text(620,22,'Tiempo:0',{ fontSize: '32px', fill: '#FFF' });
+    mistakes = game.add.group();
+    for(var i = 0; i < 5; i++){
+        var item = mistakes.create(20 + i*60, 25,    'mistake');
+    }
 
     var forb_act_timer = game.time.now;
-
-    
 	console.log("Final de create");
 }
 
@@ -196,10 +196,11 @@ function update() {
         kitchen.tilePosition.y -= (yCamera * game.time.physicsElapsed);
     }
     var aux = game.time.now - forb_act_timer;
-    if((aux/1000 >= 3) && (forbidden_actions/(aux/1000) >= 3)){
-        console.log ("Forbiden actions - " + forbidden_actions);
-        console.log ("Forbiden counter - " + aux/1000);
-        //$("#juegoContainer").prepend("<h3>Easy there buddy...</h3>")
+    if(aux/1000 >= 3){
+        if (forbidden_actions/(aux/1000) >= 3){
+            console.log ("Forbiden actions - " + forbidden_actions);
+            console.log ("Forbiden counter - " + aux/1000);
+        };
         forbidden_actions = 0;
         forb_act_timer = game.time.now;
     } 
@@ -212,7 +213,7 @@ function removeFood(food,platform){
 
 function createFoodElement(){
     var index, element;
-    if(Math.random() <= 0.4){
+    if(Math.random() <= 0.6){
         index = Math.floor((Math.random() * infoJuego.recipe.ingredients.length));
         element = foodObjects.create(game.rnd.integerInRange(0, 800), 10, infoJuego.recipe.ingredients[index].name);
     } else {
@@ -228,15 +229,18 @@ function createFoodElement(){
 function collectFoodElement(player, food){
     if(isAValidIngredient(food.key)){
         Scores[food.key].increaseAmount();
-        eval(food.key + "Text").text = food.key[0].toUpperCase() + food.key.slice(1) + 
-                                    ": " + Scores[food.key].amount + " / " + Scores[food.key].goal;
-        console.log(updateDoneCount());
-        console.log(Scores.length);
+        $("#" + food.key + "Score").text(Scores[food.key].amount);
         if(updateDoneCount() == _length(Scores)){
             nextLevel();
         }
     } else {
         mistake.play();
+        mistakes.removeChild(mistakes.getTop())
+        if(mistakes.children.length == 0){
+             player.kill();
+             game.destroy();
+            finJuego("Has cogido demasiada basura :S", showGameControls);
+        }
     }
     removeFood(food);
 }
@@ -252,7 +256,7 @@ function evalEmotions(emotionResults){
 
 function updateTiempo(){
     tiempo++;
-    //tiempoText.setText('Tiempo: '+tiempo);
+    tiempoText.setText('Tiempo: '+tiempo);
 }
 
 function nextLevel(){
@@ -262,9 +266,9 @@ function nextLevel(){
     infoJuego = {};
     Scores = {}
     game.time.events.remove(timer);
-    xVelocity = 250;
+    xVelocity = 300;
     yVelocity = 400;
-    onStop();
+    //onStop();
     nivelCompletado(tiempo, player.vidas);
 }
 

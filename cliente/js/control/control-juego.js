@@ -78,10 +78,10 @@ function setCookies(data) {
 function finJuego(text,callback){
     $("#gameMusic").animate({volume:0},1000);
     $('#juegoId').append("<h2 id='enh'>"+text+"</h2>");
-    $('#control').append('<button type="button" id="volverBtn" class="btn btn-primary btn-md">Volver a empezar</button>')
+    $('#control').append('<button type="button" id="volverBtn" class="btn btn-primary btn-md" style="margin-top:5px; margin-left:5px;">Volver a empezar</button>')
     $('#volverBtn').on('click', function () {
         $(this).remove();
-        $('#datos, #prog').remove();
+        $('#datos, #prog, #cerrarSesBtn').remove();
         callback();
     });
 }
