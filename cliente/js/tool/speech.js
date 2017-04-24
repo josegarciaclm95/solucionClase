@@ -44,7 +44,6 @@ function _SpeechSynthesis(lang, fe_male_voice, pitch, rate){
             return voice.lang === lang && voice.name.includes(fe_male_voice);
         })[0];
     }
-    
     this.speak = function(text){
         var utter = new SpeechSynthesisUtterance(text);
         utter.voice = this.choice;
@@ -52,9 +51,6 @@ function _SpeechSynthesis(lang, fe_male_voice, pitch, rate){
         utter.rate = this.rate;
         this.synth.speak(utter);
     }
-    
-
-
 }
 
 /************** FUNCIONES DE PRUEBA PARA LOS CALLBACKS*********************/

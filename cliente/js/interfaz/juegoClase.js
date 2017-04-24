@@ -247,7 +247,7 @@ function collectFoodElement(player, food){
 
 function evalEmotions(emotionResults){
     console.log(emotionResults);
-    if(emotionResults.browFurrow > 50 && num_apples < 25){
+    if(emotionResults.browFurrow > 50){
         for(var i = 0; i < 10; i++){
             createFoodElement();
         }
@@ -268,6 +268,7 @@ function nextLevel(){
     game.time.events.remove(timer);
     xVelocity = 300;
     yVelocity = 400;
+    affdexDetector.stopDetection();
     //onStop();
     nivelCompletado(tiempo, player.vidas);
 }

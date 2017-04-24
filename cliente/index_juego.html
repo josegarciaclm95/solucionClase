@@ -133,6 +133,14 @@
         recognition.onNoMatch(onNoMatchDemo);
         recognition.onError(onErrorDemo);
         var synthesis = new _SpeechSynthesis("en-GB", "Female", 1.2, 1);        
+
+        var affdexDetector = new Affdex();
+        affdexDetector.onInitializeSuccess(onInitializeSuccessDEMO);
+        affdexDetector.onWebcamConnectSuccess(onWebcamConnectSuccessDEMO);
+        affdexDetector.onWebcamConnectFailure(onWebcamConnectFailureDEMO);
+        affdexDetector.onStopSuccess(onStopSuccessDEMO);
+        affdexDetector.onImageResultsSuccess(onImageResultsSuccessDEMO);
+
     </script>
 </body>
 

@@ -215,7 +215,7 @@ function Juego(){
 }
     
 function Nivel(num, recipe, platforms){
-    this.nivel = parseInt(num[5]);
+    this.nivel = parseInt(num.slice(5)); //num es una cadena tipo "nivelX", siendo X (empieza en quinto caracter) el numero del nivel
     this.recipe = new Recipe(recipe.name, recipe.ingredients);
     this.platforms = platforms;
 }
