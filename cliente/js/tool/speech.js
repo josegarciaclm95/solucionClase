@@ -8,6 +8,7 @@ function _SpeechRecognition(){
     this.recognition.interimResults = false;
     this.recognition.maxAlternatives = 5;
     this.grammar = "";
+    var self = this;
     this.startRecognition = function(){
         this.recognition.start();
     }
@@ -18,7 +19,7 @@ function _SpeechRecognition(){
         this.grammar = '#JSGF V1.0; grammar' + term_type + '; public <' + term_name + '> = ' + rules.join(' | ') + ' ;'
         var speechRecognitionList = new SpeechGrammarList();
         speechRecognitionList.addFromString(this.grammar, 1);
-        recognition.grammars = speechRecognitionList;
+        this.recognition.grammars = speechRecognitionList;
     }
     this.onResult = function(callback){
         this.recognition.onresult = callback;
@@ -31,6 +32,9 @@ function _SpeechRecognition(){
     }
     this.onError = function(callback){
         this.recognition.onerror = callback
+    }
+    this.recognition.onend = function() {
+        self.startRecognition();
     }
 }   
 
@@ -69,7 +73,8 @@ function onResultDemo(event) {
 
 function onSpeechEndDemo(event) {
     console.log("Fin del speech");
-    //this.stop();
+    this.stop();
+    console.log(this);
 }
 
 function onNoMatchDemo(event) {

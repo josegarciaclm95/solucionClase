@@ -111,6 +111,34 @@ function proxy() {
             password: pass
         }), callback);
     }
+
+    this.authenticateBV = function (options) {
+        console.log('url token:' + options.url.tokenUrl);
+        console.log("LLEGAMOS A AUTHENTICATE");
+        //options.apiKey = "f5a2d998-132e-41c3-b4f4-e36822e3da9a";
+        return $.ajax({
+            url: options.url.tokenUrl,
+            type: "POST",
+            dataType: 'text',
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                grant_type: "client_credentials",
+                apiKey: options.apiKey
+            }
+        });
+    }
+    this.analyzeFileBV = function (blob){
+        beyondVerbal.analyzeFile(blob)
+            .done(function (res)
+            {
+                console.log("CALLBACK DONE DE ANALYZE_FILE");
+                Show(res);
+            })
+            .fail(function (err)
+            {
+                Show(err);
+            });
+    }
 }
 
 function peticionAjax(peticion, url, async, body, successCallback) {

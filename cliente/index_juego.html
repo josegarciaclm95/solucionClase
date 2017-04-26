@@ -8,10 +8,12 @@
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="css/propios/estilosPropios.css">
     <script src="lib/jquery/jquery-3.1.1.min.js"></script>
+    <!--<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>-->
     <script src="lib/bootstrap/bootstrap.min.js"></script>
     <script type="text/javascript" src="lib/phaser/phaser.min.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.cookie.js"></script>
     <script src="lib/jquery/jquery.loading.block.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/jquery.validate.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="16x16" href="./favicon.png">
@@ -76,6 +78,8 @@
                 a preparar la comida</h3>
                 <h3 class="info">¡Inicia sesión para ponerte a prueba!</h3>
                 <button id="myBtn" type="button" class="btn btn-success">¡Acepto el reto!</button>
+                <button id="myBtn1" type="button" class="btn btn-success">Activar micrófono</button>
+                
                 <!-- The Modal -->
                 <div id="myModal" class="modal">
                 <!-- Modal content -->
@@ -112,6 +116,10 @@
     <script type="text/javascript" src="js/tool/speech.js"></script>
     <script src="https://download.affectiva.com/js/3.1/affdex.js"></script>
     <script type="text/javascript" src="js/tool/affedex.js"></script>
+    <script type="text/javascript" src="js/tool/audiorecord/main.js"></script>
+    <script type="text/javascript" src="js/tool/audiorecord/recorder.js"></script>
+    <script type="text/javascript" src="js/tool/audiorecord/recorderWorker.js"></script>
+    <script type="text/javascript" src="js/tool/beyondVerbal.js"></script>
     <script type="text/javascript">
         var proxy = new proxy();
         $("#sonidoControl").on("click", apagarMusica);
@@ -141,6 +149,13 @@
         affdexDetector.onStopSuccess(onStopSuccessDEMO);
         affdexDetector.onImageResultsSuccess(onImageResultsSuccessDEMO);
 
+        var beyondVerbal = new BeyondVerbalAPI('https://token.beyondverbal.com/token','https://apiv3.beyondverbal.com/v1/recording/');
+        $("#myBtn1").on("click", function(){
+            initAudio();
+            $(this).remove();
+            $("#intro-row").append('<button id="myBtn2" type="button" class="btn btn-success" onclick="toggleRecording(this);">Grabar audio</button>');
+             $("#intro-row").append('<button id="myBtn3" type="button" class="btn btn-success" onclick="recognition.stopRecognition();">Parar grabación</button>');
+        })
     </script>
 </body>
 
