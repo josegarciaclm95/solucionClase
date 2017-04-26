@@ -15,7 +15,7 @@ var timer;
 var tiempo = 0;
 var foodObjects = {};
 var builderObject;
-
+var keyControl;
 var xVelocity = 300; 
 var yVelocity = 400;
 var xCamera = xVelocity;
@@ -41,6 +41,7 @@ function crearNivel(){
                 finJuego("Lo siento, no tenemos más niveles",resetControl);
             } else {
                 infoJuego = data;
+                keyControl = new KeyLogger(infoJuego.nivel);
                 setScoreCounters(infoJuego.recipe);
                 game = new Phaser.Game(800, 450, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
                 console.log("Datos recibidos correctos: " + (infoJuego.nivel != -1));

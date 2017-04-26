@@ -79,7 +79,7 @@
                 <h3 class="info">¡Inicia sesión para ponerte a prueba!</h3>
                 <button id="myBtn" type="button" class="btn btn-success">¡Acepto el reto!</button>
                 <button id="myBtn1" type="button" class="btn btn-success">Activar micrófono</button>
-                
+                <button id="myBtn5" type="button" class="btn btn-success" onclick="keyControl.seeStatistics()">Ver estadísticas</button>
                 <!-- The Modal -->
                 <div id="myModal" class="modal">
                 <!-- Modal content -->
@@ -112,6 +112,7 @@
     <script type="text/javascript" src="js/interfaz/GUIControl.js"></script>
     <script type="text/javascript" src="js/control/control-juego.js"></script>
     <script type="text/javascript" src="js/control/proxy.js"></script>
+    <script type="text/javascript" src="js/control/keylog.js"></script>
     <script type="text/javascript" src="js/tool/builder-json.js"></script>
     <script type="text/javascript" src="js/tool/speech.js"></script>
     <script src="https://download.affectiva.com/js/3.1/affdex.js"></script>
@@ -121,6 +122,7 @@
     <script type="text/javascript" src="js/tool/audiorecord/recorderWorker.js"></script>
     <script type="text/javascript" src="js/tool/beyondVerbal.js"></script>
     <script type="text/javascript">
+        var keyControl = new KeyLogger(1);
         var proxy = new proxy();
         $("#sonidoControl").on("click", apagarMusica);
         inicio();
