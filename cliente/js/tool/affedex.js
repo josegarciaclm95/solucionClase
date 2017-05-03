@@ -9,6 +9,8 @@ function Affdex() {
     //Construct a CameraDetector and specify the image width / height and face detector mode.
     this.detector = new affdex.CameraDetector(this.divRoot, this.width, this.height, this.faceMode);
     this.time = undefined;
+    this.FaceInformation = [];
+    this.detectNow = false;
     //Enable detection of all Expressions and Emotion
     this.detector.detectAllEmotions();
     this.detector.detectAllExpressions();
@@ -49,6 +51,9 @@ function Affdex() {
     this.onImageResultsSuccess = function (callback) {
         this.detector.addEventListener("onImageResultsSuccess", callback);
     }
+    this.setDetectionFlag = function(){
+        this.detectNow = true;
+    }
 }
 
 function onInitializeSuccessDEMO () {
@@ -72,9 +77,15 @@ function onStopSuccessDEMO () {
 
 function onImageResultsSuccessDEMO (faces, image, timestamp) {
     console.log("Number of faces found: " + faces.length);
-    if (faces.length > 0 && (Date.now() - time) / 1000 > 2) {
+    if ((faces.length > 0 && (Date.now() - time) / 1000 > 2) || this.detectNow) {
+        console.log(faces[0]);
         console.log((Date.now() - time) / 1000);
         this.time = Date.now();
         evalEmotions(faces[0].expressions);
+        this.FaceInformation.push({
+            "time":timestamp,
+            "emotions":faces[0].emotions,
+            "expressions":faces[0].expressions
+        });
     }
 }

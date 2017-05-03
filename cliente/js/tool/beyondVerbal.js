@@ -21,22 +21,8 @@ function BeyondVerbalAPI(tokenUrl, serverUrl){
         apiKey: "26b904fc-9a12-4195-aba1-ce4b166bc4e5",
         token: ''
     };
+    this.SpeechInformation = {};
     var self = this;
-    this.authenticate = function () {
-        proxy.authenticateBV(this.options)
-           .fail(function (jqXHR, textStatus, errorThrown)
-            {
-                console.log(JSON.stringify(jqXHR) + errorThrown);
-            })
-            .done(function (data)
-            {
-                console.log("AUTHENTICATE CON EXITO");
-                console.log('sucess::' + JSON.stringify(data));
-                console.log(JSON.parse(data));
-                var token = JSON.parse(data);
-                self.options.token = token.access_token;
-            });
-    }
     this.analyzeFile = function (content, interval) {
         var dfd = $.Deferred();
         var startUrl = this.options.url.serverUrl+'start';
@@ -70,7 +56,7 @@ function BeyondVerbalAPI(tokenUrl, serverUrl){
         }, dfd.reject);
         return dfd.promise().always(function (){});
     }
-    this.authenticate();
+    //this.authenticate();
 }
 
 function Show(json)

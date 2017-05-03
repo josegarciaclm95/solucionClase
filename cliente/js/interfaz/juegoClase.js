@@ -15,7 +15,7 @@ var timer;
 var tiempo = 0;
 var foodObjects = {};
 var builderObject;
-var keyControl;
+//var keyControl;
 var xVelocity = 300; 
 var yVelocity = 400;
 var xCamera = xVelocity;
@@ -41,7 +41,7 @@ function crearNivel(){
                 finJuego("Lo siento, no tenemos más niveles",resetControl);
             } else {
                 infoJuego = data;
-                keyControl = new KeyLogger(infoJuego.nivel);
+                //keyControl = new KeyLogger(infoJuego.nivel);
                 setScoreCounters(infoJuego.recipe);
                 game = new Phaser.Game(800, 450, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
                 console.log("Datos recibidos correctos: " + (infoJuego.nivel != -1));
@@ -77,32 +77,37 @@ function create() {
     //Creamos builder de elementos
     //$("body").prepend('<audio id="gameMusic" src="assets/audio/sorrow.mp3" autoplay="true" loop="true"></audio>');
     builderObject = new Builder(infoJuego);
+    //Creamos una lista de objetos Score que almacenarán la cantidad de elementos que tenemos
+    //y controlará cuando hemos alcanzado el máxmo
     builderObject.createScores(Scores);
-    console.log(Scores);
+    //console.log(Scores);
 
+    //Añadimos el audio asociado a los fallos
     mistake = game.add.audio("mistake");
+
     //Habilita fisica
     game.physics.startSystem(Phaser.Physics.P2J);
 
+    //Añadimos el fondo del juego
     kitchen = game.add.tileSprite(0, 0, 800, 450, 'kitchen');
     kitchen.scale.setTo(1.33,1.02);
     //Para que el fondo no se mueva
     kitchen.fixedToCamera = true;
 
-    //Adding de grupos de plataformas y configutacion de las mismas
+    //Añadimos grupos de plataformas y los configuramos
     PlatformGroup.platforms = game.add.group();
     PlatformGroup.cielo = game.add.group();
-
     enableBodyObject(PlatformGroup);
     //Para que el jugador se pueda mover mas alla de lo que se ve en el canvas en un momento dado
     game.world.setBounds(0, 0, 1600, 450);
 
+    //Habilitamos el suelo (plataforma invisible)
     var ground = PlatformGroup.platforms.create(0, game.world.height - 80, 'ground');
     ground.scale.setTo(2, 4);
     ground.body.immovable = true;
     ground.visible = false;
 
-    //Creamos las plataformas
+    //Creamos las plataformas en el propio juego
     builderObject.buildFloors(PlatformGroup.platforms);
 
     //Seteamos jugador
@@ -110,14 +115,23 @@ function create() {
     //Para que la camara siga al jugador
     game.camera.follow(player);
 
+    //Poblamos el "techo" del juego de los elementos que van a caer
     foodObjects = game.add.group();
     var ingredients = infoJuego.recipe.ingredients;
     for(var i = 0; i < ingredients.length * 3; i++){
         createFoodElement();
     }
+
+    //Establecemos los controles del juego
     cursors = game.input.keyboard.createCursorKeys();
     timer = game.time.events.loop(Phaser.Timer.SECOND,updateTiempo,this);
+    /* 
+    game.input.keyboard.onDownCallback = function (e){
+        console.log(e);
+    }
+    */
 
+    //Añadimos valores de scores
     tiempoText = game.add.text(620,22,'Tiempo:0',{ fontSize: '32px', fill: '#FFF' });
     mistakes = game.add.group();
     for(var i = 0; i < 5; i++){
@@ -237,6 +251,7 @@ function collectFoodElement(player, food){
     } else {
         mistake.play();
         mistakes.removeChild(mistakes.getTop())
+        proxy.affdexDetector.setDetectionFlag();
         if(mistakes.children.length == 0){
              player.kill();
              game.destroy();
@@ -269,7 +284,7 @@ function nextLevel(){
     game.time.events.remove(timer);
     xVelocity = 300;
     yVelocity = 400;
-    affdexDetector.stopDetection();
+    proxy.stopAffectivaDetection();
     //onStop();
     nivelCompletado(tiempo, player.vidas);
 }

@@ -121,8 +121,7 @@
     <script type="text/javascript" src="js/tool/audiorecord/recorder.js"></script>
     <script type="text/javascript" src="js/tool/audiorecord/recorderWorker.js"></script>
     <script type="text/javascript" src="js/tool/beyondVerbal.js"></script>
-    <script type="text/javascript">
-        var keyControl = new KeyLogger(1);
+    <script type="text/javascript">        
         var proxy = new proxy();
         $("#sonidoControl").on("click", apagarMusica);
         inicio();
@@ -143,15 +142,7 @@
         recognition.onNoMatch(onNoMatchDemo);
         recognition.onError(onErrorDemo);
         var synthesis = new _SpeechSynthesis("en-GB", "Female", 1.2, 1);        
-
-        var affdexDetector = new Affdex();
-        affdexDetector.onInitializeSuccess(onInitializeSuccessDEMO);
-        affdexDetector.onWebcamConnectSuccess(onWebcamConnectSuccessDEMO);
-        affdexDetector.onWebcamConnectFailure(onWebcamConnectFailureDEMO);
-        affdexDetector.onStopSuccess(onStopSuccessDEMO);
-        affdexDetector.onImageResultsSuccess(onImageResultsSuccessDEMO);
-
-        var beyondVerbal = new BeyondVerbalAPI('https://token.beyondverbal.com/token','https://apiv3.beyondverbal.com/v1/recording/');
+        
         $("#myBtn1").on("click", function(){
             initAudio();
             $(this).remove();

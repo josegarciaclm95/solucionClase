@@ -194,7 +194,7 @@ function siguienteNivel() {
         }, 1000);
         console.log("Llamamos a crear nivel sin parametros en siguienteNivel()");
         crearNivel();
-        affdexDetector.startDetection();
+        proxy.startAffectivaDetection();
         //onStart();
     })
     $("#cerrarSesBtn").on("click", resetControl);

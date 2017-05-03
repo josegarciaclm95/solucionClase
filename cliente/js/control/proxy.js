@@ -3,6 +3,15 @@ function proxy() {
      * Se comprueba la validez de las credenciales de login. El ultimo atributo indica si los datos se están comprobando
      * desde una cookie o desde el formulario de login. Si es desde cookie, no comprobamos la contraseña.
      */
+    this.keylogger = new KeyLogger();
+    this.affdexDetector = new Affdex();
+    this.affdexDetector.onInitializeSuccess(onInitializeSuccessDEMO);
+    this.affdexDetector.onWebcamConnectSuccess(onWebcamConnectSuccessDEMO);
+    this.affdexDetector.onWebcamConnectFailure(onWebcamConnectFailureDEMO);
+    this.affdexDetector.onStopSuccess(onStopSuccessDEMO);
+    this.affdexDetector.onImageResultsSuccess(onImageResultsSuccessDEMO);
+    this.beyondVerbal = new BeyondVerbalAPI('https://token.beyondverbal.com/token','https://apiv3.beyondverbal.com/v1/recording/');
+    
     var self = this;
     this.comprobarUsuarioMongo = function (nombre, pass, fromCookie) {
         if (pass == "" && !fromCookie) {
@@ -111,12 +120,17 @@ function proxy() {
             password: pass
         }), callback);
     }
-
+    this.startAffectivaDetection = function () {
+        this.affdexDetector.startDetection();
+    }
+    this.stopAffectivaDetection = function () {
+        this.affdexDetector.stopDetection();
+    }
     this.authenticateBV = function (options) {
         console.log('url token:' + options.url.tokenUrl);
         console.log("LLEGAMOS A AUTHENTICATE");
         //options.apiKey = "f5a2d998-132e-41c3-b4f4-e36822e3da9a";
-        return $.ajax({
+        $.ajax({
             url: options.url.tokenUrl,
             type: "POST",
             dataType: 'text',
@@ -125,20 +139,55 @@ function proxy() {
                 grant_type: "client_credentials",
                 apiKey: options.apiKey
             }
-        });
+        }).fail(function (jqXHR, textStatus, errorThrown)
+            {
+                console.log(JSON.stringify(jqXHR) + errorThrown);
+            })
+            .done(function (data)
+            {
+                console.log("AUTHENTICATE CON EXITO");
+                console.log('sucess::' + JSON.stringify(data));
+                console.log(JSON.parse(data));
+                var token = JSON.parse(data);
+                self.beyondVerbal.options.token = token.access_token;
+            });
     }
     this.analyzeFileBV = function (blob){
-        beyondVerbal.analyzeFile(blob)
+        this.beyondVerbal.analyzeFile(blob)
             .done(function (res)
             {
                 console.log("CALLBACK DONE DE ANALYZE_FILE");
                 Show(res);
+                this.beyondVerbal.SpeechInformation = {
+                    "Arousal":res.result.analysisSummary.AnalysisResult.Arousal.Mean,
+                    "Temper":res.result.analysisSummary.AnalysisResult.Temper.Mean,
+                    "Valence": res.result.analysisSummary.AnalysisResult.Valence.Mean
+                }
             })
             .fail(function (err)
             {
                 Show(err);
             });
     }
+
+    this.sendAffectiveLogs = function () {
+        peticionAjax("POST", 
+                    "/affective-log/" + $.cookie("id") + "/" + $.cookie("nivel"), 
+                    false,
+                    JSON.stringify({
+                       "affectiva":this.affdexDetector.FaceInformation,
+                       "beyond":this.beyond.SpeechInformation,
+                       "keys":this.keylogger.getKeysInformation() 
+                    }),
+                    function(){
+                        console.log("Datos enviados correctamente");
+                        //TO DO: Los datos los reiniciará la lógica afectiva cuando se implemente
+                        //self.affdexDetector.FaceInformation = {};
+                        //self.beyond.SpeechInformation = {};
+                        //self.keylogger.KeysInformation = {};
+                    });
+    }
+    this.authenticateBV(this.beyondVerbal.options);
 }
 
 function peticionAjax(peticion, url, async, body, successCallback) {
