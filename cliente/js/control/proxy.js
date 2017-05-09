@@ -49,11 +49,19 @@ function proxy() {
                 console.log()
                 showGameControls();
             }
-            $.get("/nivelCompletado/" + $.cookie("id") + "/" + tiempo + "/" + vidas, callback);
+            peticionAjax("POST", "/nivelCompletado/" + $.cookie("id") + "/" + tiempo + "/" + vidas,
+            true, 
+            JSON.stringify({
+                affectiva:this.affdexDetector.FaceInformation,
+                beyond:this.beyondVerbal.SpeechInformation,
+                keys:this.keylogger.getKeysInformation() 
+            }), 
+            callback);
+            //$.post("/nivelCompletado/" + $.cookie("id") + "/" + tiempo + "/" + vidas, callback);
         }
-        /**
-         * Obtenemos los resultados de la partida actual
-         */
+    /**
+     * Obtenemos los resultados de la partida actual
+     */
     this.obtenerResultados = function () {
         var callback = function (datos) {
             console.log("Callback de obtener resultados con " + datos.length + " resultados");
@@ -158,34 +166,25 @@ function proxy() {
             {
                 console.log("CALLBACK DONE DE ANALYZE_FILE");
                 Show(res);
-                this.beyondVerbal.SpeechInformation = {
+                res = JSON.parse(res);
+                console.log("Arousal Mean - " + res.result.analysisSummary.AnalysisResult.Arousal.Mean);
+                console.log("Temper Mean - " + res.result.analysisSummary.AnalysisResult.Temper.Mean);
+                console.log("Valence Mean - " + res.result.analysisSummary.AnalysisResult.Valence.Mean);
+                console.log("Group11_Primary - " + res.result.analysisSegments[0].analysis.Mood.Group11.Primary.Phrase);
+                console.log("Composite_Primary - " + res.result.analysisSegments[0].analysis.Mood.Composite.Primary.Phrase);
+                self.beyondVerbal.SpeechInformation = {
                     "Arousal":res.result.analysisSummary.AnalysisResult.Arousal.Mean,
                     "Temper":res.result.analysisSummary.AnalysisResult.Temper.Mean,
-                    "Valence": res.result.analysisSummary.AnalysisResult.Valence.Mean
+                    "Valence": res.result.analysisSummary.AnalysisResult.Valence.Mean,
+                    "Group11_Primary": res.result.analysisSegments[0].analysis.Mood.Group11.Primary.Phrase,
+                    "Composite_Primary":res.result.analysisSegments[0].analysis.Mood.Composite.Primary.Phrase
                 }
+                
             })
             .fail(function (err)
             {
                 Show(err);
             });
-    }
-
-    this.sendAffectiveLogs = function () {
-        peticionAjax("POST", 
-                    "/affective-log/" + $.cookie("id") + "/" + $.cookie("nivel"), 
-                    false,
-                    JSON.stringify({
-                       "affectiva":this.affdexDetector.FaceInformation,
-                       "beyond":this.beyond.SpeechInformation,
-                       "keys":this.keylogger.getKeysInformation() 
-                    }),
-                    function(){
-                        console.log("Datos enviados correctamente");
-                        //TO DO: Los datos los reiniciará la lógica afectiva cuando se implemente
-                        //self.affdexDetector.FaceInformation = {};
-                        //self.beyond.SpeechInformation = {};
-                        //self.keylogger.KeysInformation = {};
-                    });
     }
     this.authenticateBV(this.beyondVerbal.options);
 }

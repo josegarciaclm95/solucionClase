@@ -39,12 +39,13 @@ module.exports.mongoConnect = function(juego){
 	});
 }
 
-module.exports.addNuevoResultado = function(usuario, tiempo, vidas, response){
+module.exports.addNuevoResultado = function (usuario, tiempo, vidas, affectiva_data, response) {
 	dbM.collection("partidas").update(
-		{id_usuario:usuario.id},
-		{$push: {partidas:{id_partida:usuario.id_partida_actual, nivel:usuario.nivel, tiempo: tiempo, vidas: vidas}}},
-		function(err, doc){
-			if(err){
+		{ id_usuario: usuario.id },
+		{ $push: { partidas: { id_partida: usuario.id_partida_actual, nivel: usuario.nivel, 
+								tiempo: tiempo, vidas: vidas, affectiva_data: affectiva_data } } },
+		function (err, doc) {
+			if (err) {
 				console.log(err);
 			} else {
 				var nivel = usuario.nivel;
@@ -52,7 +53,7 @@ module.exports.addNuevoResultado = function(usuario, tiempo, vidas, response){
 				if (usuario.nivel > usuario.maxNivel) {
 					usuario.nivel = 1;
 				}
-				response.send({'nivel':usuario.nivel});
+				response.send({ 'nivel': usuario.nivel });
 				console.log("\t Agregado registro de resultados")
 			}
 		})

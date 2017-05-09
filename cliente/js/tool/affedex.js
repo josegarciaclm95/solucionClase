@@ -49,7 +49,23 @@ function Affdex() {
         this.detector.addEventListener("onStopSuccess", callback);
     }
     this.onImageResultsSuccess = function (callback) {
-        this.detector.addEventListener("onImageResultsSuccess", callback);
+        this.detector.addEventListener("onImageResultsSuccess", function(faces, image, timestamp){
+            console.log("Number of faces found: " + faces.length);
+            if ((faces.length > 0 && (Date.now() - time) / 1000 > 2) || this.detectNow) {
+                console.log(faces[0]);
+                console.log((Date.now() - time) / 1000);
+                this.time = Date.now();
+                evalEmotions(faces[0].expressions);
+                console.log(timestamp);
+                console.log(faces[0].emotions);
+                console.log(faces[0].expressions);
+                self.FaceInformation.push({
+                    "time":timestamp,
+                    "emotions":faces[0].emotions,
+                    "expressions":faces[0].expressions
+                });
+            }
+        });
     }
     this.setDetectionFlag = function(){
         this.detectNow = true;
@@ -82,7 +98,10 @@ function onImageResultsSuccessDEMO (faces, image, timestamp) {
         console.log((Date.now() - time) / 1000);
         this.time = Date.now();
         evalEmotions(faces[0].expressions);
-        this.FaceInformation.push({
+        console.log(timestamp);
+        console.log(faces[0].emotions);
+        console.log(faces[0].expressions);
+        self.FaceInformation.push({
             "time":timestamp,
             "emotions":faces[0].emotions,
             "expressions":faces[0].expressions

@@ -95,8 +95,8 @@ function Juego(){
     this.addPartida = function(usuario){
         this.gestorPartidas.addPartida(usuario);
     }
-    this.guardarPartida = function(usuario, tiempo, vidas, response){
-        this.gestorPartidas.addResultados(usuario, tiempo, vidas, response);
+    this.guardarPartida = function(usuario, tiempo, vidas, affectiva_data, response){
+        this.gestorPartidas.addResultados(usuario, tiempo, vidas, affectiva_data, response);
     };
     this.getPartida = function(usuario){
         return this.gestorPartidas.getPartida(usuario.id, usuario.id_partida_actual);
@@ -243,8 +243,8 @@ function Usuario(user_name, email, pass, time_register, activo){
 function Partida(){
     this.id_partida = (new Date()).valueOf();
     this.resultados = [];
-    this.agregarResultado = function(nivel, tiempo, vidas){
-        this.resultados.push(new Resultado(nivel, tiempo, vidas));
+    this.agregarResultado = function(nivel, tiempo, vidas, affectiva_data){
+        this.resultados.push(new Resultado(nivel, tiempo, vidas, affectiva_data));
     }
     Partida.prototype.toString = function(){
         var r = "Partida " + this.id_partida + "\n";
@@ -308,11 +308,11 @@ function Caretaker(){
      * @param tiempo - tiempo en acabar el nivel.
      * @param vidas - vidas al acabar el nivel.
      */
-    this.addResultados = function(usuario, tiempo, vidas, response){
+    this.addResultados = function(usuario, tiempo, vidas, affectiva_data, response){
         if(partida = this.getPartida(usuario.id, usuario.id_partida_actual)){
             console.log("\t\t Model -> \t\t\t AddPartida - Partida encontrada");
-            partida.agregarResultado(usuario.nivel,tiempo,vidas);
-            persistencia.addNuevoResultado(usuario, tiempo, vidas, response);
+            partida.agregarResultado(usuario.nivel,tiempo,vidas, affectiva_data);
+            persistencia.addNuevoResultado(usuario, tiempo, vidas, affectiva_data, response);
         }
     }
     this.deletePartidas = function(id){
@@ -338,26 +338,28 @@ function Caretaker(){
     /**
      * Funcion auxiliar para recuperar los datos de Mongo y convertirlos a datos del modelo
      * @param  {} id
-     * @param  {} partida - registro de mongo con los datos de una partida
+     * @param  {} partida Registro de mongo con los datos de una partida
      */
     this.adaptarPartida = function(id, partida){
         //console.log(partida)
         if(result = this.getPartida(id, partida.id_partida)){
-            result.agregarResultado(partida.nivel,partida.tiempo,partida.vidas);
+            console.log(partida.affectiva_data);
+            result.agregarResultado(partida.nivel,partida.tiempo,partida.vidas, partida.affectiva_data);
         } else {
             var p = new Partida();
             p.id_partida = partida.id_partida;
-            p.agregarResultado(partida.nivel, partida.tiempo, partida.vidas);
+            p.agregarResultado(partida.nivel, partida.tiempo, partida.vidas, partida.affectiva_data);
             this.getPartidas(id).partidas.push(p);
         }
         console.log("\t Model -> \t Resultados de mongo insertados en Modelo");
     }
 }
 
-function Resultado(nivel,tiempo,vidas){
+function Resultado(nivel,tiempo,vidas, affectiva_data){
     this.nivel = nivel;
     this.tiempo = tiempo;
     this.vidas = vidas;
+    this.affectiva_data = affectiva_data,
     Resultado.prototype.toString = function(){
         return "Nivel " + this.nivel + " - Tiempo " + this.tiempo + " - Vidas " + this.vidas; 
     }

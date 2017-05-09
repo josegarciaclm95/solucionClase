@@ -22,6 +22,12 @@ function estilosAlerta(selector) {
     $(selector).attr('style', "border-radius: 5px; border:#FF0000 1px solid;")
 }
 
+function construirAvisoLegal(){
+    $("#intro-row").load('../html/aviso-legal.html', function(){
+        console.log("Pagina cargada");
+    });
+}
+
 function construirLogin() {
     $("#modal-login").load('../html/login.html', function () {
         $("#claveL").on("keyup", function (e) {
@@ -267,8 +273,8 @@ function mostrarResultados() {
                 var horas = (date.getHours() < 10) ? "0" + date.getHours() : date.getHours()
                 var minutos = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes()
                 //date = date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
-                 date = dia+ "/" + mes + "/" + date.getFullYear() + " " + horas + ":" + minutos;
-                 var nombre = (resultadosJuego[i].usuario.user_name == null) ? resultadosJuego[i].usuario.email : resultadosJuego[i].usuario.user_name;
+                date = dia+ "/" + mes + "/" + date.getFullYear() + " " + horas + ":" + minutos;
+                var nombre = (resultadosJuego[i].usuario.user_name == null) ? resultadosJuego[i].usuario.email : resultadosJuego[i].usuario.user_name;
                 resultados.push([nombre,date,resultadosJuego[i].resultados[j].resultados[z].nivel, resultadosJuego[i].resultados[j].resultados[z].tiempo])
             }
         }
@@ -316,6 +322,8 @@ function setModal(){
         }
     }
 }
+
+/*
 function preparacionJuego(){
     $("#control").append("<div id='ingredients'></div>")
     $("#ingredients").append("<h3> We need the following ingredients </h3>");
@@ -338,6 +346,7 @@ function preparacionJuego(){
     $('#special').data('timeoutId', timeoutId); 
     });
 }
+*/
 
 function setScoreCounters(recipe){
     console.log("llegamos aqui");

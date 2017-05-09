@@ -40,7 +40,6 @@ function BeyondVerbalAPI(tokenUrl, serverUrl){
         {
             var recID = data.recordingId ? data.recordingId : JSON.parse(data).recordingId;
             var upStreamUrl = self.options.url.serverUrl + recID;
-            console.log("PASO PREVIO A ENVIO DE DATOS - ANALYZE_FILE");
             //post content for analysis
             $.ajax({
                 url: upStreamUrl,

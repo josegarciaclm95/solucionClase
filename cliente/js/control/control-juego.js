@@ -6,9 +6,15 @@
 function inicio() {
     if ($.cookie('email') != undefined) {
         proxy.comprobarUsuarioMongo($.cookie('email'), undefined, true)
-    } else {
+    } else if (typeof $.cookie('visitado') === 'undefined') {
         console.log("No hay una cookie");
         construirLogin();
+        $(function(){
+            $("#footer").append('<p id="warning" style="color:#FF0000; font-weight: bold;">¿Es la primera vez que entras aquí? Echa un vistazo a nuestro aviso legal en la barra superior </p>');
+        });
+        $.cookie("visitado", 1);
+    } else {
+        console.log("Has estado aqui antes");
     }
 }
 

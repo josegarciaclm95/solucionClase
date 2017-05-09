@@ -22,7 +22,7 @@ function KeyLogger(){
         }
         if(e.key === self.lastPressed.key && Date.now() - self.lastTimePress > 250  && !e.repeat){
             self.excessivePressing[e.key]++;
-            console.log(Date.now() - self.lastTimePress);
+            console.log("Key " + e.key + " pressed too fast - Time = " + (Date.now() - self.lastTimePress));
         }
         self.lastTimePress = Date.now();
         self.keysPressed++;

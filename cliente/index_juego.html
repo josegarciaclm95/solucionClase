@@ -50,9 +50,16 @@
                         <a href="#eliminar" onclick="cambiarUsuario('Eliminar')">
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Eliminar usuario</a>
                     </li>
+                    <!--
                     <li id="resultadosNavBar">
                         <a href="#resultadosNavBar" onclick="mostrarResultados()">
                             <span class="glyphicon glyphicon-signal" aria-hidden="true"></span> Resultados
+                        </a>
+                    </li>
+                    -->
+                    <li id="avisoLegal">
+                        <a href="#avisoLegal" onclick="construirAvisoLegal()">
+                            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Aviso legal
                         </a>
                     </li>
                 </ul>
@@ -80,6 +87,7 @@
                 <button id="myBtn" type="button" class="btn btn-success">¡Acepto el reto!</button>
                 <button id="myBtn1" type="button" class="btn btn-success">Activar micrófono</button>
                 <button id="myBtn5" type="button" class="btn btn-success" onclick="keyControl.seeStatistics()">Ver estadísticas</button>
+                
                 <!-- The Modal -->
                 <div id="myModal" class="modal">
                 <!-- Modal content -->
@@ -150,6 +158,10 @@
              $("#intro-row").append('<button id="myBtn3" type="button" class="btn btn-success" onclick="recognition.stopRecognition();">Parar grabación</button>');
         })
     </script>
+
+    <footer id="footer">
+        
+    </footer>
 </body>
 
 </html>

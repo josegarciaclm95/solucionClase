@@ -10,9 +10,18 @@ function _SpeechRecognition(){
     this.grammar = "";
     var self = this;
     this.startRecognition = function(){
+        this.recognition.onend = function(event) {
+            self.startRecognition();
+        }
         this.recognition.start();
     }
+    /**
+     * Important! Before stopping the Recognition, the onend callback must be 
+     * deleted, in order to be able to really stop the service (the onend callback
+     * starts the recnogition again otherwise)
+     */
     this.stopRecognition = function(){
+        this.recognition.onend = function () {}
         this.recognition.stop();
     }
     this.setGrammar = function(rules, term_type, term_name){
@@ -32,9 +41,6 @@ function _SpeechRecognition(){
     }
     this.onError = function(callback){
         this.recognition.onerror = callback
-    }
-    this.recognition.onend = function() {
-        self.startRecognition();
     }
 }   
 
@@ -60,10 +66,10 @@ function _SpeechSynthesis(lang, fe_male_voice, pitch, rate){
 /************** FUNCIONES DE PRUEBA PARA LOS CALLBACKS*********************/
 
 function onResultDemo(event) {
-    console.log(event);
+    //console.log(event);
     console.log("Tenemos resultados");
     $("#juegoContainer").append('<h3>Tenemos algo!</h3>');
-    console.log(event);
+    //console.log(event);
     $("#juegoContainer").append('<h3>Has dicho...</h3>');
     $("#juegoContainer").append('<h3>'+ event.results[0][0].transcript +'</h3>');
     $("#juegoContainer").append('<h3>Seguridad del resultado: '+ event.results[0][0].confidence * 100 +'</h3>');

@@ -107,6 +107,11 @@ app.post('/login/', function(request, response){
 	}
 });
 
+app.post('/affective-log/', function(request, response){
+	console.log("Affective logs");
+	console.log(request.body);
+});
+
 app.post("/crearUsuario/", function (request, response) {
 	console.log("Crear usuarios")
 	var user_name = request.body.user_name;
@@ -189,15 +194,18 @@ app.get('/limpiarMongo/', function(request,response){
 	juego = juegofm.makeJuego();
 });
 
-app.get('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
+app.post('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
 	console.log("Nivel completado");
+	//console.log("Affective logs");
+	//console.log(request.body);
 	var id = request.params.id;
 	var tiempo = parseInt(request.params.tiempo);
 	var vidas = parseInt(request.params.vidas);
 	var usuario = juego.buscarUsuarioById(id);
+	var affectiva_data = request.body;
 	if(usuario != undefined){
 		console.log("\t Nivel completado -> \t Usuario encontrado en nivel completado")
-		juego.guardarPartida(usuario, tiempo, vidas, response)
+		juego.guardarPartida(usuario, tiempo, vidas, affectiva_data, response)
 		//usuario.agregarResultado(new modelo.Resultado(usuario.nivel,tiempo));
 		console.log("\t Nivel completado -> \t Usuario " + id + " - Tiempo " + tiempo + "-  IdJuego - " + usuario.idJuego);
 	} else {
