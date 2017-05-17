@@ -39,7 +39,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul id="barNav" class="nav navbar-nav">
                     <li id="inicio" class="active">
-                        <a href="#inicio">
+                        <a href="#inicio" onclick="location.reload()">
                             <span class="glyphicon glyphicon-home" aria-hidden="true"></span> Inicio <span class="sr-only">(current)</span></a>
                     </li>
                     <li id="modificar" style="display:none">
@@ -49,6 +49,10 @@
                     <li id="eliminar" style="display:none">
                         <a href="#eliminar" onclick="cambiarUsuario('Eliminar')">
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Eliminar usuario</a>
+                    </li>
+                    <li id="ajustes" style="display:none">
+                        <a href="#ajustes" onclick="construirAjustes()">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Ajustes</a>
                     </li>
                     <!--
                     <li id="resultadosNavBar">
@@ -84,10 +88,7 @@
                 <h3 class="info">¿Quién dijo que aprender era aburrido? Demuestra tu dominio del inglés al mismo tiempo que ayudas al chef 
                 a preparar la comida</h3>
                 <h3 class="info">¡Inicia sesión para ponerte a prueba!</h3>
-                <button id="myBtn" type="button" class="btn btn-success">¡Acepto el reto!</button>
-                <button id="myBtn1" type="button" class="btn btn-success">Activar micrófono</button>
-                <button id="myBtn5" type="button" class="btn btn-success" onclick="keyControl.seeStatistics()">Ver estadísticas</button>
-                
+                <button id="myBtn" type="button" class="btn btn-success">¡Acepto el reto!</button>                
                 <!-- The Modal -->
                 <div id="myModal" class="modal">
                 <!-- Modal content -->

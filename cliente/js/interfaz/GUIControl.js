@@ -23,9 +23,12 @@ function estilosAlerta(selector) {
 }
 
 function construirAvisoLegal(){
-    $("#intro-row").load('../html/aviso-legal.html', function(){
-        console.log("Pagina cargada");
-    });
+    $("footer").remove();
+    $("#intro-row").load('../html/aviso-legal.html', function(){});
+}
+
+function construirAjustes() {
+    $("#juegoContainer").load('../html/ajustes.html', function(){});
 }
 
 function construirLogin() {
@@ -179,6 +182,7 @@ function showGameControls() {
     $("#registerGroup").remove();
     $("#modificar").show();
     $("#eliminar").show();
+    $("#ajustes").show();
     siguienteNivel();
 }
 
@@ -212,6 +216,7 @@ function resetControl() {
     $("#control").empty();
     $("#modificar").hide();
     $("#social").hide();
+    $("#ajustes").hide();
     $("#eliminar").hide();
     location.reload();
     //construirLogin();
