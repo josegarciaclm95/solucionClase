@@ -2,6 +2,7 @@
     "nivel1": {
         "recipe": {
             "name": "Apple and banana smoothie",
+            "recipe_info": "apple-banana-smoothie.html",
             "ingredients": [
                 {
                     "name": "apple",
@@ -11,6 +12,14 @@
                     "name": "banana",
                     "goal": 4
                 }
+            ], 
+            "sentences":[
+                ["I like apples", "/Ái lof ápols/"],
+                ["I like bananas","/Ái láik banánas/"],
+                ["I want an apple", "Ái wont an ápol"],
+                ["I don't like bananas", "Ái dont láik banánas"],
+                ["Do you like smoothies?", "/Du yu láik smucis?/"],
+                ["She doesn't like apples", "/She dásent láik ápols/"]
             ]
         },
         "platforms": [
@@ -41,6 +50,14 @@
                     "name": "flour",
                     "goal": 4
                 }
+            ],
+            "sentences":[
+                ["I like apples", "/Ái lof ápols/"],
+                ["I like bananas","/Ái láik banánas/"],
+                ["I want an apple", "Ái wont an ápol"],
+                ["I don't like bananas", "Ái dont láik banánas"],
+                ["Do you like smoothies?", "/Du yu láik smucis?/"],
+                ["She doesn't like apples", "/She dásent láik ápols/"]
             ]
         },
         "platforms": [

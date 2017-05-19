@@ -42,6 +42,13 @@ function _SpeechRecognition(){
     this.onError = function(callback){
         this.recognition.onerror = callback
     }
+    this.recognition.onsoundstart = function() {
+        console.log('Some sound is being received');
+
+    }
+    this.recognition.onsoundend = function() {
+        console.log('Some sound is not being received');
+    }
 }   
 
 function _SpeechSynthesis(lang, fe_male_voice, pitch, rate){
@@ -74,6 +81,7 @@ function onResultDemo(event) {
     $("#juegoContainer").append('<h3>'+ event.results[0][0].transcript +'</h3>');
     $("#juegoContainer").append('<h3>Seguridad del resultado: '+ event.results[0][0].confidence * 100 +'</h3>');
     console.log(event.results[0][0].transcript);
+    console.log(event);
     console.log('Confidence: ' + event.results[0][0].confidence);
 }
 

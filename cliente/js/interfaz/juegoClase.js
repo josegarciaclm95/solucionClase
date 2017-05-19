@@ -15,20 +15,20 @@ var timer;
 var tiempo = 0;
 var foodObjects = {};
 var builderObject;
-//var keyControl;
+var garbage;
 var xVelocity = 300; 
 var yVelocity = 400;
 var xCamera = xVelocity;
 var yCamera = yVelocity;
 
 var kitchen;
-var garbage = ["banana-peel", "sponge", "fish-bone"];
 var mistake;
 
 var forbidden_actions = 0;
 var forb_act_timer = 0;
 
 function crearNivel(){
+   /*
     console.log('Llamada a /datosJuego/'+$.cookie("id"));
     $.ajax({
         url: '/datosJuego/'+$.cookie("id"),
@@ -48,6 +48,9 @@ function crearNivel(){
             }
         }
     });
+    */
+    setScoreCounters(infoJuego.recipe);
+    game = new Phaser.Game(800, 450, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
 }
 
 function preload() {
@@ -56,14 +59,15 @@ function preload() {
     game.load.image('ground', 'assets/landscape/platform.png');
     game.load.image('ground2', 'assets/landscape/platform2.png');
 
-    //Food
+    //Food (valid and not valid)
     var ingredients = infoJuego.recipe.ingredients;
     for(var i = 0; i < ingredients.length; i++){
         game.load.image(ingredients[i].name, 'assets/food/' + ingredients[i].name + '.png');
     }
-    game.load.image('banana-peel', 'assets/garbage/banana-peel.png');
-    game.load.image('sponge', 'assets/garbage/sponge.png');
-    game.load.image('fish-bone', 'assets/garbage/fish-bone.png');
+    garbage = infoJuego.not_valid_food;
+    for(var i = 0; i < garbage.length; i++){
+        game.load.image(garbage[i], 'assets/food/' + garbage[i] + '.png');
+    }
     game.load.image('mistake', 'assets/landscape/mistake.png');
 
     //Player
@@ -90,7 +94,7 @@ function create() {
 
     //Añadimos el fondo del juego
     kitchen = game.add.tileSprite(0, 0, 800, 450, 'kitchen');
-    kitchen.scale.setTo(1.33,1.02);
+    kitchen.scale.setTo(1,1.02);
     //Para que el fondo no se mueva
     kitchen.fixedToCamera = true;
 
@@ -99,7 +103,7 @@ function create() {
     PlatformGroup.cielo = game.add.group();
     enableBodyObject(PlatformGroup);
     //Para que el jugador se pueda mover mas alla de lo que se ve en el canvas en un momento dado
-    game.world.setBounds(0, 0, 1600, 450);
+    //game.world.setBounds(0, 0, 1600, 450);
 
     //Habilitamos el suelo (plataforma invisible)
     var ground = PlatformGroup.platforms.create(0, game.world.height - 80, 'ground');
@@ -118,7 +122,7 @@ function create() {
     //Poblamos el "techo" del juego de los elementos que van a caer
     foodObjects = game.add.group();
     var ingredients = infoJuego.recipe.ingredients;
-    for(var i = 0; i < ingredients.length * 3; i++){
+    for(var i = 0; i < (ingredients.length + garbage.length) * 3; i++){
         createFoodElement();
     }
 
@@ -132,10 +136,10 @@ function create() {
     */
 
     //Añadimos valores de scores
-    tiempoText = game.add.text(620,22,'Tiempo:0',{ fontSize: '32px', fill: '#FFF' });
+    tiempoText = game.add.text(20,22,'Tiempo:0',{ fontSize: '32px', fill: '#FFF' });
     mistakes = game.add.group();
     for(var i = 0; i < 5; i++){
-        var item = mistakes.create(20 + i*60, 25,    'mistake');
+        var item = mistakes.create(game.world.width - i*60 - 60, 25, 'mistake');
     }
 
     var forb_act_timer = game.time.now;

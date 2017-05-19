@@ -3,7 +3,7 @@ function proxy() {
      * Se comprueba la validez de las credenciales de login. El ultimo atributo indica si los datos se están comprobando
      * desde una cookie o desde el formulario de login. Si es desde cookie, no comprobamos la contraseña.
      */
-    this.keylogger = new KeyLogger();
+    this.keylogger;
     this.affdexDetector = new Affdex();
     this.affdexDetector.onInitializeSuccess(onInitializeSuccessDEMO);
     this.affdexDetector.onWebcamConnectSuccess(onWebcamConnectSuccessDEMO);
@@ -32,6 +32,7 @@ function proxy() {
                     $("#myBtn").css("display","none");
                     $(".info").css("display","none");
                     showGameControls();
+                    self.datosJuego_ID();
                 }
             }
             peticionAjax("POST", "/login/", true, JSON.stringify({
@@ -40,6 +41,23 @@ function proxy() {
             }), callback);
         }
     };
+
+    this.datosJuego_ID = function(){
+        var callback = function(data){
+            console.log(data);
+            if(data.nivel == -1 || data == {}){
+                finJuego("Lo siento, no tenemos más niveles",resetControl);
+            } else {
+                infoJuego = data;
+                self.keylogger = new KeyLogger(infoJuego.nivel);
+                console.log("Datos recibidos correctos: " + (infoJuego.nivel != -1));
+                $("#juegoContainer").load("../assets/recipes_info/" + data.recipe.recipe_info, function(){
+                    console.log("Info de receta cargado");
+                });
+            }
+        }
+        peticionAjax("GET", '/datosJuego/'+$.cookie("id"), true, JSON.stringify(), callback);
+    }
     /**
      * El servidor registra los resultados del nivel actual y nos indica el siguiente nivel.
      */

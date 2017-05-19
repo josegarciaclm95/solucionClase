@@ -57,8 +57,9 @@ app.get("/datosJuego/:id", function (request, response) {
 	console.log("Datos juego");
 	var id = request.params.id;
 	console.log("\t DatosJuego -> \t id - " + id);
+	var not_valid_food = [];
 	var usuario = juego.buscarUsuarioById(id);
-	var res;
+	var res = {};
 	if(usuario && usuario.nivel <= juego.niveles.length){
 		res = juego.niveles[usuario.nivel-1];
 		if(usuario.nivel == 1){
@@ -67,6 +68,25 @@ app.get("/datosJuego/:id", function (request, response) {
 	} else {
 		res = {nivel:-1, platforms:[], recipe:[]}	
 	}
+	var valid_food = [];
+	for(var j = 0; j < res.recipe.ingredients.length; j++){
+		valid_food.push(res.recipe.ingredients[j].name);
+	}
+	var direct = fs.readdirSync("./cliente/assets/food");
+	console.log(res.recipe.ingredients);
+	var limit = Math.ceil(res.recipe.ingredients.length / 2);
+	console.log(limit);
+	while(not_valid_food.length < limit){
+		var random = Math.floor(Math.random() * direct.length);
+		var food_i = direct[random].slice(0, -4);
+		console.log(food_i);
+		console.log(not_valid_food);
+		if(not_valid_food.indexOf(food_i) === -1 &&
+			valid_food.indexOf(food_i) === -1){
+				not_valid_food.push(food_i);
+		}
+	}
+	res.not_valid_food = not_valid_food;
 	console.log("\t DatosJuego -> \t Datos a devolver -> " +  JSON.stringify(res.nivel));
 	response.send(res);
 });
@@ -74,8 +94,13 @@ app.get("/datosJuego/:id", function (request, response) {
 
 app.get("/", function (request, response) {
 	console.log("Inicio de página");
-	var contenido = fs.readFileSync("./cliente/index_juego.html");
+	var contenido = fs.readFileSync("./cliente/pruebas_audio.html");
 	response.setHeader("Content-type", "text/html");
+	//var direct = fs.readdirSync("./cliente/assets/food");
+	//for(var i = 0; i < direct.length; i++){
+	//	console.log(direct[i]);
+	//}
+	
 	response.send(contenido);
 });
 app.get("/welcome", function (request, response) {

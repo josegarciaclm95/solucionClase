@@ -360,7 +360,7 @@ function setScoreCounters(recipe){
     console.log(ingredients);
     for(var i = 0; i < ingredients.length; i++){
         console.log(ingredients[i]);
-        html += '<li><img width = "50px" src = "./assets/food/' + ingredients[i].name + '.png">';
+        html += '<li> ' + ingredients[i].name.charAt(0).toUpperCase() + ingredients[i].name.slice(1);
         html += '<span id="' +ingredients[i].name + 'Score">0</span> / '+ ingredients[i].goal + '</li>';
     }
     html+= '</ul>';

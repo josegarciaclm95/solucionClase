@@ -16,7 +16,8 @@ function KeyLogger(){
     var self = this;
     document.addEventListener("keydown", function(e){
         //console.log("Key down - Char code " + e.charCode + " - Key " + e.key + " - Keycode " + e.keyCode + " - Key Repeat " + e.repeat);
-        if(e.key != "ArrowLeft" && e.key != "ArrowUp" && e.key != "ArrowDown" && e.key != "ArrowRight"){
+        if(e.key != "ArrowLeft" && e.key != "ArrowUp" && e.key != "ArrowDown" && e.key != "ArrowRight" 
+            && e.key != "A" && e.key != "W" && e.key != "S" && e.key != "S"){
             console.log("Mistake!");
             self.mistakes++;
         }

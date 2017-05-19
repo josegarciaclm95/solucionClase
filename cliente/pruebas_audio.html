@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Prototipo TFG</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="css/propios/estilosPropios.css">
+    <script src="lib/jquery/jquery-3.1.1.min.js"></script>
+    <!--<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>-->
+    <script src="lib/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="lib/phaser/phaser.min.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery.cookie.js"></script>
+    <script src="lib/jquery/jquery.loading.block.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/jquery.validate.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon.png">
+</head>
+
+<body>
+    <!--
+    <audio id="backMusic" src="assets/audio/dearlyBeloved.mp3" autoplay="true" loop="true"></audio>
+    -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+                    aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="./index_juego.html">Aprende Jugando</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+    </div>
+    <div class="container-fluid">
+        <div class="row intro">
+            <div class="col-md-12" id="intro-row">
+                <h1 class="info">¡Bienvenido a Aprende Jugando!</h1>
+                <h3 class="info">¿Quién dijo que aprender era aburrido? Demuestra tu dominio del inglés al mismo tiempo que ayudas al chef 
+                a preparar la comida</h3>
+                <h3 class="info">¡Inicia sesión para ponerte a prueba!</h3>
+                <button id="myBtn" type="button" class="btn btn-success">¡Acepto el reto!</button>
+                <button id="myBtn11" type="button" class="btn btn-success" onclick="encenderApagarReconocimiento()">Empezar a escuchar</button>                   
+                <!-- The Modal -->
+            </div>
+		</div>
+		<div class="row">
+			<div class="col-sm-4">
+				<div id="control">
+					
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<div class="row" id="juegoContainer">
+				
+				</div>
+			</div>
+		</div>
+    </div>
+
+    <!--
+<script type="text/javascript" src="js/juego.js"></script></body>
+-->
+    <script type="text/javascript" src="js/interfaz/juegoClase.js"></script>
+    <script type="text/javascript" src="js/interfaz/GUIControl.js"></script>
+    <script type="text/javascript" src="js/control/control-juego.js"></script>
+    <script type="text/javascript" src="js/control/proxy.js"></script>
+    <script type="text/javascript" src="js/control/keylog.js"></script>
+    <script type="text/javascript" src="js/tool/builder-json.js"></script>
+    <script type="text/javascript" src="js/tool/speech.js"></script>
+    <script src="https://download.affectiva.com/js/3.1/affdex.js"></script>
+    <script type="text/javascript" src="js/tool/affedex.js"></script>
+    <script type="text/javascript" src="js/tool/audiorecord/main.js"></script>
+    <script type="text/javascript" src="js/tool/audiorecord/recorder.js"></script>
+    <script type="text/javascript" src="js/tool/audiorecord/recorderWorker.js"></script>
+    <script type="text/javascript" src="js/tool/beyondVerbal.js"></script>
+    <script type="text/javascript">        
+        var proxy = new proxy();
+        $("#sonidoControl").on("click", apagarMusica);
+        inicio();
+        window.onhashchange = function (e) {
+            //console.log(e)
+            var newPage = e.newURL.split('#')[1]
+            var oldPage = e.oldURL.split('#')[1]
+            if (!oldPage) oldPage = "inicio";
+            if (!newPage) newPage = "sonido"
+            $('#' + newPage).addClass('active')
+            $('#' + oldPage).removeClass('active')
+        }
+        //setModal();
+        var recognition = new _SpeechRecognition();
+        recognition.setGrammar(["i","want", "an", "a", "apple","banana", "sweet", "milkshake", "smoothie"],"fruits","fruit");
+        recognition.onResult(onResultDemo);
+        recognition.onSpeechEnd(onSpeechEndDemo);
+        recognition.onNoMatch(onNoMatchDemo);
+        recognition.onError(onErrorDemo);
+        var synthesis = new _SpeechSynthesis("en-GB", "Female", 1.2, 1);        
+        
+        function encenderApagarReconocimiento(){
+            if($("#myBtn11").text() == "Empezar a escuchar"){
+                $("#myBtn11").text("Dejar de escuchar");
+                recognition.startRecognition();
+            } else {
+                $("#myBtn11").text("Empezar de escuchar");
+                recognition.stopRecognition();
+            }
+        }
+    </script>
+
+    <footer id="footer">
+        
+    </footer>
+</body>
+
+</html>
