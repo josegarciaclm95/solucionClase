@@ -296,6 +296,35 @@ function mostrarResultados() {
     });
 }
 
+function setDictation(sentences){
+    $("#juegoContainer").empty();
+    $("#juegoContainer").append('<div style="display: block; margin: 0 auto; width:50%" id="sentences" class="dotstyle dotstyle-hop">');
+    $("#juegoContainer").append('<div style="display: block; margin: 0 auto; width:75%" id="sentence-holder">');
+    var html = "<ul>";
+    for(var i = 0; i < sentences.length; i++){
+        html += '<li class="current"><a href="#" id="sentence' + i + '"></a></a></li>';
+        console.log("#sentence" + i);
+        $("#sentences").on("click", "#sentence" + i, function(event){
+            $("#sentence-holder").empty();
+            $("#sentence-holder").append('<h3>' + sentences[parseInt(this.id.slice(8))][0] + '</h3>')
+        });
+    }
+    $("#sentences").append(html);
+    $("#juegoContainer").append('<button id="recordMe" type="button" class="btn btn-success">Listen to me</button>');
+     $("#juegoContainer").on("click", "#recordMe", function(event){
+        recognition.startRecognition();
+     });
+     toggleRecording(page);
+     
+    [].slice.call( document.querySelectorAll( '.dotstyle > ul' ) ).forEach( function( nav ) {
+        new DotNav( nav, {
+            callback : function( idx ) {
+                //console.log( idx )
+            }
+        } );
+    } );
+}
+
 function validateMail(email) {
     console.log("Validando Mail");
     var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;

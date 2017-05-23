@@ -256,10 +256,11 @@ function collectFoodElement(player, food){
         mistake.play();
         mistakes.removeChild(mistakes.getTop())
         proxy.affdexDetector.setDetectionFlag();
+        console.log(mistakes.children.length);
         if(mistakes.children.length == 0){
              player.kill();
              game.destroy();
-            finJuego("Has cogido demasiada basura :S", showGameControls);
+            finJuego("Has cogido demasiada basura", showGameControls);
         }
     }
     removeFood(food);
@@ -283,14 +284,15 @@ function nextLevel(){
     console.log("Nivel completado");
     player.kill();
     PlatformGroup = {};
-    infoJuego = {};
     Scores = {}
     game.time.events.remove(timer);
     xVelocity = 300;
     yVelocity = 400;
     proxy.stopAffectivaDetection();
+    setDictation(infoJuego.recipe.sentences);
+    infoJuego = {};
     //onStop();
-    nivelCompletado(tiempo, player.vidas);
+    //nivelCompletado(tiempo, mistakes.children.length);
 }
 
 function enableBodyObject(obj){

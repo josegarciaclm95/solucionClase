@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="css/propios/estilosPropios.css">
+    <script src="js/interfaz/modernizr.min.js"></script>
     <script src="lib/jquery/jquery-3.1.1.min.js"></script>
-    <!--<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>-->
     <script src="lib/bootstrap/bootstrap.min.js"></script>
     <script type="text/javascript" src="lib/phaser/phaser.min.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.cookie.js"></script>
@@ -119,6 +119,7 @@
 -->
     <script type="text/javascript" src="js/interfaz/juegoClase.js"></script>
     <script type="text/javascript" src="js/interfaz/GUIControl.js"></script>
+    <script type="text/javascript" src="js/interfaz/dots.js"></script>
     <script type="text/javascript" src="js/control/control-juego.js"></script>
     <script type="text/javascript" src="js/control/proxy.js"></script>
     <script type="text/javascript" src="js/control/keylog.js"></script>
@@ -150,16 +151,15 @@
         recognition.onSpeechEnd(onSpeechEndDemo);
         recognition.onNoMatch(onNoMatchDemo);
         recognition.onError(onErrorDemo);
-        var synthesis = new _SpeechSynthesis("en-GB", "Female", 1.2, 1);        
-        
+        var synthesis = new _SpeechSynthesis("en-GB", "Female", 1.2, 1); 
+        var page = this;       
         $("#myBtn1").on("click", function(){
             initAudio();
             $(this).remove();
             $("#intro-row").append('<button id="myBtn2" type="button" class="btn btn-success" onclick="toggleRecording(this);">Grabar audio</button>');
              $("#intro-row").append('<button id="myBtn3" type="button" class="btn btn-success" onclick="recognition.stopRecognition();">Parar grabación</button>');
-        })
+        });
     </script>
-
     <footer id="footer">
         
     </footer>
