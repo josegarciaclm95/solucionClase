@@ -18,14 +18,14 @@ function BeyondVerbalAPI(tokenUrl, serverUrl){
             tokenUrl: tokenUrl,
             serverUrl: serverUrl
         },
-        apiKey: "26b904fc-9a12-4195-aba1-ce4b166bc4e5",
+        apiKey: "4e8c2bca-62ad-4838-892b-ed05a5fceb3f",
         token: ''
     };
     this.SpeechInformation = {};
     var self = this;
     this.analyzeFile = function (content, interval) {
         var dfd = $.Deferred();
-        var startUrl = this.options.url.serverUrl+'start';
+        var startUrl = this.options.url.serverUrl + 'start';
         console.log("LLEGADA A ANALYZE_FILE");
         $.ajax({
             url: startUrl,

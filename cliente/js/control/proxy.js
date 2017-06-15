@@ -10,7 +10,7 @@ function proxy() {
     this.affdexDetector.onWebcamConnectFailure(onWebcamConnectFailureDEMO);
     this.affdexDetector.onStopSuccess(onStopSuccessDEMO);
     this.affdexDetector.onImageResultsSuccess(onImageResultsSuccessDEMO);
-    this.beyondVerbal = new BeyondVerbalAPI('https://token.beyondverbal.com/token','https://apiv3.beyondverbal.com/v1/recording/');
+    this.beyondVerbal = new BeyondVerbalAPI('https://token.beyondverbal.com/token','https://apiv3.beyondverbal.com/v3/recording/');
     
     var self = this;
     this.comprobarUsuarioMongo = function (nombre, pass, fromCookie) {
@@ -31,6 +31,8 @@ function proxy() {
                     $("#myModal").css("display","none");
                     $("#myBtn").css("display","none");
                     $(".info").css("display","none");
+                    $(".intro").css("display","none");
+                    $("#header-intro").css("display", "none");
                     showGameControls();
                     self.datosJuego_ID();
                 }
@@ -173,7 +175,6 @@ function proxy() {
             {
                 console.log("AUTHENTICATE CON EXITO");
                 console.log('sucess::' + JSON.stringify(data));
-                console.log(JSON.parse(data));
                 var token = JSON.parse(data);
                 self.beyondVerbal.options.token = token.access_token;
             });
@@ -197,11 +198,18 @@ function proxy() {
                     "Group11_Primary": res.result.analysisSegments[0].analysis.Mood.Group11.Primary.Phrase,
                     "Composite_Primary":res.result.analysisSegments[0].analysis.Mood.Composite.Primary.Phrase
                 }
-                
             })
             .fail(function (err)
             {
-                Show(err);
+                console.log(err);
+                self.beyondVerbal.SpeechInformation = {
+                    "Arousal":null,
+                    "Temper":null,
+                    "Valence": null,
+                    "Group11_Primary": null,
+                    "Composite_Primary":null
+                }
+                //Show(err);
             });
     }
     this.authenticateBV(this.beyondVerbal.options);

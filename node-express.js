@@ -94,13 +94,8 @@ app.get("/datosJuego/:id", function (request, response) {
 
 app.get("/", function (request, response) {
 	console.log("Inicio de página");
-	var contenido = fs.readFileSync("./cliente/pruebas_audio.html");
-	response.setHeader("Content-type", "text/html");
-	//var direct = fs.readdirSync("./cliente/assets/food");
-	//for(var i = 0; i < direct.length; i++){
-	//	console.log(direct[i]);
-	//}
-	
+	var contenido = fs.readFileSync("./cliente/index_juego.html");
+	response.setHeader("Content-type", "text/html");	
 	response.send(contenido);
 });
 app.get("/welcome", function (request, response) {

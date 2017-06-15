@@ -49,22 +49,22 @@ function doneEncoding( blob ) {
 }
 
 function toggleRecording( e ) {
-    console.log("Toggle recording");
-    if (e.classList.contains("recording")) {
+    console.log("Toggle recording - " + e.recording);
+    if (e.recording) {
         // stop recording
         audioRecorder.stop();
-        recognition.stopRecognition();
-        e.classList.remove("recording");
+        //recognition.stopRecognition();
+        e.recording = false;
         audioRecorder.getBuffers( gotBuffers );
     } else {
         // start recording
         if (!audioRecorder)
             return;
-        e.classList.add("recording");
+        e.recording = true;
         audioRecorder.clear();
-        recognition.startRecognition();
         audioRecorder.record();
     }
+    console.log("Toggle recording (end) - " + e.recording);
 }
 
 function convertToMono( input ) {

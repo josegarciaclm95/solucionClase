@@ -296,26 +296,44 @@ function mostrarResultados() {
     });
 }
 
-function setDictation(sentences){
+var startListening = function(){
+    recognition.startRecognition();
+    $("#recordMe").removeClass("btn-success");
+    $("#recordMe").addClass("btn-danger");
+    $("#recordMe").text("Stop listening");
+};
+
+var stopListening = function(){
+    recognition.stopRecognition();
+    $("#recordMe").removeClass("btn-danger");
+    $("#recordMe").addClass("btn-success");
+    $("#recordMe").text("Listen to me");
+};
+
+function setDictation(sentences, tiempo, vidas){
     $("#juegoContainer").empty();
-    $("#juegoContainer").append('<div style="display: block; margin: 0 auto; width:50%" id="sentences" class="dotstyle dotstyle-hop">');
+    $("#juegoContainer").append('<div style="display: block; margin: 0 auto; width:50%; text-align: center; vertical-align: middle;" id="sentences" class="dotstyle dotstyle-hop">');
     $("#juegoContainer").append('<div style="display: block; margin: 0 auto; width:75%" id="sentence-holder">');
     var html = "<ul>";
+    recognition.sentences = sentences.length;
+    recognition.infoJuegoPrevio = {"tiempo": tiempo, "vidas":vidas};
     for(var i = 0; i < sentences.length; i++){
-        html += '<li class="current"><a href="#" id="sentence' + i + '"></a></a></li>';
+        html += '<li><a href="#" id="sentence' + i + '"></a></a></li>';
         console.log("#sentence" + i);
         $("#sentences").on("click", "#sentence" + i, function(event){
             $("#sentence-holder").empty();
-            $("#sentence-holder").append('<h3>' + sentences[parseInt(this.id.slice(8))][0] + '</h3>')
+            $("#sentence-holder").append('<h2 style="text-align: center; vertical-align: middle;">' + sentences[parseInt(this.id.slice(8))][0] + '</h2>')
         });
     }
     $("#sentences").append(html);
-    $("#juegoContainer").append('<button id="recordMe" type="button" class="btn btn-success">Listen to me</button>');
-     $("#juegoContainer").on("click", "#recordMe", function(event){
-        recognition.startRecognition();
+    $("#sentence0").parent("li").addClass("current");
+    $("#sentence-holder").html('<h2 style="text-align: center; vertical-align: middle;">' + sentences[0][0] + '</h2>');
+    $("#juegoContainer").append('<div style="text-align: center; vertical-align: middle;"><button id="recordMe" type="button" class="btn btn-success">Clic para empezar</button></div>');
+    $("#juegoContainer").on("click", "#recordMe", function(event){
+        if($("#recordMe").text() == "Listen to me") startListening();
+        else stopListening();
      });
-     toggleRecording(page);
-     
+     toggleRecording(recognition);
     [].slice.call( document.querySelectorAll( '.dotstyle > ul' ) ).forEach( function( nav ) {
         new DotNav( nav, {
             callback : function( idx ) {

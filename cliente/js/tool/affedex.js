@@ -50,6 +50,7 @@ function Affdex() {
     }
     this.onImageResultsSuccess = function (callback) {
         this.detector.addEventListener("onImageResultsSuccess", function(faces, image, timestamp){
+            console.log(faces);
             console.log("Number of faces found: " + faces.length);
             if ((faces.length > 0 && (Date.now() - time) / 1000 > 2) || this.detectNow) {
                 console.log(faces[0]);

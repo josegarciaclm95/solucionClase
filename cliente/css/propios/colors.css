@@ -1,0 +1,27 @@
+#barra-sup, #barra-sup a {
+    background-color:#ff6090 !important;
+    color:black !important;
+}
+
+#barra-sup li.active a  {
+    background-color:#b0003a !important;
+    color:white !important;
+}
+
+button {
+    border-color: #b0003a !important;
+    background-color:#b0003a !important;
+}
+
+.row.intro {
+    background-color: #e91e63 !important;
+    color: white !important;
+}
+
+#login label {
+    color:black;
+}
+
+.progress-bar {
+    background-color: #ff6090;
+}

@@ -8,6 +8,9 @@ function _SpeechRecognition(){
     this.recognition.interimResults = false;
     this.recognition.maxAlternatives = 5;
     this.grammar = "";
+    this.sentences = 0;
+    this.infoJuegoPrevio = {};
+    this.recording = false;
     var self = this;
     this.startRecognition = function(){
         this.recognition.onend = function(event) {
@@ -31,6 +34,7 @@ function _SpeechRecognition(){
         this.recognition.grammars = speechRecognitionList;
     }
     this.onResult = function(callback){
+        self.stopRecognition();
         this.recognition.onresult = callback;
     }
     this.onSpeechEnd = function(callback) {
@@ -41,13 +45,6 @@ function _SpeechRecognition(){
     }
     this.onError = function(callback){
         this.recognition.onerror = callback
-    }
-    this.recognition.onsoundstart = function() {
-        console.log('Some sound is being received');
-
-    }
-    this.recognition.onsoundend = function() {
-        console.log('Some sound is not being received');
     }
 }   
 
@@ -73,15 +70,42 @@ function _SpeechSynthesis(lang, fe_male_voice, pitch, rate){
 /************** FUNCIONES DE PRUEBA PARA LOS CALLBACKS*********************/
 
 function onResultDemo(event) {
-    //console.log(event);
-    //console.log(event);
-    var text = $("#sentence-holder").text();
-    $("#juegoContainer").append('<h3>Has dicho...</h3>');
-    $("#juegoContainer").append('<h3>'+ event.results[0][0].transcript +'</h3>');
-    $("#juegoContainer").append('<h3>Seguridad del resultado: '+ event.results[0][0].confidence * 100 +'</h3>');
-    console.log(event.results[0][0].transcript);
-    console.log(event);
-    console.log('Confidence: ' + event.results[0][0].confidence);
+    var text = $("#sentence-holder").text().toLowerCase();
+    var split_text = text.split(" ");
+    var results = event.results[0];
+    var hits = 0;
+    for(var i = 0; i < results.length; i++){
+        var result_text = results[i].transcript.toLowerCase().split(" ");
+        for(var j = 0; j < split_text.length; j++){
+            if(result_text.indexOf(split_text[j]) != -1){
+                console.log(split_text[j] + " -> is in -> " + results[i].transcript);
+                hits++;
+            }
+        }
+        if(hits / split_text.length >= 0.6){
+            $("#sentence-holder").css("color", "#008000");
+            $("#sentence-holder").append("<h3>Well done!</h3>");
+            stopListening();
+            $("#sentence-holder").slideToggle(1000, function(){
+                    var s_number = parseInt($(".current > a").attr("id").slice(8));
+                    if(s_number + 1 == recognition.sentences){
+                        toggleRecording(recognition);
+                        //mostrarResultados();
+                        nivelCompletado(recognition.infoJuegoPrevio.tiempo, recognition.infoJuegoPrevio.vidas)
+                    } else {
+                        $("#sentence" + (s_number + 1))[0].click();
+                    }
+                    $("#sentence-holder").slideToggle();
+                });
+            break;
+        } else {
+            hits = 0;
+        }
+    }
+    console.log("Fin del bucle - Hits = " + hits);
+    if(hits == 0){
+        $("#sentence-holder").css("color", "#FF0000");
+    }
 }
 
 function onSpeechEndDemo(event) {

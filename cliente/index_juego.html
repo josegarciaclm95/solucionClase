@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="css/propios/estilosPropios.css">
+    <link rel="stylesheet" href="css/propios/colors.css">
     <script src="js/interfaz/modernizr.min.js"></script>
     <script src="lib/jquery/jquery-3.1.1.min.js"></script>
     <script src="lib/bootstrap/bootstrap.min.js"></script>
@@ -23,7 +24,7 @@
     <!--
     <audio id="backMusic" src="assets/audio/dearlyBeloved.mp3" autoplay="true" loop="true"></audio>
     -->
-    <nav class="navbar navbar-default navbar-fixed-top">
+    <nav class="navbar navbar-default navbar-fixed-top" id="barra-sup">
         <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
@@ -61,20 +62,23 @@
                         </a>
                     </li>
                     -->
+                    
+                </ul>
+                
+                <ul id="barNav_r" class="nav navbar-nav navbar-right">
+                   <!-- <li id="sonido">
+                        <a id="sonidoControl" href="#">
+                            <span class="glyphicon glyphicon-volume-off" aria-hidden="true"></span>
+                            <strong>Sonido</strong>
+                        </a>
+                    </li>-->
                     <li id="avisoLegal">
                         <a href="#avisoLegal" onclick="construirAvisoLegal()">
                             <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Aviso legal
                         </a>
                     </li>
                 </ul>
-                <ul id="barNav_r" class="nav navbar-nav navbar-right">
-                    <li id="sonido">
-                        <a id="sonidoControl" href="#">
-                            <span class="glyphicon glyphicon-volume-off" aria-hidden="true"></span>
-                            <strong>Sonido</strong>
-                        </a>
-                    </li>
-                </ul>
+                
             </div>
             <!-- /.navbar-collapse -->
         </div>
@@ -82,22 +86,72 @@
     </nav>
     </div>
     <div class="container-fluid">
-        <div class="row intro">
+
+        <div id="header-intro" class="row" style="padding-bottom:50px">
+            <div class="col-md-8" style="padding:75px 75px 150px">
+                <img src="./assets/hat.png">
+            </div>
+            <div class="col-md-4">
+                <p style="padding-top:100px">
+                    <h2>¿Cuanto sabes de cocina?  </h2>
+                    <h2>¿Y de inglés? </h2>
+                    <h2>Demuestra tu nivel con este juego</h2>
+                </p>
+                <p style="padding-top:20px">
+                    <button id="myBtn" type="button" class="btn btn-success">¡Acepto el reto!</button>
+                </p>
+            </div>
+        </div>
+        <div id="intro-info" class="row intro">
             <div class="col-md-12" id="intro-row">
-                <h1 class="info">¡Bienvenido a Aprende Jugando!</h1>
-                <h3 class="info">¿Quién dijo que aprender era aburrido? Demuestra tu dominio del inglés al mismo tiempo que ayudas al chef 
-                a preparar la comida</h3>
-                <h3 class="info">¡Inicia sesión para ponerte a prueba!</h3>
-                <button id="myBtn" type="button" class="btn btn-success">¡Acepto el reto!</button>                
+                <div class="row">
+                    <h1 class="info">¡Bienvenido a Aprende Jugando!</h1>
+                    <h3 class="info">¿Quién dijo que aprender era aburrido? Demuestra tu dominio del inglés al mismo tiempo que ayudas al chef 
+                        a preparar la comida</h3>
+                    <h3 class="info">¡Inicia sesión para ponerte a prueba!</h3>
+                </div>
+                <div class="row" style="margin-top:20px">
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <img width="300" src="./assets/info1.png">
+                        </div>
+                        <div class="row">
+                            <p> Recolecta los ingredientes necesarios para cocinas una receta</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="row">
+                                <img width="300" src="./assets/info2.png">
+                        </div>
+                        <div class="row">
+                            <p>Pero cuidado, no toda la comida que caiga será valida. ¡Coge solo los ingredientes
+                                correctos o perderás vidas!
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="row">
+                                <img width="300" src="./assets/info3.png">
+                        </div>
+                        <div class="row">
+                            <p>Después de recoger los ingredientes pondrás a prueba tu pronunciación. Pulsa el botón
+                                debajo de cada frase cuando estés listo para pronunciarla. ¡Cuanto mejor pronuncies las frases
+                                más puntos conseguirás!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                                
                 <!-- The Modal -->
                 <div id="myModal" class="modal">
                 <!-- Modal content -->
-                <div id="modal-login" class="modal-content">
-                    <span class="close">&times;</span>
-                </div>
+                    <div id="modal-login" class="modal-content">
+                        <span class="close">&times;</span>
+                    </div>
                 </div>
             </div>
 		</div>
+        
 		<div class="row">
 			<div class="col-sm-4">
 				<div id="control">
@@ -140,9 +194,9 @@
             var newPage = e.newURL.split('#')[1]
             var oldPage = e.oldURL.split('#')[1]
             if (!oldPage) oldPage = "inicio";
-            if (!newPage) newPage = "sonido"
-            $('#' + newPage).addClass('active')
-            $('#' + oldPage).removeClass('active')
+            if (!newPage) newPage = "sonido";
+            $('#' + newPage).addClass('active');
+            $('#' + oldPage).removeClass('active');
         }
         setModal();
         var recognition = new _SpeechRecognition();
@@ -151,18 +205,14 @@
         recognition.onSpeechEnd(onSpeechEndDemo);
         recognition.onNoMatch(onNoMatchDemo);
         recognition.onError(onErrorDemo);
-        var synthesis = new _SpeechSynthesis("en-GB", "Female", 1.2, 1); 
-        var page = this;       
-        $("#myBtn1").on("click", function(){
-            initAudio();
-            $(this).remove();
-            $("#intro-row").append('<button id="myBtn2" type="button" class="btn btn-success" onclick="toggleRecording(this);">Grabar audio</button>');
-             $("#intro-row").append('<button id="myBtn3" type="button" class="btn btn-success" onclick="recognition.stopRecognition();">Parar grabación</button>');
-        });
+        var synthesis = new _SpeechSynthesis("en-GB", "Female", 1.2, 1);        
+        initAudio();
     </script>
-    <footer id="footer">
+    <!--
+        <footer id="footer">
         
-    </footer>
+        </footer>
+    -->
 </body>
 
 </html>

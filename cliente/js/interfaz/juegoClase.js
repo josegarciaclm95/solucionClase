@@ -260,6 +260,7 @@ function collectFoodElement(player, food){
         if(mistakes.children.length == 0){
              player.kill();
              game.destroy();
+             proxy.stopAffectivaDetection();
             finJuego("Has cogido demasiada basura", showGameControls);
         }
     }
@@ -289,7 +290,7 @@ function nextLevel(){
     xVelocity = 300;
     yVelocity = 400;
     proxy.stopAffectivaDetection();
-    setDictation(infoJuego.recipe.sentences);
+    setDictation(infoJuego.recipe.sentences, tiempo, mistakes.children.length);
     infoJuego = {};
     //onStop();
     //nivelCompletado(tiempo, mistakes.children.length);
