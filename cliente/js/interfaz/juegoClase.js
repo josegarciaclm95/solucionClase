@@ -28,27 +28,6 @@ var forbidden_actions = 0;
 var forb_act_timer = 0;
 
 function crearNivel(){
-   /*
-    console.log('Llamada a /datosJuego/'+$.cookie("id"));
-    $.ajax({
-        url: '/datosJuego/'+$.cookie("id"),
-        dataType: 'json',
-        async: false,
-        success: function (data) {
-            console.log("Datos devultos a crearNivel")
-            console.log(data);
-            if(data.nivel == -1 || data == {}){
-                finJuego("Lo siento, no tenemos más niveles",resetControl);
-            } else {
-                infoJuego = data;
-                //keyControl = new KeyLogger(infoJuego.nivel);
-                setScoreCounters(infoJuego.recipe);
-                game = new Phaser.Game(800, 450, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
-                console.log("Datos recibidos correctos: " + (infoJuego.nivel != -1));
-            }
-        }
-    });
-    */
     setScoreCounters(infoJuego.recipe);
     game = new Phaser.Game(800, 450, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
 }
@@ -79,19 +58,15 @@ function preload() {
 
 function create() {
     //Creamos builder de elementos
-    //$("body").prepend('<audio id="gameMusic" src="assets/audio/sorrow.mp3" autoplay="true" loop="true"></audio>');
     builderObject = new Builder(infoJuego);
     //Creamos una lista de objetos Score que almacenarán la cantidad de elementos que tenemos
     //y controlará cuando hemos alcanzado el máxmo
     builderObject.createScores(Scores);
-    //console.log(Scores);
 
     //Añadimos el audio asociado a los fallos
     mistake = game.add.audio("mistake");
-
     //Habilita fisica
     game.physics.startSystem(Phaser.Physics.P2J);
-
     //Añadimos el fondo del juego
     kitchen = game.add.tileSprite(0, 0, 800, 450, 'kitchen');
     kitchen.scale.setTo(1,1.02);
@@ -102,8 +77,6 @@ function create() {
     PlatformGroup.platforms = game.add.group();
     PlatformGroup.cielo = game.add.group();
     enableBodyObject(PlatformGroup);
-    //Para que el jugador se pueda mover mas alla de lo que se ve en el canvas en un momento dado
-    //game.world.setBounds(0, 0, 1600, 450);
 
     //Habilitamos el suelo (plataforma invisible)
     var ground = PlatformGroup.platforms.create(0, game.world.height - 80, 'ground');

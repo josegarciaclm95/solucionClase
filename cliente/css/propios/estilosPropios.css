@@ -26,7 +26,7 @@ li {
 .intro {
     text-align: center;
     vertical-align: middle;
-    padding: 0px 100px;
+    padding: 0px 100px 60px 100px;
 }
 
 .row.intro p {

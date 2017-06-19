@@ -52,12 +52,12 @@
                 }
             ],
             "sentences":[
-                ["I like apples", "/Ái lof ápols/"],
-                ["I like bananas","/Ái láik banánas/"],
-                ["I want an apple", "Ái wont an ápol"],
-                ["I don't like bananas", "Ái dont láik banánas"],
-                ["Do you like smoothies?", "/Du yu láik smucis?/"],
-                ["She doesn't like apples", "/She dásent láik ápols/"]
+                ["I like chocolate", "/Ái lof ápols/"],
+                ["Sugar is very sweet","/Ái láik banánas/"],
+                ["I'm allergic to nuts", "Ái wont an ápol"],
+                ["You can use flour to bake a cake", "Ái dont láik banánas"],
+                ["Do you want to try this brownie?", "/Du yu láik smucis?/"],
+                ["I want some chocolate for dessert", "/She dásent láik ápols/"]
             ]
         },
         "platforms": [
