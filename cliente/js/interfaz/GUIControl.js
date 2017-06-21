@@ -174,15 +174,11 @@ function showGameControls() {
     $('#datos, #cabeceraP, #cabecera, #prog').remove();
     $('#control').append('<div id="datos"><h4>Usuario: ' + nombre + '<br />Nivel: ' + nivel + '</h4></div>');
     $('#control').append('<div class="progress" id="prog"><div class="progress-bar progress-bar-success progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width:' + percen + '%">' + percen + '%</div></div>');
-    //$('#control').append('<button id="hearMe" type="button" style="margin-top:5px; margin-right:5px;" class="btn btn-success">Escúchame</button>');
-    $("#hearMe").on("click", function(event){
-        $("#juegoContainer").prepend('<h3>Te estamos escuchando</h3>');
-        recognition.startRecognition();
-    });
     $("#registerGroup").remove();
     $("#modificar").show();
     $("#eliminar").show();
     $("#ajustes").show();
+    proxy.datosJuego_ID();
     siguienteNivel();
 }
 
@@ -199,9 +195,6 @@ function siguienteNivel() {
         //$("#cerrarSesBtn").remove();
         $("#juegoContainer").empty();
         $("#juegoContainer").append('<div id="juegoId"></div>');
-        $("#backMusic").animate({
-            volume: 0
-        }, 1000);
         console.log("Llamamos a crear nivel sin parametros en siguienteNivel()");
         crearNivel();
         proxy.startAffectivaDetection();
@@ -238,12 +231,13 @@ function mostrarResultadosUsuario(datos) {
     var cadena = "<table id='resultados' class='table table-bordered table-condensed'><tr><th>Nombre</th><th>Nivel</th><th>Tiempo</th></tr>";
     for (var i = 0; i < datos.length; i++) {
         cadena = cadena + "<tr><td>" + $.cookie("email") + "</td><td> " + datos[i].nivel + "</td>" + "</td><td> " + datos[i].tiempo + "</td></tr>";
-        if(datos[i].nivel == $.cookie("nivel")){
-            $("twitter-button").attr("data-text", "¡He hecho el nivel  " + $.cookie("nivel") + " en " + datos[i].tiempo + " segundos");
-        }
     }
     cadena = cadena + "</table>";
     $('#juegoId').append(cadena);
+    $("#juegoId").append('<button type="button" id="sigRecBtn" class="btn btn-primary btn-md" style="margin-top:5px">Siguiente receta</button>');
+    $("#sigRecBtn").on("click", function(){
+        showGameControls();
+    });
 }
 
 function mostrarResultados() {
@@ -307,7 +301,7 @@ var stopListening = function(){
     recognition.stopRecognition();
     $("#recordMe").removeClass("btn-danger");
     $("#recordMe").addClass("btn-success");
-    $("#recordMe").text("Listen to me");
+    $("#recordMe").text("Clic para empezar");
 };
 
 function setDictation(sentences, tiempo, vidas){
@@ -330,7 +324,7 @@ function setDictation(sentences, tiempo, vidas){
     $("#sentence-holder").html('<h2 style="text-align: center; vertical-align: middle;">' + sentences[0][0] + '</h2>');
     $("#juegoContainer").append('<div style="text-align: center; vertical-align: middle;"><button id="recordMe" type="button" class="btn btn-success">Clic para empezar</button></div>');
     $("#juegoContainer").on("click", "#recordMe", function(event){
-        if($("#recordMe").text() == "Listen to me") startListening();
+        if($("#recordMe").text() == "Clic para empezar") startListening();
         else stopListening();
      });
      toggleRecording(recognition);
@@ -341,6 +335,9 @@ function setDictation(sentences, tiempo, vidas){
             }
         } );
     } );
+    infoJuego = {};
+    console.log("Info juego borrado")
+    $("#juegoContainer").append('<div id="juegoId"></div>');
 }
 
 function validateMail(email) {
@@ -375,35 +372,10 @@ function setModal(){
     }
 }
 
-/*
-function preparacionJuego(){
-    $("#control").append("<div id='ingredients'></div>")
-    $("#ingredients").append("<h3> We need the following ingredients </h3>");
-    synthesis.speak("We need the following ingredients");
-    $("#ingredients").append("<img src='../../assets/food/apple.png'></img> <h3> x<span id='appNum'>3</span> Apples </h3>");
-    synthesis.speak("Three apples");
-    $("#ingredients").append("<img src='../../assets/food/banana.png'></img> <h3> x<span id='banNum'>2</span> Bananas </h3>");
-    synthesis.speak("Two bananas");
-    $("#ingredients").append("<h3 id='trans'>Be careful! Fruits spoil with time</h3>");
-    $("#ingredients").append("<h3 id='special' style='display:none;'>Traducción: ¡Ten cuidado! La fruta caduca con el tiempo</h3>");
-    synthesis.speak("Be careful! Fruits spoil with time");
-    $("#trans").mouseenter(function(event){
-        console.log("Entre");
-        clearTimeout($('#special').data('timeoutId'));
-        $('#special').show(200);
-    }).mouseleave(function(){
-        var timeoutId = setTimeout(function(){
-            $('#special').hide(200);
-        }, 1000);
-    $('#special').data('timeoutId', timeoutId); 
-    });
-}
-*/
-
 function setScoreCounters(recipe){
     console.log("llegamos aqui");
     var ingredients = recipe.ingredients;
-    var html ='<ul id="scores">';
+    var html ='<ul id="scores" class="no-list">';
     console.log(ingredients);
     for(var i = 0; i < ingredients.length; i++){
         console.log(ingredients[i]);

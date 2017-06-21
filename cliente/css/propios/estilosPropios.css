@@ -29,6 +29,10 @@ li {
     padding: 0px 100px 60px 100px;
 }
 
+.intro h4 {
+    text-align: left;
+}
+
 .row.intro p {
     text-align: justify;
     text-justify: inter-word;
@@ -151,13 +155,20 @@ button{
     background: white;
 }
 
+.no-list {
+    list-style-type: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+.no-list li{
+    display: inline !important;
+}
+
 #scores {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
     font-weight: bold;
     width: 800px;
-    overflow: hidden;
     font-size: 1.3em;
     background: white;
     border-style: solid;
@@ -166,10 +177,6 @@ button{
 
 #scores span{
     padding-left: 10px;
-}
-
-#scores li{
-    display: inline;
 }
 
 .law-warn {

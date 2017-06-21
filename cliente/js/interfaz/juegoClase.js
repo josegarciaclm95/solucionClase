@@ -7,6 +7,7 @@ var game;
 var juego;
 var player;
 var cursors;
+var left_cursors = [];
 var infoJuego = {};
 var PlatformGroup = {};
 var Scores = {};
@@ -23,6 +24,8 @@ var yCamera = yVelocity;
 
 var kitchen;
 var mistake;
+var jump;
+var collect;
 
 var forbidden_actions = 0;
 var forb_act_timer = 0;
@@ -54,6 +57,8 @@ function preload() {
 
     //Sounds
     game.load.audio('mistake', 'assets/audio/wrong.mp3');
+    game.load.audio('jump', 'assets/audio/jump.wav');
+    game.load.audio('collect', 'assets/audio/collect.wav');
 }
 
 function create() {
@@ -65,6 +70,8 @@ function create() {
 
     //Añadimos el audio asociado a los fallos
     mistake = game.add.audio("mistake");
+    jump = game.add.audio("jump");
+    collect = game.add.audio("collect");
     //Habilita fisica
     game.physics.startSystem(Phaser.Physics.P2J);
     //Añadimos el fondo del juego
@@ -101,6 +108,9 @@ function create() {
 
     //Establecemos los controles del juego
     cursors = game.input.keyboard.createCursorKeys();
+    left_cursors.push(game.input.keyboard.addKey(Phaser.Keyboard.A));
+    left_cursors.push(game.input.keyboard.addKey(Phaser.Keyboard.W));
+    left_cursors.push(game.input.keyboard.addKey(Phaser.Keyboard.D));
     timer = game.time.events.loop(Phaser.Timer.SECOND,updateTiempo,this);
     /* 
     game.input.keyboard.onDownCallback = function (e){
@@ -143,7 +153,7 @@ function update() {
     player.body.velocity.x = 0;
     xCamera, yCamera = 0;
 
-    if (cursors.left.isDown) {
+    if (cursors.left.isDown || left_cursors[0].isDown) {
         player.body.velocity.x = -xVelocity;
         if(!player.body.touching.left) 
             xCamera = -xVelocity;
@@ -151,7 +161,7 @@ function update() {
             xCamera = 0;
         player.animations.play('left');
     } 
-    else if (cursors.right.isDown) {
+    else if (cursors.right.isDown || left_cursors[2].isDown) {
         player.body.velocity.x = xVelocity;
         if(!player.body.touching.right){
             xCamera = xVelocity;
@@ -165,17 +175,17 @@ function update() {
         player.frame = 1;
         xCamera = 0;
     }
-    if (cursors.up.isDown && player.body.touching.down) {
+    if ((cursors.up.isDown || left_cursors[1].isDown) && player.body.touching.down) {
         player.body.velocity.y = -yVelocity;
         yCamera = -yVelocity;
+        jump.play();
+
     }
     
-    if(cursors.up.isDown && !player.body.touching.down &&
+    if((cursors.up.isDown || left_cursors[1].isDown) && !player.body.touching.down &&
             !player.body.touching.up && !player.body.touching.left &&
             !player.body.touching.right) {
                 forbidden_actions++;
-                //console.log("+1");
-                //console.log((game.time.now - forb_act_timer)/1000)
     }
     
     if (!game.camera.atLimit.x)
@@ -220,6 +230,7 @@ function createFoodElement(){
 
 function collectFoodElement(player, food){
     if(isAValidIngredient(food.key)){
+        collect.play();
         Scores[food.key].increaseAmount();
         $("#" + food.key + "Score").text(Scores[food.key].amount);
         if(updateDoneCount() == _length(Scores)){
@@ -263,12 +274,53 @@ function nextLevel(){
     xVelocity = 300;
     yVelocity = 400;
     proxy.stopAffectivaDetection();
-    setDictation(infoJuego.recipe.sentences, tiempo, mistakes.children.length);
-    infoJuego = {};
-    //onStop();
-    //nivelCompletado(tiempo, mistakes.children.length);
+    game.destroy();
+    $("#juegoContainer").load('../html/intermedio.html', function () {
+        console.log("INFO JUEGO");
+        console.log(infoJuego);
+        var html = "<ul class='no-list'>";
+        for(var i = 0; i < infoJuego.recipe.ingredients.length; i++){
+            html += "<li>";
+            html += "<img width='80' src='assets/food/";
+            html += infoJuego.recipe.ingredients[i].name + ".png'>"
+            html += '<h2> ' + infoJuego.recipe.ingredients[i].name.charAt(0).toUpperCase() + infoJuego.recipe.ingredients[i].name.slice(1);
+            html += " X " + infoJuego.recipe.ingredients[i].goal + "</h2></li>";
+        }   
+        html += "</ul>";     
+        $("#final-scores").append(html);
+        //loadInfoSentences();
+        /*$("#juegoContainer").on("click", "#button-ready", function(event){
+            setDictation(infoJuego.recipe.sentences, tiempo, mistakes.children.length);
+        });*/
+        $("#button-ready").on("click", function(){
+            setDictation(infoJuego.recipe.sentences, tiempo, mistakes.children.length);
+        });
+    });    
 }
 
+function loadInfoSentences() {
+    $("#juegoContainer").empty();
+    var html = '<div id="intermedio" class="intro">';
+    html += '<h1>¡Enhorabuena!</h1><h2>Has conseguido todos los ingredientes</h2><div id="final-scores">';
+    html += '<ul class="no-list">';
+    for(var i = 0; i < infoJuego.recipe.ingredients.length; i++){
+        html += '<li>';
+        html += '<img width="80" src="assets/food/';
+        html += infoJuego.recipe.ingredients[i].name + '.png">';
+        html += '<h2> ' + infoJuego.recipe.ingredients[i].name.charAt(0).toUpperCase() + infoJuego.recipe.ingredients[i].name.slice(1);
+        html += ' X ' + infoJuego.recipe.ingredients[i].goal + '</h2></li>';
+    }
+    html += '<h4>A continuación encontrarás la fase de <strong>pronunciación.</strong></h4>';
+    html += '<h4>Verás una frase y un botón. Cuando estés listo para pronunciar esa frase, pulsa el botón y';
+    html += 'la aplicación empezará a escucharte. </h4>';
+    html += '<h4>Si tu pronunciación es correcta, la siguiente frase se cargará automáticamente</h4>';
+    html += '<h4>Si te equivocas, tendrás dos oportunidades.</h4>';
+    html += '<h4>Si a la tercera te equivocas, ¡no pasa nada!</h4>';
+    html += '<h4>El juego cargará la siguiente frase, así hasta que las hagas todas</h4>';
+    html += '<h4>Pulsa el botón cuando estés listo para empezar la siguiente fase</h4>';
+    html += '<button type="button" id="button-ready" class="btn btn-success">¡Estoy listo!</button></div>';
+    $("#juegoContainer").append(html);
+}
 function enableBodyObject(obj){
     for(element in obj){
         obj[element].enableBody = true;

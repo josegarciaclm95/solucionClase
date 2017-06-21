@@ -88,6 +88,7 @@ function onResultDemo(event) {
             stopListening();
             $("#sentence-holder").slideToggle(1000, function(){
                     var s_number = parseInt($(".current > a").attr("id").slice(8));
+                    console.log(s_number + " Numero oracion - " + recognition.sentences + " Numero oraciones" )
                     if(s_number + 1 == recognition.sentences){
                         toggleRecording(recognition);
                         //mostrarResultados();

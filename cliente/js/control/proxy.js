@@ -34,7 +34,7 @@ function proxy() {
                     $(".intro").css("display","none");
                     $("#header-intro").css("display", "none");
                     showGameControls();
-                    self.datosJuego_ID();
+                    //self.datosJuego_ID();
                 }
             }
             peticionAjax("POST", "/login/", true, JSON.stringify({
@@ -53,6 +53,7 @@ function proxy() {
                 infoJuego = data;
                 self.keylogger = new KeyLogger(infoJuego.nivel);
                 console.log("Datos recibidos correctos: " + (infoJuego.nivel != -1));
+                //siguienteNivel();
                 $("#juegoContainer").load("../assets/recipes_info/" + data.recipe.recipe_info, function(){
                     console.log("Info de receta cargado");
                 });
@@ -67,7 +68,7 @@ function proxy() {
             var callback = function (datos) {
                 $.cookie("nivel", datos.nivel);
                 console.log()
-                showGameControls();
+                //showGameControls();
             }
             peticionAjax("POST", "/nivelCompletado/" + $.cookie("id") + "/" + tiempo + "/" + vidas,
             true, 

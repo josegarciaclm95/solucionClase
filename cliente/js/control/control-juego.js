@@ -26,10 +26,6 @@ function limpiarMongo() {
 }
 
 function nivelCompletado(tiempo,vidas) {
-    game.destroy();
-    $("#gameMusic").animate({volume:0},1000,function(){
-        $(this).remove();
-    });
     $('#juegoId').append("<h2 id='enh'>¡Enhorabuena!</h2>");
     proxy.nivelCompletado(tiempo,vidas);
     proxy.obtenerResultados();
