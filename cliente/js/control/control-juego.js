@@ -44,8 +44,8 @@ function crearUsuario(user_name, email, pass) {
         user_name = "jugador";
     }
     var url = '';
-    //url = "http://localhost:1338"
-    url = "https://juegoprocesos.herokuapp.com";
+    url = "http://localhost:1338"
+    //url = "https://juegoprocesos.herokuapp.com";
     proxy.crearUsuario(user_name, email, pass, url);
     
 }

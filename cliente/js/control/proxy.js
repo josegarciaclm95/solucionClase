@@ -34,6 +34,7 @@ function proxy() {
         this.user_accept_affective.beyond = $("#checkBeyond")[0].checked;
         this.user_accept_affective.keys = $("#checkKeys")[0].checked;
         var callback = function(data){
+            window.scrollTo(0, 0);
             if(data == {}){
                 console.log("Algo ha ido mal. Ajustes no realizados");
                 $("#resultAjustes").css("color","#ff0000").text("Ha habido un problema. Intentelo más tarde");
@@ -62,6 +63,7 @@ function proxy() {
                     borrarCookies();
                     loginIncorrecto();
                 } else {
+                    console.log(data);
                     setCookies(data);
                     console.log("El usuario es correcto");
                     self.setAffective(data.accept_affective);
@@ -130,6 +132,7 @@ function proxy() {
 
     this.crearUsuario = function (user_name, email, pass, url) {
         var callback = function (data) {
+            console.log(data);
             $.loadingBlockHide();
             if (data.result == "userExists") {
                 estilosAlerta('#estilosAlerta');
@@ -137,7 +140,7 @@ function proxy() {
             } else {
                 $("#formRegistro").remove();
                 $("#juegoContainer").prepend('<span id="warning" style="font-weight: bold;">Te acabamos de mandar un mensaje con un link para confirmar tu cuenta. </span>');
-                $("#juegoContainer").prepend('<span id="warning" style="font-weight: bold;">Comprueba tu bandeja de correo electrónico. </span>');
+                $("#juegoContainer").prepend('<span id="warning" style="font-weight: bold;">Comprueba tu bandeja de correo electrónico. </span><br/>');
             }
         }
         peticionAjax("POST", "/crearUsuario/", true, JSON.stringify({

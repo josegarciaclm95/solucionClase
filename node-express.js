@@ -129,13 +129,11 @@ app.post('/login/', function(request, response){
 
 app.post("/updateDetectionPermission/", function(request, response){
 	var accept_affective = {
-		affectiva: request.body.affectiva === "true",
-		beyond: request.body.beyond === "true",
-		keys: request.body.keys === "true"
+		affectiva: request.body.affectiva,
+		beyond: request.body.beyond,
+		keys: request.body.keys
     }; 
-	console.log(request.body);
-	console.log(accept_affective);
-	juego.actualizarPermisosUsuario(request.body.id, accept_affective, response);
+	juego.actualizarPermisosUsuario(request.body.usuario, accept_affective, response);
 });
 
 app.post('/affective-log/', function(request, response){
@@ -151,8 +149,10 @@ app.post("/crearUsuario/", function (request, response) {
 	var urlD = request.body.url;
 	var userFound = juego.buscarUsuario(email);
 	var time_register = (new Date().valueOf());
+	console.log(userFound);
 	if(!userFound){
-		juego.agregarUsuario(user_name,email,encrypt(pass),time_register,false, response)
+		console.log("\t Crear usuarios -> Usuario disponible");
+		juego.agregarUsuario(user_name,email,encrypt(pass),time_register, false, response)
 		var url = urlD + "/confirmarCuenta/" + email + "/" + time_register;
 		var html = '¡¡Bienvenido a ConquistaNiveles!! <br/> Confirme su cuenta haciendo clic en el siguiente enlace: <br/>';
 		html += '<a href='+url+'>'+url+'</a>';
@@ -161,6 +161,7 @@ app.post("/crearUsuario/", function (request, response) {
 		function callbackSendEmail(errr,info){
 			if (errr){
 				console.log(errr);
+				console.log("\t Crear usuarios -> Error en el envio de email de confirmación");
 				response.send({result:"EmailNotSent"})
 			}
 			else {
@@ -169,6 +170,7 @@ app.post("/crearUsuario/", function (request, response) {
 		}
 		client.sendMail(mensaje, callbackSendEmail);
 	} else {
+		console.log("\t Crear usuarios -> Usuario no disponible");
 		response.send({result:"userExists"})
 	}
 });

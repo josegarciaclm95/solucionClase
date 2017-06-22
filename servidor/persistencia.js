@@ -22,7 +22,8 @@ module.exports.mongoConnect = function(juego){
 				} else {
 					cursor.forEach(function(actual){
 						console.log("\tPersistencia -> \t Agregado nuevo usuario al modelo");
-            			juego.newUsuario(actual.user_name, actual.email, actual.password, actual.time_register, actual.activo, actual._id)
+						console.log(actual);
+            			juego.newUsuario(actual.user_name, actual.email, actual.password, actual.time_register, actual.activo, actual.accept_affective, actual._id)
 						dbM.collection("partidas").find({id_usuario: ObjectID(actual._id)}).toArray(function(err, cursor){
 							if(err){
 								console.log(err);
@@ -78,14 +79,16 @@ module.exports.updateOn = function(collection,criteria,changes,options,callback)
 }
 
 module.exports.insertarUsuario = function(user_name, email, pass, time_register, activo, accept_affective, response, juego){
+	console.log("PERSISTENCIA > INSERTARuSUARIO")
 	usersM.insert({user_name:user_name, email:email, password: pass, id_registro: time_register, activo:activo, accept_affective:accept_affective}, function(err, result){
 		if(err){
 			console.log(err);
 		} else {
-			var newUser = juego.newUsuario(user_name, email, pass, time_register, activo, result.ops[0]._, id)
+			var newUser = juego.newUsuario(user_name, email, pass, time_register, activo, accept_affective, result.ops[0]._id)
 			console.log("\t Id de Mongo asignado a usuario insertado - " + newUser.id);
 			function consoleLogError(err,result){
 				if(err){
+					console.log("ERROR EN INSERCION");
 					console.log(err);
 				} else {
 					console.log("\t Datos de partidas inicializados en insertarUsuario")

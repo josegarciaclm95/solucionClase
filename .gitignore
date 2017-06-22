@@ -5,3 +5,4 @@ Procfile
 cliente/js/juegoClase-refactor.js
 prueba.js
 test/resultados.txt
+./config.json

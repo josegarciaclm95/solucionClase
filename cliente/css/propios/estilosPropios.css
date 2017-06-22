@@ -1,7 +1,5 @@
 body {
     padding-top: 70px;
-    /*background: #ffff99;
-    color: #000000 !important; */
     font-family: 'PT Sans', sans-serif;
     font-size: 1.8em !important;
 }
@@ -23,9 +21,16 @@ li {
     list-style: none;
 }
 
-.intro {
+.center {
     text-align: center;
     vertical-align: middle;
+}
+
+.info {
+    padding: 0px 30px;
+}
+
+.intro {
     padding: 0px 100px 60px 100px;
 }
 
@@ -41,7 +46,7 @@ li {
     margin: 0 auto;
 }
 
-
+/*
 #welcome, #bad-welcome {
     background: #088A08;
     text-align: center;
@@ -67,7 +72,7 @@ li {
 #bad-welcome {
     background: #DF3A01;
 }
-
+*/
 #table, th, td { 
     color: #000000;
     border: 1px solid darkblue;
@@ -139,6 +144,7 @@ li {
 #formRegistro {
     font-size: 1.2em;
     text-align: left;
+    padding-right: 20px;
 }
 
 input[type="text"], input[type="password"]{

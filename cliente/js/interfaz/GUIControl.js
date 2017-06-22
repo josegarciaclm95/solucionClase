@@ -29,6 +29,9 @@ function construirAvisoLegal(){
 
 function construirAjustes() {
     $("#juegoContainer").load('../html/ajustes.html', function(){
+        $("#checkAffectiva")[0].checked = proxy.user_accept_affective.affectiva;
+        $("#checkBeyond")[0].checked = proxy.user_accept_affective.beyond;
+        $("#checkKeys")[0].checked = proxy.user_accept_affective.keys;
         $("#confirmarCambios").on("click", function(){
             proxy.actualizarPermisosDeteccion();
         });
@@ -52,7 +55,13 @@ function construirLogin() {
             proxy.comprobarUsuarioMongo($("#nombreL").val(), $("#claveL").val(), false);
         });
         $("#registrBtn").on("click", function (e) {
+            console.log("Evento Click en registrBtn")
             limpiarEstilos("#nombreL,#claveL");
+            $("#myModal").css("display","none");
+            $("#myBtn").css("display","none");
+            $(".info").css("display","none");
+            $(".intro").css("display","none");
+            $("#header-intro").css("display", "none");
             construirRegistro();
         });
     });
@@ -60,9 +69,11 @@ function construirLogin() {
 }
 
 function construirRegistro() {
-    $("#intro-row").empty();
+    //$("#intro-row").empty();
     limpiarJuegoContainer();
-    $("#intro-row").load('../html/registro.html', function () {
+    $("#juegoContainer").load('../html/registro.html', function () {
+        $("#control").append("<img style='padding-top:50px' src='./assets/hat.png' width='300'>");
+        $("#control").append("<h3>Aprende jugando</h3>");
         $("#userName").on("focus", function (e) {
             limpiarEstilos(this);
         });
@@ -346,7 +357,7 @@ function setDictation(sentences, tiempo, vidas){
 
 function validateMail(email) {
     console.log("Validando Mail");
-    var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;;
     console.log(re.test(email))
     return re.test(email);
 }
@@ -360,7 +371,6 @@ function setModal(){
     var span = document.getElementsByClassName("close")[0];
     // When the user clicks on the button, open the modal 
     btn.onclick = function() {
-        console.log("Funcion");
         modal.style.display = "block";
         construirLogin();
     }

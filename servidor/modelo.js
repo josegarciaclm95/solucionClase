@@ -15,8 +15,8 @@ function Juego(){
     this.connectMongo = function(){
         persistencia.mongoConnect(self);
     }
-    this.newUsuario = function(user_name, email, pass, time_register, activo, id){
-        var newUser = new Usuario(user_name, email, pass, time_register, activo);
+    this.newUsuario = function(user_name, email, pass, time_register, activo, accept_affective, id){
+        var newUser = new Usuario(user_name, email, pass, time_register, activo, accept_affective);
         newUser.maxNivel = this.niveles.length;
         newUser.id = id;
         self.usuarios.push(newUser);
@@ -33,18 +33,13 @@ function Juego(){
      * @param  {} response - objecto response asociado a la request
      */
     this.agregarUsuario = function(user_name,email,pass,time_register,activo, response){
-        var a = this.buscarUsuario(email);
-        if(a == undefined){
-            console.log("\t Model -> \t Agregado nuevo usuario al modelo");
-            var accept_affective = {
-                affectiva: true,
-                beyond: true,
-                keys: true
-            }; 
-            persistencia.insertarUsuario(user_name,email,pass,time_register,activo, accept_affective, response, self);
-        } else {
-            console.log("\t Model -> \t El usuario ya existia. Se refrescan datos");
-        }
+        console.log("JUEGO > AGREGAR USUARIO > EMAIL >" + email);
+        var accept_affective = {
+            affectiva: true,
+            beyond: true,
+            keys: true
+        }; 
+        persistencia.insertarUsuario(user_name,email,pass,time_register,activo, accept_affective, response, self);
     };
     
     /**
@@ -257,7 +252,7 @@ function Recipe(name, recipe_info, ingredients, sentences){
     this.sentences = sentences;
 }
 
-function Usuario(user_name, email, pass, time_register, activo){
+function Usuario(user_name, email, pass, time_register, activo, accept_affective){
     this.user_name = user_name;
     this.email = email;
     this.password = pass;
@@ -265,11 +260,7 @@ function Usuario(user_name, email, pass, time_register, activo){
     this.nivel = 1;
     this.time_register = time_register;
     this.activo = activo;
-    this.accept_affective = {
-        affectiva: true,
-        beyond: true,
-        keys: true
-    }
+    this.accept_affective = accept_affective
     Usuario.prototype.toString = function(){
         var r = "Usuario " + user_name + " con email " +  this.email + " - Id " + this.id + "\n";
         r += "Registrado con id  " + this.time_register + + " y activo = " + this.activo +  "\n";
@@ -380,7 +371,7 @@ function Caretaker(){
     this.adaptarPartida = function(id, partida){
         //console.log(partida)
         if(result = this.getPartida(id, partida.id_partida)){
-            console.log(partida.affectiva_data);
+            //console.log(partida.affectiva_data);
             result.agregarResultado(partida.nivel,partida.tiempo,partida.vidas, partida.affectiva_data);
         } else {
             var p = new Partida();

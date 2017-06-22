@@ -13,6 +13,11 @@ button {
     background-color:#b0003a !important;
 }
 
+#welcome .intro, #bad-welcome .intro {
+    background-color: white !important;
+    color:#b0003a !important;
+}
+
 .row.intro {
     background-color: #e91e63 !important;
     color: white !important;
