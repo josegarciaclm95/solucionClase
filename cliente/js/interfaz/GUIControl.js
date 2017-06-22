@@ -28,7 +28,11 @@ function construirAvisoLegal(){
 }
 
 function construirAjustes() {
-    $("#juegoContainer").load('../html/ajustes.html', function(){});
+    $("#juegoContainer").load('../html/ajustes.html', function(){
+        $("#confirmarCambios").on("click", function(){
+            proxy.actualizarPermisosDeteccion();
+        });
+    });
 }
 
 function construirLogin() {

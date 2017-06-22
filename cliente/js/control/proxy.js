@@ -3,16 +3,53 @@ function proxy() {
      * Se comprueba la validez de las credenciales de login. El ultimo atributo indica si los datos se están comprobando
      * desde una cookie o desde el formulario de login. Si es desde cookie, no comprobamos la contraseña.
      */
-    this.keylogger;
-    this.affdexDetector = new Affdex();
-    this.affdexDetector.onInitializeSuccess(onInitializeSuccessDEMO);
-    this.affdexDetector.onWebcamConnectSuccess(onWebcamConnectSuccessDEMO);
-    this.affdexDetector.onWebcamConnectFailure(onWebcamConnectFailureDEMO);
-    this.affdexDetector.onStopSuccess(onStopSuccessDEMO);
-    this.affdexDetector.onImageResultsSuccess(onImageResultsSuccessDEMO);
-    this.beyondVerbal = new BeyondVerbalAPI('https://token.beyondverbal.com/token','https://apiv3.beyondverbal.com/v3/recording/');
-    
+    this.keylogger = undefined;
+    this.affdexDetector = undefined;
+    this.beyondVerbal = undefined;
+    this.user_accept_affective = {}
     var self = this;
+    this.setAffective = function(accept_affective){
+        this.user_accept_affective = accept_affective;
+        if(accept_affective.affectiva) {
+            self.initializeAffdexDetector();
+        }
+        if(accept_affective.beyond){
+            self.initializeBeyondVerbal();
+        }
+    }
+    this.initializeAffdexDetector = function(){
+        this.affdexDetector = new Affdex();
+        this.affdexDetector.onInitializeSuccess(onInitializeSuccessDEMO);
+        this.affdexDetector.onWebcamConnectSuccess(onWebcamConnectSuccessDEMO);
+        this.affdexDetector.onWebcamConnectFailure(onWebcamConnectFailureDEMO);
+        this.affdexDetector.onStopSuccess(onStopSuccessDEMO);
+        this.affdexDetector.onImageResultsSuccess(onImageResultsSuccessDEMO);
+    }
+    this.initializeBeyondVerbal = function(){
+        this.beyondVerbal = new BeyondVerbalAPI('https://token.beyondverbal.com/token','https://apiv3.beyondverbal.com/v3/recording/');
+        this.authenticateBV(this.beyondVerbal.options);
+    }
+    this.actualizarPermisosDeteccion = function(){
+        this.user_accept_affective.affectiva = $("#checkAffectiva")[0].checked;
+        this.user_accept_affective.beyond = $("#checkBeyond")[0].checked;
+        this.user_accept_affective.keys = $("#checkKeys")[0].checked;
+        var callback = function(data){
+            if(data == {}){
+                console.log("Algo ha ido mal. Ajustes no realizados");
+                $("#resultAjustes").css("color","#ff0000").text("Ha habido un problema. Intentelo más tarde");
+            } else {
+                console.log("Cambios realizados");
+                $("#resultAjustes").css("color","#e91e63").text("Cambios realizados");
+            }
+        }
+        peticionAjax("POST", "/updateDetectionPermission/", true, JSON.stringify({
+                affectiva: this.user_accept_affective.affectiva,
+                beyond: this.user_accept_affective.beyond,
+                keys:this.user_accept_affective.keys,
+                usuario: $.cookie('id')
+            }), callback);
+
+    }
     this.comprobarUsuarioMongo = function (nombre, pass, fromCookie) {
         if (pass == "" && !fromCookie) {
             estilosAlerta('#claveL')
@@ -26,8 +63,8 @@ function proxy() {
                     loginIncorrecto();
                 } else {
                     setCookies(data);
-                    console.log(data);
                     console.log("El usuario es correcto");
+                    self.setAffective(data.accept_affective);
                     $("#myModal").css("display","none");
                     $("#myBtn").css("display","none");
                     $(".info").css("display","none");
@@ -150,10 +187,10 @@ function proxy() {
         }), callback);
     }
     this.startAffectivaDetection = function () {
-        this.affdexDetector.startDetection();
+        if(self.affdexDetector != undefined) this.affdexDetector.startDetection();
     }
     this.stopAffectivaDetection = function () {
-        this.affdexDetector.stopDetection();
+        if(self.affdexDetector != undefined) this.affdexDetector.stopDetection();
     }
     this.authenticateBV = function (options) {
         console.log('url token:' + options.url.tokenUrl);
@@ -213,7 +250,7 @@ function proxy() {
                 //Show(err);
             });
     }
-    this.authenticateBV(this.beyondVerbal.options);
+    
 }
 
 function peticionAjax(peticion, url, async, body, successCallback) {

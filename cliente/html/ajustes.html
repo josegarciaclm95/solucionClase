@@ -1,52 +1,51 @@
 <div class="row">
-<div class="col-sm-4">
-Recoger datos de la cara
-</div>
-<div class="col-sm-8">
-<label class="switch">
-  <input type="checkbox">
-  <div class="slider round"></div>
-</label>
-</div>
-</div>
-<div class="row">
-<div class="col-sm-4">
-Recoger datos de la voz
-</div>
-<div class="col-sm-8">
-<label class="switch">
-  <input type="checkbox">
-  <div class="slider round"></div>
-</label>
-</div>
+  <h2 id="resultAjustes"></h2>
 </div>
 
 <div class="row">
-<div class="col-sm-4">
-Recoger datos de las teclas
+  <h3>Aquí puedes ajustar qué detección puede llevarse a cabo durante el uso de la aplicación.</h3>
+  <h3>Si quieres que se utilicen los tres sistemas (voz, cara y teclas), entonces no tienes que hacer nada.</h3>
+  <h3>Si por el contrario quieres deshabilitar algún sistema, haz clic en los selectores de los sistemas que
+    quieras apagar.*</h3>
+  <h3>Cuando hayas terminado de cambiar los ajustes, pulsa el botón "Confirmar" o los ajustes no se guardarán.</h3>
+  <h5>(*) Si un selector es de color gris, significa que ese sistema está desactivado.</h5>
 </div>
-<div class="col-sm-8">
-<label class="switch">
-  <input type="checkbox">
-  <div class="slider round"></div>
-</label>
-</div>
+<div class="row">
+    <div class="col-sm-4">
+      Recoger datos de la cara
+    </div>
+    <div class="col-sm-8">
+      <label class="switch">
+        <input type="checkbox" id="checkAffectiva">
+        <div class="slider round"></div>
+      </label>
+    </div>
 </div>
 
 <div class="row">
-<div class="col-sm-4">
+    <div class="col-sm-4">
+      Recoger datos de la voz
+    </div>
+    <div class="col-sm-8">
+      <label class="switch">
+        <input type="checkbox" id="checkBeyond">
+        <div class="slider round"></div>
+      </label>
+    </div>
+</div>
 
+<div class="row">
+    <div class="col-sm-4">
+      Recoger datos de las teclas
+    </div>
+    <div class="col-sm-8">
+      <label class="switch">
+        <input type="checkbox" id="checkKeys">
+        <div class="slider round"></div>
+      </label>
+    </div>
 </div>
-<div class="col-sm-8">
 
+<div class="row intro">
+    <button id="confirmarCambios" type="button" class="btn btn-success">Confirmar cambios</button>
 </div>
-</div>
-<!-- <div class="row">
-<div class="col-sm-4">
-
-</div>
-<div class="col-sm-8">
-
-</div>
-</div>
--->

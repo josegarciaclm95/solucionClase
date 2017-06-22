@@ -221,11 +221,11 @@ button{
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #b0003a;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #b0003a;
 }
 
 input:checked + .slider:before {

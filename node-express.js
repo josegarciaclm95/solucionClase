@@ -127,6 +127,17 @@ app.post('/login/', function(request, response){
 	}
 });
 
+app.post("/updateDetectionPermission/", function(request, response){
+	var accept_affective = {
+		affectiva: request.body.affectiva === "true",
+		beyond: request.body.beyond === "true",
+		keys: request.body.keys === "true"
+    }; 
+	console.log(request.body);
+	console.log(accept_affective);
+	juego.actualizarPermisosUsuario(request.body.id, accept_affective, response);
+});
+
 app.post('/affective-log/', function(request, response){
 	console.log("Affective logs");
 	console.log(request.body);
@@ -216,8 +227,6 @@ app.get('/limpiarMongo/', function(request,response){
 
 app.post('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
 	console.log("Nivel completado");
-	//console.log("Affective logs");
-	//console.log(request.body);
 	var id = request.params.id;
 	var tiempo = parseInt(request.params.tiempo);
 	var vidas = parseInt(request.params.vidas);
@@ -226,9 +235,9 @@ app.post('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
 	if(usuario != undefined){
 		console.log("\t Nivel completado -> \t Usuario encontrado en nivel completado")
 		juego.guardarPartida(usuario, tiempo, vidas, affectiva_data, response)
-		//usuario.agregarResultado(new modelo.Resultado(usuario.nivel,tiempo));
 		console.log("\t Nivel completado -> \t Usuario " + id + " - Tiempo " + tiempo + "-  IdJuego - " + usuario.idJuego);
 	} else {
+		//Codigo legado de prueba antigua
 		console.log("\t Nivel completado -> \t Usuario NO encontrado en nivel completado")
 		usuario = new modelo.Usuario("dummy");
 		usuario.nivel = -2;

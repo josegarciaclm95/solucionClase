@@ -36,7 +36,12 @@ function Juego(){
         var a = this.buscarUsuario(email);
         if(a == undefined){
             console.log("\t Model -> \t Agregado nuevo usuario al modelo");
-            persistencia.insertarUsuario(user_name,email,pass,time_register,activo, response, self);
+            var accept_affective = {
+                affectiva: true,
+                beyond: true,
+                keys: true
+            }; 
+            persistencia.insertarUsuario(user_name,email,pass,time_register,activo, accept_affective, response, self);
         } else {
             console.log("\t Model -> \t El usuario ya existia. Se refrescan datos");
         }
@@ -163,6 +168,26 @@ function Juego(){
             response.send({"ok":-1, "nModified":-1});
         }
     }
+    this.actualizarPermisosUsuario = function(id, accept_affective, response){
+        var changes = {"accept_affective" : accept_affective}
+        var criteria = {}
+        var user = this.buscarUsuarioById(id);
+        if(user){
+            console.log(user);
+            user.accept_affective = accept_affective;
+            criteria = {"email": user.email};
+            persistencia.updateOn("usuarios", criteria, { $set: changes}, {}, function(err, result){
+                if(err){
+                    console.log(err);
+                    response.send({"ok":-1})
+                } else {
+                    response.send({"ok":1});
+                }
+            });
+        } else {
+            response.send({});
+        }
+    }
     this.getResultados = function(response) {
         var results = []
         for(var i in this.usuarios){
@@ -192,7 +217,12 @@ function Juego(){
      * @param  {} response
      */
     this.insertarUsuarioPRUEBAS = function(user_name,email,pass,time_register,act,response){
-        persistencia.insertarUsuario(user_name,email,pass,time_register,act, response, self)
+        var accept_affective = {
+            affectiva: true,
+            beyond: true,
+            keys: true
+        };
+        persistencia.insertarUsuario(user_name,email,pass,time_register,act, accept_affective, response, self)
     }
 
     this.limpiarMongoPRUEBAS = function(response){
@@ -235,6 +265,11 @@ function Usuario(user_name, email, pass, time_register, activo){
     this.nivel = 1;
     this.time_register = time_register;
     this.activo = activo;
+    this.accept_affective = {
+        affectiva: true,
+        beyond: true,
+        keys: true
+    }
     Usuario.prototype.toString = function(){
         var r = "Usuario " + user_name + " con email " +  this.email + " - Id " + this.id + "\n";
         r += "Registrado con id  " + this.time_register + + " y activo = " + this.activo +  "\n";
