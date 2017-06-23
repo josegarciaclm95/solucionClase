@@ -73,20 +73,20 @@ app.get("/datosJuego/:id", function (request, response) {
 		valid_food.push(res.recipe.ingredients[j].name);
 	}
 	var direct = fs.readdirSync("./cliente/assets/food");
-	console.log(res.recipe.ingredients);
-	var limit = Math.ceil(res.recipe.ingredients.length / 2);
-	console.log(limit);
+	var proporcion_basura_i = Math.floor(usuario.dificultad / 3) % 3;
+	var limit = Math.ceil(res.recipe.ingredients.length / juego.proporcion_basura[proporcion_basura_i]);
 	while(not_valid_food.length < limit){
 		var random = Math.floor(Math.random() * direct.length);
 		var food_i = direct[random].slice(0, -4);
-		console.log(food_i);
-		console.log(not_valid_food);
 		if(not_valid_food.indexOf(food_i) === -1 &&
 			valid_food.indexOf(food_i) === -1){
 				not_valid_food.push(food_i);
 		}
 	}
+	console.log(not_valid_food);
 	res.not_valid_food = not_valid_food;
+	res.gravedad_nivel = juego.gravedad[Math.floor(usuario.dificultad) % 3];
+	res.probabilidad_ing_valido = juego.probabilidad_ing_valido[Math.floor(usuario.dificultad / 9) % 3];
 	console.log("\t DatosJuego -> \t Datos a devolver -> " +  JSON.stringify(res.nivel));
 	response.send(res);
 });

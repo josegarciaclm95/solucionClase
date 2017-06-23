@@ -7,6 +7,9 @@ function Juego(){
     this.nombre = "Aprende Jugando";
     this.niveles = [];
     this.usuarios = [];
+    this.gravedad = [50, 125, 200];
+    this.proporcion_basura = [3, 2, 1];
+    this.probabilidad_ing_valido = [0.9, 0.75, 0.5];
     this.gestorPartidas = new Caretaker();
     var self = this;
     this.agregarNivel = function(nivel){
@@ -19,6 +22,7 @@ function Juego(){
         var newUser = new Usuario(user_name, email, pass, time_register, activo, accept_affective);
         newUser.maxNivel = this.niveles.length;
         newUser.id = id;
+        newUser.dificultad = 13;
         self.usuarios.push(newUser);
         self.addRegistro(newUser.id);
         return newUser;
@@ -260,7 +264,18 @@ function Usuario(user_name, email, pass, time_register, activo, accept_affective
     this.nivel = 1;
     this.time_register = time_register;
     this.activo = activo;
-    this.accept_affective = accept_affective
+    this.accept_affective = accept_affective;
+    this.dificultad = -1;
+    this.incrementarDificultad = function(){
+        if (this.dificultad < 26){
+            this.dificultad++;
+        }
+    }
+    this.decrementarDificultad = function() {
+        if(this.dificultad > 0){
+            this.dificultad--;
+        }
+    }
     Usuario.prototype.toString = function(){
         var r = "Usuario " + user_name + " con email " +  this.email + " - Id " + this.id + "\n";
         r += "Registrado con id  " + this.time_register + + " y activo = " + this.activo +  "\n";

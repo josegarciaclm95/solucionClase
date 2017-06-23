@@ -215,7 +215,7 @@ function removeFood(food,platform){
 
 function createFoodElement(){
     var index, element;
-    if(Math.random() <= 0.6){
+    if(Math.random() <= infoJuego.probabilidad_ing_valido){
         index = Math.floor((Math.random() * infoJuego.recipe.ingredients.length));
         element = foodObjects.create(game.rnd.integerInRange(0, 800), 10, infoJuego.recipe.ingredients[index].name);
     } else {
@@ -223,7 +223,7 @@ function createFoodElement(){
         element = foodObjects.create(game.rnd.integerInRange(0, 800), 10, garbage[index]);
     }
     game.physics.enable(element, Phaser.Physics.P2J)
-    element.body.gravity.y = game.rnd.integerInRange(50,200);
+    element.body.gravity.y = game.rnd.integerInRange(infoJuego.gravedad_nivel, infoJuego.gravedad_nivel + 75);
     element.anchor.setTo(0.5, 0.6);
     element.angle = 0.0;
 }
@@ -239,7 +239,7 @@ function collectFoodElement(player, food){
     } else {
         mistake.play();
         mistakes.removeChild(mistakes.getTop())
-        proxy.affdexDetector.setDetectionFlag();
+        //proxy.affdexDetector.setDetectionFlag();
         console.log(mistakes.children.length);
         if(mistakes.children.length == 0){
              player.kill();
@@ -252,9 +252,8 @@ function collectFoodElement(player, food){
 }
 
 function evalEmotions(emotionResults){
-    console.log(emotionResults);
     if(emotionResults.browFurrow > 50){
-        for(var i = 0; i < 10; i++){
+        for(var i = 0; i < 5; i++){
             createFoodElement();
         }
     }
@@ -298,29 +297,6 @@ function nextLevel(){
     });    
 }
 
-function loadInfoSentences() {
-    $("#juegoContainer").empty();
-    var html = '<div id="intermedio" class="intro">';
-    html += '<h1>¡Enhorabuena!</h1><h2>Has conseguido todos los ingredientes</h2><div id="final-scores">';
-    html += '<ul class="no-list">';
-    for(var i = 0; i < infoJuego.recipe.ingredients.length; i++){
-        html += '<li>';
-        html += '<img width="80" src="assets/food/';
-        html += infoJuego.recipe.ingredients[i].name + '.png">';
-        html += '<h2> ' + infoJuego.recipe.ingredients[i].name.charAt(0).toUpperCase() + infoJuego.recipe.ingredients[i].name.slice(1);
-        html += ' X ' + infoJuego.recipe.ingredients[i].goal + '</h2></li>';
-    }
-    html += '<h4>A continuación encontrarás la fase de <strong>pronunciación.</strong></h4>';
-    html += '<h4>Verás una frase y un botón. Cuando estés listo para pronunciar esa frase, pulsa el botón y';
-    html += 'la aplicación empezará a escucharte. </h4>';
-    html += '<h4>Si tu pronunciación es correcta, la siguiente frase se cargará automáticamente</h4>';
-    html += '<h4>Si te equivocas, tendrás dos oportunidades.</h4>';
-    html += '<h4>Si a la tercera te equivocas, ¡no pasa nada!</h4>';
-    html += '<h4>El juego cargará la siguiente frase, así hasta que las hagas todas</h4>';
-    html += '<h4>Pulsa el botón cuando estés listo para empezar la siguiente fase</h4>';
-    html += '<button type="button" id="button-ready" class="btn btn-success">¡Estoy listo!</button></div>';
-    $("#juegoContainer").append(html);
-}
 function enableBodyObject(obj){
     for(element in obj){
         obj[element].enableBody = true;
