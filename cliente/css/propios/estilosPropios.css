@@ -21,6 +21,11 @@ li {
     list-style: none;
 }
 
+#help {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+}
 .center {
     text-align: center;
     vertical-align: middle;
@@ -46,33 +51,6 @@ li {
     margin: 0 auto;
 }
 
-/*
-#welcome, #bad-welcome {
-    background: #088A08;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 200%;
-}
-
-#welcome p, #bad-welcome p {
-    width: 40%;
-    font-size: 100%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-#welcome h1, #bad-welcome h1 {
-    font-weight: bold;
-}
-
-#welcome button, #bad-welcome button  {
-    font-size: 150%;
-}
-
-#bad-welcome {
-    background: #DF3A01;
-}
-*/
 #table, th, td { 
     color: #000000;
     border: 1px solid darkblue;
@@ -126,6 +104,13 @@ li {
     text-align: left;
 }
 
+.modal-content p {
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    width: auto !important;
+    padding: 0px 30px;
+}
+
 /* The Close Button */
 .close {
     color: #aaa;
@@ -176,9 +161,6 @@ button{
     font-weight: bold;
     width: 800px;
     font-size: 1.3em;
-    background: white;
-    border-style: solid;
-    border-color: red;
 }
 
 #scores span{

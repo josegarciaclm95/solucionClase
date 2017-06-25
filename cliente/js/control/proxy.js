@@ -16,6 +16,9 @@ function proxy() {
         if(accept_affective.beyond){
             self.initializeBeyondVerbal();
         }
+        if(accept_affective.keys){
+            self.initializeKeylogger();
+        }
     }
     this.initializeAffdexDetector = function(){
         this.affdexDetector = new Affdex();
@@ -28,6 +31,9 @@ function proxy() {
     this.initializeBeyondVerbal = function(){
         this.beyondVerbal = new BeyondVerbalAPI('https://token.beyondverbal.com/token','https://apiv3.beyondverbal.com/v3/recording/');
         this.authenticateBV(this.beyondVerbal.options);
+    }
+    this.initializeKeylogger = function() {
+        this.keylogger = new KeyLogger();
     }
     this.actualizarPermisosDeteccion = function(){
         this.user_accept_affective.affectiva = $("#checkAffectiva")[0].checked;
@@ -90,7 +96,7 @@ function proxy() {
                 finJuego("Lo siento, no tenemos más niveles",resetControl);
             } else {
                 infoJuego = data;
-                self.keylogger = new KeyLogger(infoJuego.nivel);
+                //self.keylogger = new KeyLogger(infoJuego.nivel);
                 console.log("Datos recibidos correctos: " + (infoJuego.nivel != -1));
                 //siguienteNivel();
                 $("#juegoContainer").load("../assets/recipes_info/" + data.recipe.recipe_info, function(){
@@ -107,16 +113,14 @@ function proxy() {
             var callback = function (datos) {
                 $.cookie("nivel", datos.nivel);
                 console.log()
-                //showGameControls();
             }
             peticionAjax("POST", "/nivelCompletado/" + $.cookie("id") + "/" + tiempo + "/" + vidas,
             true, 
             JSON.stringify({
-                affectiva:this.affdexDetector.FaceInformation,
-                beyond:this.beyondVerbal.SpeechInformation,
-                keys:this.keylogger.getKeysInformation() 
-            }), 
-            callback);
+                affectiva: self.getAffdexDetectorInformation(),
+                beyond: self.getBeyondVerbalInformation(),
+                keys: self.getKeysInformation() 
+            }), callback);
             //$.post("/nivelCompletado/" + $.cookie("id") + "/" + tiempo + "/" + vidas, callback);
         }
     /**
@@ -195,6 +199,33 @@ function proxy() {
     this.stopAffectivaDetection = function () {
         if(self.affdexDetector != undefined) this.affdexDetector.stopDetection();
     }
+    this.getAffdexDetectorInformation = function(){
+        if(self.affdexDetector != undefined) {
+            return this.affdexDetector.FaceInformation;
+        } else {
+            return {}
+        }
+    }
+    this.getBeyondVerbalInformation = function(){
+        if(self.beyondVerbal != undefined) {
+            return this.beyondVerbal.SpeechInformation;
+        } else {
+            return {}
+        }
+    }
+    this.getKeysInformation = function(){
+        if(self.keylogger != undefined) {
+            return this.keylogger.getKeysInformation();
+        } else {
+            return {}
+        }
+    }
+    this.startKeylogger = function(){
+        if(self.keylogger != undefined) this.keylogger.start();
+    }
+    this.stopKeylogger = function(){
+        if(self.keylogger != undefined) this.keylogger.stop();
+    }
     this.authenticateBV = function (options) {
         console.log('url token:' + options.url.tokenUrl);
         console.log("LLEGAMOS A AUTHENTICATE");
@@ -221,7 +252,8 @@ function proxy() {
             });
     }
     this.analyzeFileBV = function (blob){
-        this.beyondVerbal.analyzeFile(blob)
+        if(this.beyondVerbal != undefined){
+            this.beyondVerbal.analyzeFile(blob)
             .done(function (res)
             {
                 console.log("CALLBACK DONE DE ANALYZE_FILE");
@@ -252,8 +284,8 @@ function proxy() {
                 }
                 //Show(err);
             });
-    }
-    
+        }
+    }  
 }
 
 function peticionAjax(peticion, url, async, body, successCallback) {

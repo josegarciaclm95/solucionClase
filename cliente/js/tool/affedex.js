@@ -10,7 +10,7 @@ function Affdex() {
     this.detector = new affdex.CameraDetector(this.divRoot, this.width, this.height, this.faceMode);
     this.time = undefined;
     this.FaceInformation = [];
-    this.detectNow = true;
+    //this.detectNow = true;
     //Enable detection of all Expressions and Emotion
     this.detector.detectAllEmotions();
     this.detector.detectAllExpressions();
@@ -52,7 +52,7 @@ function Affdex() {
         this.detector.addEventListener("onImageResultsSuccess", function(faces, image, timestamp){
             console.log(faces);
             console.log("Number of faces found: " + faces.length);
-            if ((faces.length > 0 && (Date.now() - time) / 1000 > 2) || this.detectNow) {
+            if ((faces.length > 0) && (Date.now() - this.time) / 1000 > 2) {
                 this.time = Date.now();
                 evalEmotions(faces[0].expressions);
                 self.FaceInformation.push({
@@ -63,9 +63,11 @@ function Affdex() {
             }
         });
     }
+    /*
     this.setDetectionFlag = function(){
         this.detectNow = true;
     }
+    */
 }
 
 function onInitializeSuccessDEMO () {
@@ -87,6 +89,7 @@ function onStopSuccessDEMO () {
     console.log("The detector reports stopped");
 }
 
+/*
 function onImageResultsSuccessDEMO (faces, image, timestamp) {
     console.log("Number of faces found: " + faces.length);
     if ((faces.length > 0 && (Date.now() - time) / 1000 > 2) || this.detectNow) {
@@ -104,3 +107,4 @@ function onImageResultsSuccessDEMO (faces, image, timestamp) {
         });
     }
 }
+*/

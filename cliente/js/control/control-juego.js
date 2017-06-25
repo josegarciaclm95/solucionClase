@@ -91,17 +91,3 @@ function finJuego(text,callback){
 function cambiarUsuario(action){
     eval("construirFormulario"+action+"()")
 }
-
-function apagarMusica(){
-    $("audio").animate({volume:0},100);
-    $("#sonido").addClass("active");
-    $("#sonidoControl").off("click");
-    $("#sonidoControl").on("click", encenderMusica);
-}
-
-function encenderMusica(){
-    $("audio").animate({volume:1},100);
-    $("#sonido").removeClass("active");
-    $("#sonidoControl").off("click");
-    $("#sonidoControl").on("click", apagarMusica);
-}

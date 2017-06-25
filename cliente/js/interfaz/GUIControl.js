@@ -172,11 +172,13 @@ function construirFormularioEliminar() {
     });
 }
 
-/**
- * Borramos el elemento control (Panel de control)
- */
-function borrarControl() {
-    $("#control").remove();
+function construirAyuda(){
+    //$("#myModal").css("display","none");
+    $("#myModal").css("display","block");
+    $(".modal").css("display","block");
+    $("#modal-login").load('../html/ayuda.html', function () {
+        console.log("AYUDA CARGADA");
+    });
 }
 
 /**
@@ -193,6 +195,7 @@ function showGameControls() {
     $("#modificar").show();
     $("#eliminar").show();
     $("#ajustes").show();
+    //setModal('myModal', 'help', construirAyuda);
     proxy.datosJuego_ID();
     siguienteNivel();
 }
@@ -212,8 +215,6 @@ function siguienteNivel() {
         $("#juegoContainer").append('<div id="juegoId"></div>');
         console.log("Llamamos a crear nivel sin parametros en siguienteNivel()");
         crearNivel();
-        proxy.startAffectivaDetection();
-        //onStart();
     })
     $("#cerrarSesBtn").on("click", resetControl);
 }
@@ -307,21 +308,19 @@ function mostrarResultados() {
 
 var startListening = function(){
     recognition.startRecognition();
-    $("#recordMe").removeClass("btn-success");
-    $("#recordMe").addClass("btn-danger");
-    $("#recordMe").text("Stop listening");
+    $("#recordMe").addClass("recording");
+    $("#recordMe").text("Parar");
 };
 
 var stopListening = function(){
     recognition.stopRecognition();
-    $("#recordMe").removeClass("btn-danger");
-    $("#recordMe").addClass("btn-success");
+    $("#recordMe").removeClass("recording");
     $("#recordMe").text("Clic para empezar");
 };
 
 function setDictation(sentences, tiempo, vidas){
     $("#juegoContainer").empty();
-    $("#juegoContainer").append('<div style="display: block; margin: 0 auto; width:50%; text-align: center; vertical-align: middle;" id="sentences" class="dotstyle dotstyle-hop">');
+    $("#juegoContainer").append('<div style="display: block; margin: 0 auto; width:50%;" id="sentences" class="dotstyle dotstyle-hop center">');
     $("#juegoContainer").append('<div style="display: block; margin: 0 auto; width:75%" id="sentence-holder">');
     var html = "<ul>";
     recognition.sentences = sentences.length;
@@ -331,14 +330,16 @@ function setDictation(sentences, tiempo, vidas){
         console.log("#sentence" + i);
         $("#sentences").on("click", "#sentence" + i, function(event){
             $("#sentence-holder").empty();
-            $("#sentence-holder").append('<h2 style="text-align: center; vertical-align: middle;">' + sentences[parseInt(this.id.slice(8))][0] + '</h2>')
+            $("#sentence-holder").append('<h2 class="center">' + sentences[parseInt(this.id.slice(8))][0] + '</h2>')
         });
     }
     $("#sentences").append(html);
     $("#sentence0").parent("li").addClass("current");
-    $("#sentence-holder").html('<h2 style="text-align: center; vertical-align: middle;">' + sentences[0][0] + '</h2>');
-    $("#juegoContainer").append('<div style="text-align: center; vertical-align: middle;"><button id="recordMe" type="button" class="btn btn-success">Clic para empezar</button></div>');
+    $("#sentence-holder").html('<h2 class="center">' + sentences[0][0] + '</h2>');
+    $("#juegoContainer").append('<div class="center" id="record-button"><button id="recordMe" class="btn btn-success" type="button">Clic para empezar</button></div>');
+    $("#juegoContainer").append('<div class="center" id="result-sent"><h2 id="resultado-oracion"></h2></div>');
     $("#juegoContainer").on("click", "#recordMe", function(event){
+        $("#sentence-holder").css("color", "#000000");
         if($("#recordMe").text() == "Clic para empezar") startListening();
         else stopListening();
      });
@@ -362,6 +363,7 @@ function validateMail(email) {
     return re.test(email);
 }
 
+/*
 function setModal(){
     // Get the modal
     var modal = document.getElementById('myModal');
@@ -385,6 +387,34 @@ function setModal(){
         }
     }
 }
+*/
+
+function setModal(modal_id, element_id, callback){
+    // Get the modal
+    var modal = document.getElementById(modal_id);
+    // Get the button that opens the modal
+    var btn = document.getElementById(element_id);
+    // Get the <span> element that closes the modal
+    //var span = document.getElementsByClassName("close")[0];
+    // When the user clicks on the button, open the modal 
+    console.log(btn);
+    btn.onclick = function() {
+        modal.style.display = "block";
+        callback();
+    }
+    // When the user clicks on <span> (x), close the modal
+    /*
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+    */
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+}
 
 function setScoreCounters(recipe){
     console.log("llegamos aqui");
@@ -399,6 +429,7 @@ function setScoreCounters(recipe){
     html+= '</ul>';
     $("#juegoContainer").prepend(html);
     $("#juegoContainer").prepend('<h3>Receta: ' + recipe.name + '</h3>');
+    $()
 }
 
 function upperCaseFirstLetter(string){

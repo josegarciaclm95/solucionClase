@@ -17,7 +17,7 @@ var tiempo = 0;
 var foodObjects = {};
 var builderObject;
 var garbage;
-var xVelocity = 300; 
+var xVelocity = 300;
 var yVelocity = 400;
 var xCamera = xVelocity;
 var yCamera = yVelocity;
@@ -27,12 +27,11 @@ var mistake;
 var jump;
 var collect;
 
-var forbidden_actions = 0;
-var forb_act_timer = 0;
-
-function crearNivel(){
+function crearNivel() {
     setScoreCounters(infoJuego.recipe);
     game = new Phaser.Game(800, 450, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
+    proxy.startKeylogger();
+    proxy.startAffectivaDetection();
 }
 
 function preload() {
@@ -43,11 +42,11 @@ function preload() {
 
     //Food (valid and not valid)
     var ingredients = infoJuego.recipe.ingredients;
-    for(var i = 0; i < ingredients.length; i++){
+    for (var i = 0; i < ingredients.length; i++) {
         game.load.image(ingredients[i].name, 'assets/food/' + ingredients[i].name + '.png');
     }
     garbage = infoJuego.not_valid_food;
-    for(var i = 0; i < garbage.length; i++){
+    for (var i = 0; i < garbage.length; i++) {
         game.load.image(garbage[i], 'assets/food/' + garbage[i] + '.png');
     }
     game.load.image('mistake', 'assets/landscape/mistake.png');
@@ -76,7 +75,7 @@ function create() {
     game.physics.startSystem(Phaser.Physics.P2J);
     //Añadimos el fondo del juego
     kitchen = game.add.tileSprite(0, 0, 800, 450, 'kitchen');
-    kitchen.scale.setTo(1,1.02);
+    kitchen.scale.setTo(1, 1.02);
     //Para que el fondo no se mueva
     kitchen.fixedToCamera = true;
 
@@ -102,7 +101,7 @@ function create() {
     //Poblamos el "techo" del juego de los elementos que van a caer
     foodObjects = game.add.group();
     var ingredients = infoJuego.recipe.ingredients;
-    for(var i = 0; i < (ingredients.length + garbage.length) * 3; i++){
+    for (var i = 0; i < (ingredients.length + garbage.length) * 3; i++) {
         createFoodElement();
     }
 
@@ -111,42 +110,36 @@ function create() {
     left_cursors.push(game.input.keyboard.addKey(Phaser.Keyboard.A));
     left_cursors.push(game.input.keyboard.addKey(Phaser.Keyboard.W));
     left_cursors.push(game.input.keyboard.addKey(Phaser.Keyboard.D));
-    timer = game.time.events.loop(Phaser.Timer.SECOND,updateTiempo,this);
-    /* 
-    game.input.keyboard.onDownCallback = function (e){
-        console.log(e);
-    }
-    */
+    timer = game.time.events.loop(Phaser.Timer.SECOND, updateTiempo, this);
+
 
     //Añadimos valores de scores
-    tiempoText = game.add.text(20,22,'Tiempo:0',{ fontSize: '32px', fill: '#FFF' });
+    tiempoText = game.add.text(20, 22, 'Tiempo:0', { fontSize: '32px', fill: '#FFF' });
     mistakes = game.add.group();
-    for(var i = 0; i < 5; i++){
-        var item = mistakes.create(game.world.width - i*60 - 60, 25, 'mistake');
+    for (var i = 0; i < 5; i++) {
+        var item = mistakes.create(game.world.width - i * 60 - 60, 25, 'mistake');
     }
-
-    var forb_act_timer = game.time.now;
-	console.log("Final de create");
+    console.log("Final de create");
 }
 
-function setPlayer(){
+function setPlayer() {
     player = game.add.sprite(38, game.world.height - 230, 'dude');
     game.physics.enable(player);
 
     player.body.gravity.y = 350; //It sets the gravity that will affect the body (the height it can reach)
     player.body.collideWorldBounds = true; //Can the sprite go beyond the game borders? If it can, it CAN'T come back.
 
-    player.animations.add('left', [3, 5],15, true);
-    player.animations.add('right', [6, 8],15, true);
+    player.animations.add('left', [3, 5], 15, true);
+    player.animations.add('right', [6, 8], 15, true);
 }
 
 function update() {
     //Elementos que van a chocar entre sí
     game.physics.arcade.collide(player, PlatformGroup.platforms);
     //Que tiene que pasar cuando dos objetos se solapen
-    game.physics.arcade.overlap(foodObjects, PlatformGroup.platforms, removeFood,null,this);
+    game.physics.arcade.overlap(foodObjects, PlatformGroup.platforms, removeFood, null, this);
     game.physics.arcade.overlap(player, foodObjects, collectFoodElement, null, this);
-    foodObjects.forEach(function(item){
+    foodObjects.forEach(function (item) {
         item.angle++;
     });
 
@@ -155,20 +148,20 @@ function update() {
 
     if (cursors.left.isDown || left_cursors[0].isDown) {
         player.body.velocity.x = -xVelocity;
-        if(!player.body.touching.left) 
+        if (!player.body.touching.left)
             xCamera = -xVelocity;
-        else 
+        else
             xCamera = 0;
         player.animations.play('left');
-    } 
+    }
     else if (cursors.right.isDown || left_cursors[2].isDown) {
         player.body.velocity.x = xVelocity;
-        if(!player.body.touching.right){
+        if (!player.body.touching.right) {
             xCamera = xVelocity;
         }
-         else {
+        else {
             xCamera = 0;
-         }
+        }
         player.animations.play('right');
     } else {
         player.animations.stop();
@@ -181,41 +174,22 @@ function update() {
         jump.play();
 
     }
-    
-    if((cursors.up.isDown || left_cursors[1].isDown) && !player.body.touching.down &&
-            !player.body.touching.up && !player.body.touching.left &&
-            !player.body.touching.right) {
-                forbidden_actions++;
-    }
-    
-    if (!game.camera.atLimit.x)
-    {
+    if (!game.camera.atLimit.x) {
         kitchen.tilePosition.x -= (xCamera * game.time.physicsElapsed);
     }
-
-    if (!game.camera.atLimit.y)
-    {
+    if (!game.camera.atLimit.y) {
         kitchen.tilePosition.y -= (yCamera * game.time.physicsElapsed);
     }
-    var aux = game.time.now - forb_act_timer;
-    if(aux/1000 >= 3){
-        if (forbidden_actions/(aux/1000) >= 3){
-            console.log ("Forbiden actions - " + forbidden_actions);
-            console.log ("Forbiden counter - " + aux/1000);
-        };
-        forbidden_actions = 0;
-        forb_act_timer = game.time.now;
-    } 
 }
 
-function removeFood(food,platform){
+function removeFood(food, platform) {
     food.kill();
     createFoodElement();
 }
 
-function createFoodElement(){
+function createFoodElement() {
     var index, element;
-    if(Math.random() <= infoJuego.probabilidad_ing_valido){
+    if (Math.random() <= infoJuego.probabilidad_ing_valido) {
         index = Math.floor((Math.random() * infoJuego.recipe.ingredients.length));
         element = foodObjects.create(game.rnd.integerInRange(0, 800), 10, infoJuego.recipe.ingredients[index].name);
     } else {
@@ -228,43 +202,41 @@ function createFoodElement(){
     element.angle = 0.0;
 }
 
-function collectFoodElement(player, food){
-    if(isAValidIngredient(food.key)){
+function collectFoodElement(player, food) {
+    if (isAValidIngredient(food.key)) {
         collect.play();
         Scores[food.key].increaseAmount();
         $("#" + food.key + "Score").text(Scores[food.key].amount);
-        if(updateDoneCount() == _length(Scores)){
+        if (updateDoneCount() == _length(Scores)) {
             nextLevel();
         }
     } else {
         mistake.play();
         mistakes.removeChild(mistakes.getTop())
-        //proxy.affdexDetector.setDetectionFlag();
-        console.log(mistakes.children.length);
-        if(mistakes.children.length == 0){
-             player.kill();
-             game.destroy();
-             proxy.stopAffectivaDetection();
+        if (mistakes.children.length == 0) {
+            player.kill();
+            game.destroy();
+            proxy.stopAffectivaDetection();
             finJuego("Has cogido demasiada basura", showGameControls);
         }
     }
     removeFood(food);
 }
 
-function evalEmotions(emotionResults){
-    if(emotionResults.browFurrow > 50){
-        for(var i = 0; i < 5; i++){
+function evalEmotions(emotionResults) {
+    if (emotionResults.browFurrow > 50) {
+        for (var i = 0; i < 5; i++) {
             createFoodElement();
         }
     }
 }
 
-function updateTiempo(){
+function updateTiempo() {
     tiempo++;
-    tiempoText.setText('Tiempo: '+tiempo);
+    tiempoText.setText('Tiempo: ' + tiempo);
 }
 
-function nextLevel(){
+function nextLevel() {
     console.log("Nivel completado");
     player.kill();
     PlatformGroup = {};
@@ -273,56 +245,55 @@ function nextLevel(){
     xVelocity = 300;
     yVelocity = 400;
     proxy.stopAffectivaDetection();
+    proxy.stopKeylogger();
     game.destroy();
     $("#juegoContainer").load('../html/intermedio.html', function () {
         console.log("INFO JUEGO");
         console.log(infoJuego);
         var html = "<ul class='no-list'>";
-        for(var i = 0; i < infoJuego.recipe.ingredients.length; i++){
+        for (var i = 0; i < infoJuego.recipe.ingredients.length; i++) {
             html += "<li>";
             html += "<img width='80' src='assets/food/";
             html += infoJuego.recipe.ingredients[i].name + ".png'>"
             html += '<h2> ' + infoJuego.recipe.ingredients[i].name.charAt(0).toUpperCase() + infoJuego.recipe.ingredients[i].name.slice(1);
             html += " X " + infoJuego.recipe.ingredients[i].goal + "</h2></li>";
-        }   
-        html += "</ul>";     
+        }
+        html += "</ul>";
         $("#final-scores").append(html);
-        //loadInfoSentences();
-        /*$("#juegoContainer").on("click", "#button-ready", function(event){
-            setDictation(infoJuego.recipe.sentences, tiempo, mistakes.children.length);
-        });*/
-        $("#button-ready").on("click", function(){
+        $("#juegoContainer").append('<audio id="victory" src="assets/audio/tada.wav" type="audio/wav"></audio>');
+        $("#victory")[0].play();
+        $("#button-ready").on("click", function () {
             setDictation(infoJuego.recipe.sentences, tiempo, mistakes.children.length);
         });
-    });    
+    });
 }
 
-function enableBodyObject(obj){
-    for(element in obj){
+function enableBodyObject(obj) {
+    for (element in obj) {
         obj[element].enableBody = true;
     }
 }
 
-function isAValidIngredient(food_name){
+function isAValidIngredient(food_name) {
     var answer = false;
     var ingredients = infoJuego.recipe.ingredients;
-    for(var i = 0; i < ingredients.length; i++){
+    for (var i = 0; i < ingredients.length; i++) {
         answer = answer || (ingredients[i].name == food_name);
-        if(answer)
+        if (answer)
             return true;
     }
     return answer;
 }
 
-function updateDoneCount(){
+function updateDoneCount() {
     var count = 0;
-    for(i in Scores){
-        if(Scores[i].done)
+    for (i in Scores) {
+        if (Scores[i].done)
             count++;
     }
     return count;
 }
 
-function _length(obj){
+function _length(obj) {
     return Object.keys(obj).length;
 }

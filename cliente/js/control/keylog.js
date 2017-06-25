@@ -13,28 +13,35 @@ function KeyLogger(){
     this.lastTimePress = 0;
     this.keysPressed = 0;
     var self = this;
-    document.addEventListener("keydown", function(e){
-        if(e.key == "1"){
-            self.seeStatistics();
-        }
-        if(!e.repeat){
-            console.log("Key down - Char code " + e.charCode + " - Key " + e.key + " - Keycode " + e.keyCode + " - Key Repeat " + e.repeat);
-            console.log("Nueva key " + e.key + "down");
-            self.lastTimePress = Date.now();
-            self.keysPressed++;
-            if(e.key != "ArrowLeft" && e.key != "ArrowUp" && e.key != "ArrowDown" && e.key != "ArrowRight" 
-            && e.key != "a" && e.key != "w" && e.key != "s" && e.key != "d"){
-                self.mistakes++;
+    this.start = function(){
+        document.addEventListener("keydown", function(e){
+            if(e.key == "1"){
+                self.seeStatistics();
             }
-        }
-    });
-    document.addEventListener("keyup", function(e){
-        console.log("Key up - Char code " + e.charCode + " - Key " + e.key + " - Keycode " + e.keyCode + " - Key Repeat " + e.repeat);
-        console.log(Date.now() - self.lastTimePress);
-        if(Date.now() - self.lastTimePress < 60){
-            self.excessivePressing[e.key]++;
-        }
-    });
+            if(!e.repeat){
+                console.log("Key down - Char code " + e.charCode + " - Key " + e.key + " - Keycode " + e.keyCode + " - Key Repeat " + e.repeat);
+                console.log("Nueva key " + e.key + "down");
+                self.lastTimePress = Date.now();
+                self.keysPressed++;
+                if(e.key != "ArrowLeft" && e.key != "ArrowUp" && e.key != "ArrowDown" && e.key != "ArrowRight" 
+                && e.key != "a" && e.key != "w" && e.key != "s" && e.key != "d"){
+                    self.mistakes++;
+                }
+            }
+        });
+        document.addEventListener("keyup", function(e){
+            console.log("Key up - Char code " + e.charCode + " - Key " + e.key + " - Keycode " + e.keyCode + " - Key Repeat " + e.repeat);
+            console.log(Date.now() - self.lastTimePress);
+            if(Date.now() - self.lastTimePress < 60){
+                self.excessivePressing[e.key]++;
+            }
+        });
+    }
+    
+    this.stop = function(){
+        document.addEventListener("keyup", function(e){});
+        document.addEventListener("keydown", function(e){});
+    }
     this.seeStatistics = function(){
         var html = "<p>Number of key pressed = " + self.keysPressed + "</p>";
         html += "<p>Number of mistakes = " + self.mistakes + "</p>";

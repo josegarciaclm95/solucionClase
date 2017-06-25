@@ -9,6 +9,7 @@ function _SpeechRecognition(){
     this.recognition.maxAlternatives = 5;
     this.grammar = "";
     this.sentences = 0;
+    this.intento = 0;
     this.infoJuegoPrevio = {};
     this.recording = false;
     var self = this;
@@ -68,44 +69,68 @@ function _SpeechSynthesis(lang, fe_male_voice, pitch, rate){
 }
 
 /************** FUNCIONES DE PRUEBA PARA LOS CALLBACKS*********************/
-
+/**
+ * Se toma el texto contenido en el contenedor de las oraciones y se compara con todos 
+ * los resultados que ha devuelto el SpeechRecognizer.
+ * Para ello se separan las dos oraciones en palabras y se hace una comparacion para 
+ * ver cuantas palabras de la oración original están contenidos en cada resultado. Si la tasa de 
+ * aciertos es mayor del 60%, entonces se acepta como válida la frase. 
+ */
 function onResultDemo(event) {
-    var text = $("#sentence-holder").text().toLowerCase();
-    var split_text = text.split(" ");
+    var split_text = $("#sentence-holder").text().toLowerCase().split(" ");
+    console.log(event);
     var results = event.results[0];
     var hits = 0;
+    var endingSentences = function(){
+        var s_number = parseInt($(".current > a").attr("id").slice(8));
+        if(s_number + 1 == recognition.sentences){
+            console.log("Ending sentences > YA HEMOS TERMINADO");
+            $("#sentences").remove();
+            $("#sentence-holder").remove();
+            $("#record-button").remove();
+            $("#result-sent").remove();
+            toggleRecording(recognition);
+            nivelCompletado(recognition.infoJuegoPrevio.tiempo, recognition.infoJuegoPrevio.vidas);
+        } else {
+            console.log("Ending sentences > SIGUIENTE FRASE");
+            $("#sentence" + (s_number + 1))[0].click();
+            recognition.intento = 0;
+        }
+        $("#resultado-oracion").text("");
+        $("#sentence-holder").slideToggle(1000);
+        $("#sentence-holder").css("color", "#000000");
+    }
     for(var i = 0; i < results.length; i++){
         var result_text = results[i].transcript.toLowerCase().split(" ");
+        hits = 0;
         for(var j = 0; j < split_text.length; j++){
             if(result_text.indexOf(split_text[j]) != -1){
-                console.log(split_text[j] + " -> is in -> " + results[i].transcript);
                 hits++;
             }
         }
         if(hits / split_text.length >= 0.6){
             $("#sentence-holder").css("color", "#008000");
-            $("#sentence-holder").append("<h3>Well done!</h3>");
+            $("#resultado-oracion").text("¡Bien hecho!");
             stopListening();
-            $("#sentence-holder").slideToggle(1000, function(){
-                    var s_number = parseInt($(".current > a").attr("id").slice(8));
-                    console.log(s_number + " Numero oracion - " + recognition.sentences + " Numero oraciones" )
-                    if(s_number + 1 == recognition.sentences){
-                        toggleRecording(recognition);
-                        //mostrarResultados();
-                        nivelCompletado(recognition.infoJuegoPrevio.tiempo, recognition.infoJuegoPrevio.vidas)
-                    } else {
-                        $("#sentence" + (s_number + 1))[0].click();
-                    }
-                    $("#sentence-holder").slideToggle();
-                });
+            console.log("Llamada como callback");
+            $("#sentence-holder").slideToggle(1000, endingSentences);
             break;
         } else {
             hits = 0;
         }
     }
     console.log("Fin del bucle - Hits = " + hits);
-    if(hits == 0){
+    if(hits / split_text.length < 0.6){
+        stopListening();
         $("#sentence-holder").css("color", "#FF0000");
+        $("#resultado-oracion").text("¡Cachis! Tranqui, intentalo de nuevo");
+        recognition.intento++;
+        if(recognition.intento == 3) {
+            console.log("Llamada manual");
+            $("#resultado-oracion").text("¡No te preocupes! Pasamos a la siguiente");
+            $("#sentence-holder").slideToggle(1000, endingSentences);
+             //$("#sentence-holder").slideToggle(1000);
+        }
     }
 }
 

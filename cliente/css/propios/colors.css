@@ -13,6 +13,11 @@ button {
     background-color:#b0003a !important;
 }
 
+button.recording {
+    background-color: #ff6090 !important;
+    color:#b0003a !important;
+}
+
 #welcome .intro, #bad-welcome .intro {
     background-color: white !important;
     color:#b0003a !important;
@@ -23,10 +28,23 @@ button {
     color: white !important;
 }
 
-#login label {
+#login label, .ayuda {
     color:black;
 }
 
 .progress-bar {
     background-color: #ff6090;
 }
+
+#scores {
+    color:#e91e63;
+}
+
+#scores li {
+    color:#b0003a;
+}
+
+#scores span {
+    color:#e91e63;
+}
+
