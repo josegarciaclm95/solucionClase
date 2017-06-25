@@ -78,6 +78,7 @@ function proxy() {
                     $(".info").css("display","none");
                     $(".intro").css("display","none");
                     $("#header-intro").css("display", "none");
+                    $("#affect-info").css("display", "none");
                     showGameControls();
                     //self.datosJuego_ID();
                 }
