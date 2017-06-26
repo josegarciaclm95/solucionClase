@@ -48,3 +48,12 @@ button.recording {
     color:#e91e63;
 }
 
+#help {
+    background-color: #ff6090;
+    color:white;
+}
+
+#help:hover {
+    background-color: #b0003a;
+}
+
