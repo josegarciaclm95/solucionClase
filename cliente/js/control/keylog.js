@@ -14,33 +14,13 @@ function KeyLogger(){
     this.keysPressed = 0;
     var self = this;
     this.start = function(){
-        document.addEventListener("keydown", function(e){
-            if(e.key == "1"){
-                self.seeStatistics();
-            }
-            if(!e.repeat){
-                console.log("Key down - Char code " + e.charCode + " - Key " + e.key + " - Keycode " + e.keyCode + " - Key Repeat " + e.repeat);
-                console.log("Nueva key " + e.key + "down");
-                self.lastTimePress = Date.now();
-                self.keysPressed++;
-                if(e.key != "ArrowLeft" && e.key != "ArrowUp" && e.key != "ArrowDown" && e.key != "ArrowRight" 
-                && e.key != "a" && e.key != "w" && e.key != "s" && e.key != "d"){
-                    self.mistakes++;
-                }
-            }
-        });
-        document.addEventListener("keyup", function(e){
-            console.log("Key up - Char code " + e.charCode + " - Key " + e.key + " - Keycode " + e.keyCode + " - Key Repeat " + e.repeat);
-            console.log(Date.now() - self.lastTimePress);
-            if(Date.now() - self.lastTimePress < 60){
-                self.excessivePressing[e.key]++;
-            }
-        });
+        document.addEventListener("keydown", keydownCallback);
+        document.addEventListener("keyup", keyupCallback);
     }
-    
     this.stop = function(){
-        document.addEventListener("keyup", function(e){});
-        document.addEventListener("keydown", function(e){});
+        console.log("KEYLOG STOP");
+        document.removeEventListener("keydown", keydownCallback);
+        document.removeEventListener("keyup", keyupCallback);
     }
     this.seeStatistics = function(){
         var html = "<p>Number of key pressed = " + self.keysPressed + "</p>";
@@ -58,3 +38,23 @@ function KeyLogger(){
         }
     }
 }
+
+var keydownCallback = function(e){
+        if(!e.repeat){
+            console.log("Key down - Char code " + e.charCode + " - Key " + e.key + " - Keycode " + e.keyCode + " - Key Repeat " + e.repeat);
+            console.log("Nueva key " + e.key + "down");
+            proxy.keylogger.lastTimePress = Date.now();
+            proxy.keylogger.keysPressed++;
+            if(e.key != "ArrowLeft" && e.key != "ArrowUp" && e.key != "ArrowDown" && e.key != "ArrowRight" 
+            && e.key != "a" && e.key != "w" && e.key != "s" && e.key != "d"){
+                proxy.keylogger.mistakes++;
+            }
+        }
+    };
+    var keyupCallback = function(e){
+        console.log("Key up - Char code " + e.charCode + " - Key " + e.key + " - Keycode " + e.keyCode + " - Key Repeat " + e.repeat);
+        console.log(Date.now() - proxy.keylogger.lastTimePress);
+        if(Date.now() - proxy.keylogger.lastTimePress < 60){
+            proxy.keylogger.excessivePressing[e.key]++;
+        }
+    };

@@ -27,8 +27,16 @@ function limpiarMongo() {
 
 function nivelCompletado(tiempo,vidas) {
     $('#juegoId').append("<h2 id='enh'>¡Enhorabuena!</h2>");
-    proxy.nivelCompletado(tiempo,vidas);
-    proxy.obtenerResultados();
+    $('#juegoId').append("<div id='loading' class='center'><img src='./assets/loading.gif'><h3 id='load-info'></h3></div>");
+    $("#load-info").text("Procesando datos...").delay(1000).fadeOut(1000, function(){
+        $("#load-info").text("Analizando emociones...").fadeIn(1000, function(){
+            proxy.nivelCompletado(tiempo,vidas);
+        }).delay(2000).fadeOut(1000, function(){
+            $("#load-info").text("Extrayendo resultados...").fadeIn(1000, function(){
+                proxy.obtenerResultados();
+            });
+        })
+    });
 }
 
 //Funciones de comunicación

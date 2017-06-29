@@ -234,6 +234,9 @@ app.post('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
 	var vidas = parseInt(request.params.vidas);
 	var usuario = juego.buscarUsuarioById(id);
 	var affectiva_data = request.body;
+	var affectiva = affectiva_data.affectiva;
+	var beyond = affectiva_data.beyond;
+	var keys = affectiva_data.keys;
 	if(usuario != undefined){
 		console.log("\t Nivel completado -> \t Usuario encontrado en nivel completado")
 		juego.guardarPartida(usuario, tiempo, vidas, affectiva_data, response)

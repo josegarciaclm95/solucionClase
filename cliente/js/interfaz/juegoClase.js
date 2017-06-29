@@ -217,7 +217,7 @@ function collectFoodElement(player, food) {
             player.kill();
             game.destroy();
             proxy.stopAffectivaDetection();
-            finJuego("Has cogido demasiada basura", showGameControls);
+            finJuego("Has cogido demasiados alimentos no válidos", showGameControls);
         }
     }
     removeFood(food);

@@ -164,7 +164,7 @@ button{
     overflow: hidden !important;
 }
 
-.no-list li{
+ul.no-list li{
     display: inline !important;
 }
 
@@ -181,6 +181,7 @@ button{
 .law-warn {
     text-align: justify;
     text-justify: inter-word; 
+    padding: 25px 50px
 }
 
 /* The switch - the box around the slider */
@@ -330,4 +331,39 @@ input:checked + .slider:before {
 	transform: rotate(0deg);
 	-webkit-transition: -webkit-transform 0.3s ease, opacity 0.3s ease;
 	transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+button.glow {
+    animation:glow 1200ms linear 200ms 2 alternate;
+    -moz-animation:glow 1200ms linear 200ms 2 alternate;
+    -webkit-animation:glow 1200ms linear 200ms 2 alternate;
+}
+
+@keyframes glow {
+    0% {
+        box-shadow:0 0 1px 1px rgba(255,255,255,0.9);
+    }
+    20%, 100% {
+        box-shadow:0 0 1px 1px rgba(255,255,255,0.9), 0 0 3px 8px #ff6090, 0 0 2px 12px #FFF;
+    }
+}
+
+/* Firefox */
+@-moz-keyframes glow {
+    0% {
+        box-shadow:0 0 1px 1px rgba(255,255,255,0.9);
+    }
+    20%, 100% {
+        box-shadow:0 0 1px 1px rgba(255,255,255,0.9), 0 0 3px 8px #ff6090, 0 0 2px 12px #FFF;
+    }
+}
+
+/* Safari and Chrome */
+@-webkit-keyframes glow {
+    0% {
+        box-shadow:0 0 1px 1px #FFF;
+    }
+    20%, 100% {
+        box-shadow:0 0 1px 1px #FFF, 0 0 3px 8px #ff6090, 0 0 2px 12px #FFF;
+    }
 }

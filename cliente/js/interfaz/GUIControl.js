@@ -24,7 +24,9 @@ function estilosAlerta(selector) {
 
 function construirAvisoLegal(){
     $("footer").remove();
-    $("#intro-row").load('../html/aviso-legal.html', function(){});
+    limpiarJuegoContainer();
+    ocultarInformacion();
+    $("#juegoContainer").load('../html/aviso-legal.html', function(){});
 }
 
 function construirAjustes() {
@@ -339,6 +341,7 @@ function setDictation(sentences, tiempo, vidas){
     $("#sentence0").parent("li").addClass("current");
     $("#sentence-holder").html('<h2 class="center">' + sentences[0][0] + '</h2>');
     $("#juegoContainer").append('<div class="center" id="record-button"><button id="recordMe" class="btn btn-success" type="button">Clic para empezar</button></div>');
+    $("#recordMe").addClass("glow");
     $("#juegoContainer").append('<div class="center" id="result-sent"><h2 id="resultado-oracion"></h2></div>');
     $("#juegoContainer").on("click", "#recordMe", function(event){
         $("#sentence-holder").css("color", "#000000");

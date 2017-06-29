@@ -77,6 +77,7 @@ function _SpeechSynthesis(lang, fe_male_voice, pitch, rate){
  * aciertos es mayor del 60%, entonces se acepta como válida la frase. 
  */
 function onResultDemo(event) {
+    $("#recordMe").removeClass("glow");
     var split_text = $("#sentence-holder").text().toLowerCase().split(" ");
     console.log(event);
     var results = event.results[0];
@@ -94,6 +95,7 @@ function onResultDemo(event) {
         } else {
             console.log("Ending sentences > SIGUIENTE FRASE");
             $("#sentence" + (s_number + 1))[0].click();
+            $("#recordMe").addClass("glow");
             recognition.intento = 0;
         }
         $("#resultado-oracion").text("");

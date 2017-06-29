@@ -50,9 +50,10 @@ function Affdex() {
     }
     this.onImageResultsSuccess = function (callback) {
         this.detector.addEventListener("onImageResultsSuccess", function(faces, image, timestamp){
-            console.log(faces);
-            console.log("Number of faces found: " + faces.length);
+            //console.log(faces);
+            
             if ((faces.length > 0) && (Date.now() - this.time) / 1000 > 2) {
+                console.log("Number of faces found: " + faces.length);
                 this.time = Date.now();
                 evalEmotions(faces[0].expressions);
                 self.FaceInformation.push({

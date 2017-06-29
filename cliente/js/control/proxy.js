@@ -12,12 +12,20 @@ function proxy() {
         this.user_accept_affective = accept_affective;
         if(accept_affective.affectiva) {
             self.initializeAffdexDetector();
+        } else {
+            self.affdexDetector = undefined;
         }
         if(accept_affective.beyond){
             self.initializeBeyondVerbal();
+        } else {
+            self.beyondVerbal = undefined;
         }
         if(accept_affective.keys){
             self.initializeKeylogger();
+        } else {
+            self.keylogger = undefined;
+            document.removeEventListener("keydown", keydownCallback);
+            document.removeEventListener("keyup", keyupCallback);
         }
     }
     this.initializeAffdexDetector = function(){
@@ -39,6 +47,7 @@ function proxy() {
         this.user_accept_affective.affectiva = $("#checkAffectiva")[0].checked;
         this.user_accept_affective.beyond = $("#checkBeyond")[0].checked;
         this.user_accept_affective.keys = $("#checkKeys")[0].checked;
+        self.setAffective(this.user_accept_affective);
         var callback = function(data){
             window.scrollTo(0, 0);
             if(data == {}){
@@ -108,7 +117,6 @@ function proxy() {
     this.nivelCompletado = function (tiempo, vidas) {
             var callback = function (datos) {
                 $.cookie("nivel", datos.nivel);
-                console.log()
             }
             peticionAjax("POST", "/nivelCompletado/" + $.cookie("id") + "/" + tiempo + "/" + vidas,
             true, 
