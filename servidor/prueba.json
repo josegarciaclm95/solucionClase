@@ -1,7 +1,7 @@
 {
     "nivel1": {
         "recipe": {
-            "name": "Apple and banana smoothie",
+            "name": "Summer smoothie",
             "recipe_info": "apple-banana-smoothie.html",
             "ingredients": [
                 {
@@ -32,7 +32,7 @@
     },
     "nivel2": {
         "recipe": {
-            "name": "Helado de chocolate y vainilla",
+            "name": "Yummy Ice-Cream",
             "recipe_info": "helado.html",
             "ingredients": [
                 {
