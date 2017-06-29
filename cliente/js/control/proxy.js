@@ -26,7 +26,7 @@ function proxy() {
         this.affdexDetector.onWebcamConnectSuccess(onWebcamConnectSuccessDEMO);
         this.affdexDetector.onWebcamConnectFailure(onWebcamConnectFailureDEMO);
         this.affdexDetector.onStopSuccess(onStopSuccessDEMO);
-        this.affdexDetector.onImageResultsSuccess(onImageResultsSuccessDEMO);
+        this.affdexDetector.onImageResultsSuccess(function(){});
     }
     this.initializeBeyondVerbal = function(){
         this.beyondVerbal = new BeyondVerbalAPI('https://token.beyondverbal.com/token','https://apiv3.beyondverbal.com/v3/recording/');
@@ -73,12 +73,7 @@ function proxy() {
                     setCookies(data);
                     console.log("El usuario es correcto");
                     self.setAffective(data.accept_affective);
-                    $("#myModal").css("display","none");
-                    $("#myBtn").css("display","none");
-                    $(".info").css("display","none");
-                    $(".intro").css("display","none");
-                    $("#header-intro").css("display", "none");
-                    $("#affect-info").css("display", "none");
+                    ocultarInformacion();
                     showGameControls();
                     //self.datosJuego_ID();
                 }

@@ -118,6 +118,7 @@ function construirRegistro() {
 
 function construirFormularioModificar() {
     limpiarJuegoContainer();
+    ocultarInformacion();
     $("#juegoContainer").load('../html/registro.html', function () {
         $("#password1").on("focus", function (e) {
             limpiarEstilos(this);
@@ -158,6 +159,7 @@ else if ($("#password1").val() == "") {
                 $("#formRegistro").prepend('<span id="warning" style="color:#FF0000">Contraseña no puede ir en blanco!!!</span>');
                 */
 function construirFormularioEliminar() {
+    ocultarInformacion();
     limpiarJuegoContainer();
     $("#juegoContainer").load('../html/registro.html', function () {
         $("#formRegistro").prepend('<span style="color:#FF0000; font-weight:bold">Confirma tus credenciales. Vas a eliminar tus datos</span>');
@@ -363,31 +365,14 @@ function validateMail(email) {
     return re.test(email);
 }
 
-/*
-function setModal(){
-    // Get the modal
-    var modal = document.getElementById('myModal');
-    // Get the button that opens the modal
-    var btn = document.getElementById("myBtn");
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
-    // When the user clicks on the button, open the modal 
-    btn.onclick = function() {
-        modal.style.display = "block";
-        construirLogin();
-    }
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
-        modal.style.display = "none";
-    }
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
+function ocultarInformacion(){
+    $("#myModal").css("display","none");
+    $("#myBtn").css("display","none");
+    $(".info").css("display","none");
+    $(".intro").css("display","none");
+    $("#header-intro").css("display", "none");
+    $("#affect-info").css("display", "none");
 }
-*/
 
 function setModal(modal_id, element_id, callback){
     // Get the modal
