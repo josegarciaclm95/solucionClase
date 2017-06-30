@@ -214,6 +214,7 @@ function collectFoodElement(player, food) {
         mistake.play();
         mistakes.removeChild(mistakes.getTop())
         if (mistakes.children.length == 0) {
+            tiempo = 0;
             player.kill();
             game.destroy();
             proxy.stopAffectivaDetection();
@@ -238,6 +239,7 @@ function updateTiempo() {
 }
 
 function nextLevel() {
+    tiempo = 0;
     console.log("Nivel completado");
     player.kill();
     PlatformGroup = {};
