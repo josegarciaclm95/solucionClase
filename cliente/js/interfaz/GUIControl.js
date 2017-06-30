@@ -332,6 +332,7 @@ function setDictation(sentences, tiempo, vidas){
     var grammar = [];
     recognition.sentences = sentences.length;
     recognition.infoJuegoPrevio = {"tiempo": tiempo, "vidas":vidas};
+    tiempo = 0;
     for(var i = 0; i < sentences.length; i++){
         grammar.push(sentences[i][0].toLowerCase().split("-").join(" ").split(" "));
         html += '<li><a href="#" id="sentence' + i + '"></a></a></li>';
