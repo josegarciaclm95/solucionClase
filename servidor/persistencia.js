@@ -54,7 +54,7 @@ module.exports.addNuevoResultado = function (usuario, tiempo, vidas, affectiva_d
 				if (usuario.nivel > usuario.maxNivel) {
 					usuario.nivel = 1;
 				}
-				response.send({ 'nivel': usuario.nivel });
+				response.send({ 'nivel': usuario.nivel , "dificultad": usuario.dificultad});
 				console.log("\t Agregado registro de resultados")
 			}
 		})

@@ -251,6 +251,7 @@ app.post('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
 	var vidas = parseInt(request.params.vidas);
 	var usuario = juego.buscarUsuarioById(id);
 	var affectiva_data = request.body;
+	console.log(request.body);
 	var affectiva = affectiva_data.affectiva;
 	var beyond = affectiva_data.beyond;
 	var keys = affectiva_data.keys;
@@ -279,7 +280,7 @@ app.post('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
 					var number = 0;
 					for(var exc_property in keys[property]){
 						if(keys[property].hasOwnProperty(exc_property)){
-							if(keys[property][exc_property] > 10){
+							if(keys[property][exc_property] >= 10){
 								number++;
 							}
 						}

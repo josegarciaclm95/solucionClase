@@ -81,7 +81,6 @@ function preparacionPruebas() {
             
             testDatosJuego(); //Aqui traemos los datos de un nivel y simulamos el juego entero
             
-            
             testLogin("xemagg95@gmail.com",""); //sin contrasena - no devuelve nada
             testLogin("juan",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
             testLogin("pepe","pepe"); // contrasena buena - devuelve user
@@ -325,14 +324,14 @@ function testModificarUsuario(new_user_name,old_email, new_email, new_pass) {
     }
     request.post(options, function (error, response, body) {
         console.log("==========================================")
-        console.log("Respuesta testModificar() - Email viejo " + old_email + " Email Nuevo " + new_email + "User Name nuevo " + new_user_name + " Password nueva " + new_pass);
+        console.log("Respuesta testModificar() - Email viejo " + old_email + " Email Nuevo " + new_email + " User Name nuevo " + new_user_name + " Password nueva " + new_pass);
         console.log("--------------------------------------------------------");
         if (!error && response.statusCode == 200) {
             var nModified = JSON.parse(body).nModified;
             var ok = JSON.parse(body).ok;
             if (ok != 1) {
-                var output = "Test Modificar ERROR. NO OK";
-                console.log(output.red);
+                var output = "Test Modificar INCORRECTO";
+                console.log(output.green);
             } else if (nModified != 1) {
                 var output = "Test Modificar INCORRECTO. NO SE HA REALIZADO MODIFICACIÓN";
                 console.log(output.green);
@@ -421,8 +420,35 @@ var i = 0;
 function testSimularJuego(tiempo) {
     var options = {
         url: urlD + '/nivelCompletado/' + id + '/' + tiempo + '/' + 5,
-        method: 'GET',
+        method: 'POST',
         headers: headers,
+        form: {
+            keys: {
+                "mistakes":10,
+                "excessivePressing":{
+                    "a":11,
+                    "w":11
+                }
+            },
+            affectiva: [
+                {
+                    "emotions":{
+                        "valence":-50
+                    },
+                    "expressions":{
+                        upperLipRaise:70
+                    }
+                },
+                {
+                    "emotions":{
+                        "valence":-50
+                    },
+                    "expressions":{
+                        upperLipRaise:70
+                    }
+                }
+            ]
+        },
         qs: {
             '': ''
         }
@@ -434,7 +460,7 @@ function testSimularJuego(tiempo) {
             console.log("==========================================")
             console.log("Respuesta testSimularJuego() - id " + id);
             if (result != -1) {
-                var output = "Test Siguiente nivel - Nivel -> " + result + " CORRECTO";
+                var output = "Test Siguiente nivel - Nivel -> " + result + " - Dificultad -> " + JSON.parse(body).dificultad + " CORRECTO";
                 console.log(output.green);
                 i++;
             } else {
