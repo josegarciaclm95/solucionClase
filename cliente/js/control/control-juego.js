@@ -53,7 +53,7 @@ function crearUsuario(user_name, email, pass) {
     }
     var url = '';
     //url = "http://localhost:1338"
-    url = "https://emocook.herokuapp.com/";
+    url = "https://emocook.herokuapp.com";
     proxy.crearUsuario(user_name, email, pass, url);
     
 }
