@@ -166,9 +166,7 @@ function construirFormularioEliminar() {
     limpiarJuegoContainer();
     $("#juegoContainer").load('../html/registro.html', function () {
         $("#formRegistro").prepend('<span style="color:#FF0000; font-weight:bold">Confirma tus credenciales. Vas a eliminar tus datos</span>');
-        $("#camposContra2").remove();
-        $("#labelUserName").remove();
-        $("#userName").remove();
+        $("#camposContra2, #userName, #labelUserName").remove();
         $("#confirmaRegBtn").text("Eliminar credenciales");
         $("#labelCorreo").text("Correo electrónico");
         $("#confirmaRegBtn").on("click", function () {
@@ -184,6 +182,22 @@ function construirAyuda(){
     $("#modal-login").load('../html/ayuda.html', function () {
         console.log("AYUDA CARGADA");
     });
+}
+
+function construirFinJuego(){
+    limpiarJuegoContainer();
+    var nombre = $.cookie("user_name");
+    var nivel = $.cookie("nivel");
+    var percen = 100;
+    $('#datos, #cabeceraP, #cabecera, #prog').remove();
+    $('#control').append('<div id="datos"><h4>Usuario: ' + nombre + '<br />Nivel: ' + nivel + '</h4></div>');
+    $('#control').append('<div class="progress" id="prog"><div class="progress-bar progress-bar-success progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width:' + percen + '%">' + percen + '%</div></div>');
+    $("#juegoContainer").load("../html/fin.html", function(){
+        $("#volverBtn").on("click", showGameControls);
+        $("#cerrarSBtn").on("click", resetControl);
+    });
+
+
 }
 
 /**
@@ -256,9 +270,15 @@ function mostrarResultadosUsuario(datos) {
     cadena = cadena + "</table>";
     $('#juegoId').append(cadena);
     $("#juegoId").append('<button type="button" id="sigRecBtn" class="btn btn-primary btn-md" style="margin-top:5px">Siguiente receta</button>');
-    $("#sigRecBtn").on("click", function(){
-        showGameControls();
-    });
+    if(datos.length == $.cookie("maxNivel")){
+        $("#sigRecBtn").on("click", function(){
+            construirFinJuego();
+        });
+    } else {
+        $("#sigRecBtn").on("click", function(){
+            showGameControls();
+        });
+    }
 }
 
 function mostrarResultados() {
@@ -332,7 +352,6 @@ function setDictation(sentences, tiempo, vidas){
     var grammar = [];
     recognition.sentences = sentences.length;
     recognition.infoJuegoPrevio = {"tiempo": tiempo, "vidas":vidas};
-    tiempo = 0;
     for(var i = 0; i < sentences.length; i++){
         grammar.push(sentences[i][0].toLowerCase().split("-").join(" ").split(" "));
         html += '<li><a href="#" id="sentence' + i + '"></a></a></li>';

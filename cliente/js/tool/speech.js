@@ -103,6 +103,7 @@ function onResultDemo(event) {
             $("#record-button").remove();
             $("#result-sent").remove();
             toggleRecording(recognition);
+            console.log(recognition.infoJuegoPrevio.tiempo);
             nivelCompletado(recognition.infoJuegoPrevio.tiempo, recognition.infoJuegoPrevio.vidas);
         } else {
             $("#sentence" + (s_number + 1))[0].click();

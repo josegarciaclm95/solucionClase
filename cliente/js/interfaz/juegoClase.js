@@ -36,6 +36,7 @@ function crearNivel() {
 
 function preload() {
     //console.log(infoJuego);
+    tiempo = 0;
     game.load.image('kitchen', 'assets/landscape/kitchen.png');
     game.load.image('ground', 'assets/landscape/platform.png');
     game.load.image('ground2', 'assets/landscape/platform2.png');
@@ -239,7 +240,6 @@ function updateTiempo() {
 }
 
 function nextLevel() {
-    tiempo = 0;
     console.log("Nivel completado");
     player.kill();
     PlatformGroup = {};
