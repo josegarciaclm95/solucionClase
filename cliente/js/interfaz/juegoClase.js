@@ -217,7 +217,8 @@ function collectFoodElement(player, food) {
             player.kill();
             game.destroy();
             proxy.stopAffectivaDetection();
-            finJuego("Has cogido demasiados alimentos no válidos", showGameControls);
+            finJuego("Has cogido demasiados alimentos no válidos", proxy.disminuirDificultad);
+            //showGameControls
         }
     }
     removeFood(food);
@@ -253,7 +254,7 @@ function nextLevel() {
         var html = "<ul class='no-list'>";
         for (var i = 0; i < infoJuego.recipe.ingredients.length; i++) {
             html += "<li>";
-            html += "<img width='80' src='assets/food/";
+            html += "<img width='50' src='assets/food/";
             html += infoJuego.recipe.ingredients[i].name + ".png'>"
             html += '<h2> ' + infoJuego.recipe.ingredients[i].name.charAt(0).toUpperCase() + infoJuego.recipe.ingredients[i].name.slice(1);
             html += " X " + infoJuego.recipe.ingredients[i].goal + "</h2></li>";

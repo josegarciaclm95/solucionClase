@@ -97,6 +97,8 @@ function proxy() {
     this.datosJuego_ID = function(){
         var callback = function(data){
             console.log(data);
+            console.log(data.gravedad_nivel);
+            console.log(data.probabilidad_ing_valido);
             if(data.nivel == -1 || data == {}){
                 finJuego("Lo siento, no tenemos más niveles",resetControl);
             } else {
@@ -105,6 +107,7 @@ function proxy() {
                 console.log("Datos recibidos correctos: " + (infoJuego.nivel != -1));
                 //siguienteNivel();
                 $("#juegoContainer").load("../assets/recipes_info/" + data.recipe.recipe_info, function(){
+                    $("#recipe-name").text(infoJuego.recipe.name);
                     console.log("Info de receta cargado");
                 });
             }
@@ -127,12 +130,24 @@ function proxy() {
             }), callback);
             //$.post("/nivelCompletado/" + $.cookie("id") + "/" + tiempo + "/" + vidas, callback);
         }
+    this.disminuirDificultad = function(){
+        var callback = function (datos) {
+            console.log("Dificultad modificada");
+            showGameControls();
+        }
+        peticionAjax("POST", "/modificarDificultad/" + $.cookie("id") + "/",
+        true,
+        JSON.stringify({
+            variacion:-5
+        }), callback);
+    }
     /**
      * Obtenemos los resultados de la partida actual
      */
     this.obtenerResultados = function () {
         var callback = function (datos) {
             console.log("Callback de obtener resultados con " + datos.length + " resultados");
+            $("#loading").remove();
             mostrarResultadosUsuario(datos);
         }
         $.get("/obtenerResultados/" + $.cookie("id"), callback);

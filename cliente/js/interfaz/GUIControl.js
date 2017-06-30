@@ -73,6 +73,7 @@ function construirLogin() {
 function construirRegistro() {
     //$("#intro-row").empty();
     limpiarJuegoContainer();
+    ocultarInformacion();
     $("#juegoContainer").load('../html/registro.html', function () {
         $("#control").append("<img style='padding-top:50px' src='./assets/hat.png' width='300'>");
         $("#control").append("<h3>Aprende jugando</h3>");
@@ -166,7 +167,7 @@ function construirFormularioEliminar() {
     $("#juegoContainer").load('../html/registro.html', function () {
         $("#formRegistro").prepend('<span style="color:#FF0000; font-weight:bold">Confirma tus credenciales. Vas a eliminar tus datos</span>');
         $("#camposContra2").remove();
-        $("labelUserName").remove();
+        $("#labelUserName").remove();
         $("#userName").remove();
         $("#confirmaRegBtn").text("Eliminar credenciales");
         $("#labelCorreo").text("Correo electrónico");
@@ -189,7 +190,7 @@ function construirAyuda(){
  * Haciendo uso de una cookie previa, presentamos la info del jugador (tras haber actualizado la cookie)
  */
 function showGameControls() {
-    var nombre = $.cookie("email");
+    var nombre = $.cookie("user_name");
     var nivel = $.cookie("nivel");
     var percen = Math.floor(((nivel - 1) / $.cookie("maxNivel")) * 100);
     $('#datos, #cabeceraP, #cabecera, #prog').remove();
@@ -250,7 +251,7 @@ function mostrarResultadosUsuario(datos) {
     $('#juegoId').append('<h3 id="res">Resultados</h3>');
     var cadena = "<table id='resultados' class='table table-bordered table-condensed'><tr><th>Nombre</th><th>Nivel</th><th>Tiempo</th></tr>";
     for (var i = 0; i < datos.length; i++) {
-        cadena = cadena + "<tr><td>" + $.cookie("email") + "</td><td> " + datos[i].nivel + "</td>" + "</td><td> " + datos[i].tiempo + "</td></tr>";
+        cadena = cadena + "<tr><td>" + $.cookie("user_name") + "</td><td> " + datos[i].nivel + "</td>" + "</td><td> " + datos[i].tiempo + "</td></tr>";
     }
     cadena = cadena + "</table>";
     $('#juegoId').append(cadena);
@@ -323,13 +324,16 @@ var stopListening = function(){
 };
 
 function setDictation(sentences, tiempo, vidas){
+    console.log("LLAMADA A SETDICTARION");
     $("#juegoContainer").empty();
     $("#juegoContainer").append('<div style="display: block; margin: 0 auto; width:50%;" id="sentences" class="dotstyle dotstyle-hop center">');
     $("#juegoContainer").append('<div style="display: block; margin: 0 auto; width:75%" id="sentence-holder">');
     var html = "<ul>";
+    var grammar = [];
     recognition.sentences = sentences.length;
     recognition.infoJuegoPrevio = {"tiempo": tiempo, "vidas":vidas};
     for(var i = 0; i < sentences.length; i++){
+        grammar.push(sentences[i][0].toLowerCase().split("-").join(" ").split(" "));
         html += '<li><a href="#" id="sentence' + i + '"></a></a></li>';
         console.log("#sentence" + i);
         $("#sentences").on("click", "#sentence" + i, function(event){
@@ -337,17 +341,26 @@ function setDictation(sentences, tiempo, vidas){
             $("#sentence-holder").append('<h2 class="center">' + sentences[parseInt(this.id.slice(8))][0] + '</h2>')
         });
     }
+    recognition.setGrammar(grammar,"fruits","fruit");
     $("#sentences").append(html);
     $("#sentence0").parent("li").addClass("current");
     $("#sentence-holder").html('<h2 class="center">' + sentences[0][0] + '</h2>');
     $("#juegoContainer").append('<div class="center" id="record-button"><button id="recordMe" class="btn btn-success" type="button">Clic para empezar</button></div>');
     $("#recordMe").addClass("glow");
     $("#juegoContainer").append('<div class="center" id="result-sent"><h2 id="resultado-oracion"></h2></div>');
+    /*
     $("#juegoContainer").on("click", "#recordMe", function(event){
+        console.log("Callback set on button");
         $("#sentence-holder").css("color", "#000000");
         if($("#recordMe").text() == "Clic para empezar") startListening();
         else stopListening();
      });
+     */
+    $("#recordMe").on("click", function(){
+        $("#sentence-holder").css("color", "#000000");
+        if($("#recordMe").text() == "Clic para empezar") startListening();
+        else stopListening();
+    });
      toggleRecording(recognition);
     [].slice.call( document.querySelectorAll( '.dotstyle > ul' ) ).forEach( function( nav ) {
         new DotNav( nav, {

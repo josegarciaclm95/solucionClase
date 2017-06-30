@@ -20,6 +20,7 @@ function Juego(){
     }
     this.newUsuario = function(user_name, email, pass, time_register, activo, accept_affective, id){
         var newUser = new Usuario(user_name, email, pass, time_register, activo, accept_affective);
+        console.log(time_register);
         newUser.maxNivel = this.niveles.length;
         newUser.id = id;
         newUser.dificultad = 13;
@@ -266,15 +267,18 @@ function Usuario(user_name, email, pass, time_register, activo, accept_affective
     this.activo = activo;
     this.accept_affective = accept_affective;
     this.dificultad = -1;
-    this.incrementarDificultad = function(){
-        if (this.dificultad < 26){
-            this.dificultad++;
+    this.modificarDificultad = function(number){
+        if (this.dificultad + number > 26){
+            this.dificultad = 26;
+        } else if (this.dificultad + number < 0) {
+            this.dificultad = 0;
+        } else {
+            this.dificultad+= number;
         }
-    }
-    this.decrementarDificultad = function() {
-        if(this.dificultad > 0){
-            this.dificultad--;
-        }
+        var C = this.dificultad % 3;
+        var B = Math.floor(this.dificultad / 3) % 3;
+        var A = Math.floor(this.dificultad / 9) % 3;
+        console.log("\t Modelo -> \t Nueva dificultad -> \t (" + A + ", " + B + ", " + C + ")");
     }
     Usuario.prototype.toString = function(){
         var r = "Usuario " + user_name + " con email " +  this.email + " - Id " + this.id + "\n";

@@ -17,7 +17,20 @@ function _SpeechRecognition(){
         this.recognition.onend = function(event) {
             self.startRecognition();
         }
-        this.recognition.start();
+        try{
+            this.recognition.start();
+        }catch(err){
+            console.log(err);
+            $("#recordMe").off("click", function(){
+                $("#recordMe").on("click", function(){
+                    $("#sentence-holder").css("color", "#000000");
+                    if($("#recordMe").text() == "Clic para empezar") startListening();
+                    else stopListening();
+                });
+            });
+            self.stopRecognition();
+        }
+        
     }
     /**
      * Important! Before stopping the Recognition, the onend callback must be 
@@ -78,14 +91,13 @@ function _SpeechSynthesis(lang, fe_male_voice, pitch, rate){
  */
 function onResultDemo(event) {
     $("#recordMe").removeClass("glow");
-    var split_text = $("#sentence-holder").text().toLowerCase().split(" ");
+    var split_text = $("#sentence-holder").text().toLowerCase().split("-").join(" ").split(" ");
     console.log(event);
     var results = event.results[0];
     var hits = 0;
     var endingSentences = function(){
         var s_number = parseInt($(".current > a").attr("id").slice(8));
         if(s_number + 1 == recognition.sentences){
-            console.log("Ending sentences > YA HEMOS TERMINADO");
             $("#sentences").remove();
             $("#sentence-holder").remove();
             $("#record-button").remove();
@@ -93,7 +105,6 @@ function onResultDemo(event) {
             toggleRecording(recognition);
             nivelCompletado(recognition.infoJuegoPrevio.tiempo, recognition.infoJuegoPrevio.vidas);
         } else {
-            console.log("Ending sentences > SIGUIENTE FRASE");
             $("#sentence" + (s_number + 1))[0].click();
             $("#recordMe").addClass("glow");
             recognition.intento = 0;
@@ -114,7 +125,6 @@ function onResultDemo(event) {
             $("#sentence-holder").css("color", "#008000");
             $("#resultado-oracion").text("¡Bien hecho!");
             stopListening();
-            console.log("Llamada como callback");
             $("#sentence-holder").slideToggle(1000, endingSentences);
             break;
         } else {
@@ -128,7 +138,6 @@ function onResultDemo(event) {
         $("#resultado-oracion").text("¡Cachis! Tranqui, intentalo de nuevo");
         recognition.intento++;
         if(recognition.intento == 3) {
-            console.log("Llamada manual");
             $("#resultado-oracion").text("¡No te preocupes! Pasamos a la siguiente");
             $("#sentence-holder").slideToggle(1000, endingSentences);
              //$("#sentence-holder").slideToggle(1000);
@@ -149,4 +158,6 @@ function onNoMatchDemo(event) {
 function onErrorDemo(event){
     console.log(event);
     console.log("Ha habido un error");
+    recognition.stopRecognition();
+    recognition.startRecognition();
 }

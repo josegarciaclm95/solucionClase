@@ -23,7 +23,7 @@ module.exports.mongoConnect = function(juego){
 					cursor.forEach(function(actual){
 						console.log("\tPersistencia -> \t Agregado nuevo usuario al modelo");
 						console.log(actual);
-            			juego.newUsuario(actual.user_name, actual.email, actual.password, actual.time_register, actual.activo, actual.accept_affective, actual._id)
+            			juego.newUsuario(actual.user_name, actual.email, actual.password, actual.id_registro, actual.activo, actual.accept_affective, actual._id)
 						dbM.collection("partidas").find({id_usuario: ObjectID(actual._id)}).toArray(function(err, cursor){
 							if(err){
 								console.log(err);

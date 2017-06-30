@@ -68,12 +68,15 @@ app.get("/datosJuego/:id", function (request, response) {
 	} else {
 		res = {nivel:-1, platforms:[], recipe:[]}	
 	}
+	
 	var valid_food = [];
 	for(var j = 0; j < res.recipe.ingredients.length; j++){
 		valid_food.push(res.recipe.ingredients[j].name);
 	}
 	var direct = fs.readdirSync("./cliente/assets/food");
+	usuario.modificarDificultad(0);
 	var proporcion_basura_i = Math.floor(usuario.dificultad / 3) % 3;
+	console.log(juego.proporcion_basura[proporcion_basura_i]);
 	var limit = Math.ceil(res.recipe.ingredients.length / juego.proporcion_basura[proporcion_basura_i]);
 	while(not_valid_food.length < limit){
 		var random = Math.floor(Math.random() * direct.length);
@@ -85,7 +88,7 @@ app.get("/datosJuego/:id", function (request, response) {
 	}
 	console.log(not_valid_food);
 	res.not_valid_food = not_valid_food;
-	res.gravedad_nivel = juego.gravedad[Math.floor(usuario.dificultad) % 3];
+	res.gravedad_nivel = juego.gravedad[usuario.dificultad % 3];
 	res.probabilidad_ing_valido = juego.probabilidad_ing_valido[Math.floor(usuario.dificultad / 9) % 3];
 	console.log("\t DatosJuego -> \t Datos a devolver -> " +  JSON.stringify(res.nivel));
 	response.send(res);
@@ -227,6 +230,20 @@ app.get('/limpiarMongo/', function(request,response){
 	juego = juegofm.makeJuego();
 });
 
+app.post('/modificarDificultad/:id/', function (request, response) {
+	console.log("Dificultad modificada");
+	var id = request.params.id;
+	var dificulty_increment = parseInt(request.body.variacion);
+	var usuario = juego.buscarUsuarioById(id);
+	if(usuario != undefined){
+		usuario.modificarDificultad(dificulty_increment);
+		console.log("\t Nueva dificultad ->" + usuario.dificultad);
+		response.send({"result":"ok"});
+	} else {
+		response.send({"result":"ERROR"});
+	}
+});
+
 app.post('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
 	console.log("Nivel completado");
 	var id = request.params.id;
@@ -237,9 +254,96 @@ app.post('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
 	var affectiva = affectiva_data.affectiva;
 	var beyond = affectiva_data.beyond;
 	var keys = affectiva_data.keys;
+	var dificulty_increment = 1;
+	//console.log(keys);
+	//console.log(affectiva);
+	var change_difficulty = {
+		keys: "none",
+		affectiva: "none",
+		beyond: "none"
+	};
+	//Si se han detectado muchas pulsaciones excesivas y muchos errores, asumimos que hay que bajar
+	//la dificultad
+	for(var property in keys){
+		var key_hit;
+		if(keys.hasOwnProperty(property)){
+			switch(property){
+				case "mistakes":
+				console.log(keys[property]);
+					if(keys[property]>12){
+						key_hit = true;
+					}
+					break;
+				case "excessivePressing":
+					console.log(keys[property]);
+					var number = 0;
+					for(var exc_property in keys[property]){
+						if(keys[property].hasOwnProperty(exc_property)){
+							if(keys[property][exc_property] > 10){
+								number++;
+							}
+						}
+					}
+					if(number >= 2){
+						key_hit = true;
+					}
+					break;
+			}
+			if(key_hit){
+				change_difficulty["keys"] = "down";
+				break;
+			}
+		}
+	}
+	for(var i = 0; i < affectiva.length; i++){
+		var number = 0;
+		for(var property in affectiva[i]){
+			if(affectiva[i].hasOwnProperty(property)){
+				//console.log(affectiva[i]);
+				console.log(property);
+				switch(property){
+					case "emotions":
+						if ((affectiva[i][property].valence < -10) || 
+							(affectiva[i][property].disgust > 40) || 
+							(affectiva[i][property].sadness > 40) ||
+							(affectiva[i][property].anger > 40)){
+							number++;
+						}
+						break;
+					case "expressions":
+						if((affectiva[i][property].upperLipRaise > 50) ||
+						   (affectiva[i][property].browFurrow > 50) ||
+						   (affectiva[i][property].browFurrow > 50 && affectiva[i][property].smirk > 50) ||
+						   (affectiva[i][property].noseWrinkle > 50)
+						) {
+							number++;
+						}
+						break;
+				}
+			}
+		}
+		console.log(number);
+		console.log(affectiva.length*2);
+		if((number / affectiva.length*2) > 0.5){
+			console.log("Nivel complejo - bajamos dificultad");
+			change_difficulty["affectiva"] = "down";
+		} else {
+			change_difficulty["affectiva"] = "up";
+		}
+	}
+	console.log(change_difficulty);
+	if(change_difficulty["affectiva"] == "down" && change_difficulty["keys"] == "down"){
+		dificulty_increment = -3;
+	} else if (change_difficulty["affectiva"] == "down") {
+		dificulty_increment = -2;
+	} else if (change_difficulty["affectiva"] == "up") {
+		dificulty_increment = 2;
+	}
 	if(usuario != undefined){
 		console.log("\t Nivel completado -> \t Usuario encontrado en nivel completado")
-		juego.guardarPartida(usuario, tiempo, vidas, affectiva_data, response)
+		usuario.modificarDificultad(dificulty_increment);
+		console.log("\t Nivel completado -> \t Nueva dificultad -> \t" + usuario.dificultad);
+		juego.guardarPartida(usuario, tiempo, vidas, affectiva_data, response);
 		console.log("\t Nivel completado -> \t Usuario " + id + " - Tiempo " + tiempo + "-  IdJuego - " + usuario.idJuego);
 	} else {
 		//Codigo legado de prueba antigua
