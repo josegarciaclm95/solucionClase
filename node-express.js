@@ -43,7 +43,7 @@ function encrypt(text){
 }
 
 var mensaje = {
-	from: 'donotanswer@juegoprocesos.com',
+	from: 'donotanswer@emocook.com',
 	subject: 'Confirme su cuenta',
 	text: 'Hello world'
 };
@@ -157,7 +157,7 @@ app.post("/crearUsuario/", function (request, response) {
 		console.log("\t Crear usuarios -> Usuario disponible");
 		juego.agregarUsuario(user_name,email,encrypt(pass),time_register, false, response)
 		var url = urlD + "/confirmarCuenta/" + email + "/" + time_register;
-		var html = '¡¡Bienvenido a ConquistaNiveles!! <br/> Confirme su cuenta haciendo clic en el siguiente enlace: <br/>';
+		var html = '¡¡Bienvenido a emoCook!! <br/> Confirme su cuenta haciendo clic en el siguiente enlace: <br/>';
 		html += '<a href='+url+'>'+url+'</a>';
 		mensaje.to = email;
 		mensaje.html = html;
