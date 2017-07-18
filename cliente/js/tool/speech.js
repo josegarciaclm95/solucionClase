@@ -136,7 +136,7 @@ function onResultDemo(event) {
     if(hits / split_text.length < 0.6){
         stopListening();
         $("#sentence-holder").css("color", "#FF0000");
-        $("#resultado-oracion").text("¡Cachis! Tranqui, intentalo de nuevo");
+        $("#resultado-oracion").text("¡Cachis! Tranqui, inténtalo de nuevo");
         recognition.intento++;
         if(recognition.intento == 3) {
             $("#resultado-oracion").text("¡No te preocupes! Pasamos a la siguiente");

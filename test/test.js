@@ -15,16 +15,16 @@ function encrypt(text) {
 
 //var sleep = require("sleep");
 var urlD = "http://localhost:1338";
-//var urlD = "https://juegoprocesos.herokuapp.com";
-/***********************IMPORTANTEEEEEEEEEEEEEEEEEEEEEEEE************************** */
+//var urlD = "https://emocook.herokuapp.com";
+/**** IMPORTANTE - VALORES PARA LA SIMUACIÓN DE JUEGO ****/
 var id;
 var tiempoConfir;
 var maxNiveles;
-/***********************IMPORTANTEEEEEEEEEEEEEEEEEEEEEEEE************************** */
+/**** IMPORTANTE - VALORES PARA LA SIMUACIÓN DE JUEGO ****/
 
 /**
  * TENEMOS UNA CUENTA ACTIVA xemagg95@gmail.com - jose
- * UN USUARIO jose - jose EN EL limbo
+ * UN USUARIO jose - jose SIN ACTIVAR
  * UN USUARIO josem - jose ACTIVO
  * UN USUARIO dani - dani ACTIVO
  * UN USUARIO jose2 - jose2 ACTIVO
@@ -38,7 +38,7 @@ var headers = {
 
 console.log("==============================================".rainbow)
 console.log(" Inicio de las pruebas del API REST:" + urlD);
-console.log(" 1. Crear usuario (email existente en limbo/emial existente en usuarios/email nuevo)");
+console.log(" 1. Crear usuario (sin activar/activo/no existente)");
 console.log(" 2. Confirmar usuario");
 console.log(" 3. Traer datos de juego");
 console.log(" 4. Login de usuario (existente/inexistente/inicio por cookies)");
@@ -47,7 +47,7 @@ console.log(" 6. Eliminar usuario e intentar loguear después");
 console.log(" 7. Simular que juega todos los niveles, que vuelve a empezar y comprobar resultados");
 console.log("============================================== \n".rainbow)
 
-/*****************************************AUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUXILIARES */
+/*******FUNCIONES AUXILIARES */
 
 function peticionAjax(peticion, url, async, body, successCallback) {
     var options = {
@@ -74,23 +74,23 @@ function preparacionPruebas() {
             testRaiz();
             
             testCrearUsuario("xemagg95@gmail.com","jose"); //Nombre que ya existe
-            testCrearUsuario("jose","jose"); //Nombre que ya esta en el limbo
-            testCrearUsuario("josemariagarcia95@gmail.com","jose"); //nombre que no existe
+            testCrearUsuario("jose","jose"); //Nombre de usuario sin activar
+            testCrearUsuario("josemariagarcia95@gmail.com","jose"); //nombre de usuario que no existe
             testConfirmarUsuario("jose", tiempoConfir) //confirmar usuario
-            testConfirmarUsuario("pedro",45716);
+            testConfirmarUsuario("pedro",45716); //confirmar usuario con id de confirmación incorrecto
             
             testDatosJuego(); //Aqui traemos los datos de un nivel y simulamos el juego entero
             
-            testLogin("xemagg95@gmail.com",""); //sin contrasena - no devuelve nada
-            testLogin("juan",undefined); //sin contrasena (caso de que hay una cookie) devuelve user
-            testLogin("pepe","pepe"); // contrasena buena - devuelve user
+            testLogin("xemagg95@gmail.com",""); //Inicio de sesión sin contraseña - no devuelve nada
+            testLogin("juan",undefined); //Inicio de sesión sin contrasena (caso de que hay una cookie) devuelve user
+            testLogin("pepe","pepe"); // Inicio de sesión con contrasena correcta - devuelve user
             
-            testModificarUsuario("", "josem2","joseM",""); //cambio de usuario que no existe
-            testModificarUsuario("", "josem","joseM",""); //cambio de usuario que existe (nombre)
-            testModificarUsuario("daniel27", "dani","","dani1"); //cambio de usuario que existe (contraseña)
+            testModificarUsuario("", "josem2","joseM",""); //Modificar usuario que no existe
+            testModificarUsuario("", "josem","joseM",""); //Modificar usuario que existe (nombre)
+            testModificarUsuario("daniel27", "dani","","dani1"); //Modificar usuario que existe (contraseña)
             
             testEliminarUsuario("jose31","jose2"); //eliminar usuario que no existe
-            testEliminarUsuario("jose2","jose2"); //eliminar usuario que no existe
+            testEliminarUsuario("jose2","jose2"); //eliminar usuario que existe
         })
     }
 
