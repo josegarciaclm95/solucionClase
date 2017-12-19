@@ -238,7 +238,7 @@ app.get('/limpiarMongo/', function(request,response){
 });
 
 app.post('/modificarDificultad/:id/', function (request, response) {
-	console.log("Dificultad modificada");
+	console.log("Modificar dificultad");
 	var id = request.params.id;
 	var dificulty_increment = parseInt(request.body.variacion);
 	var usuario = juego.buscarUsuarioById(id);

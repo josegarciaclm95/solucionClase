@@ -138,6 +138,7 @@ function onResultDemo(event) {
         $("#sentence-holder").css("color", "#FF0000");
         $("#resultado-oracion").text("¡Cachis! Tranqui, inténtalo de nuevo");
         recognition.intento++;
+        evaluator.keylogger.mistakes++;
         if(recognition.intento == 3) {
             $("#resultado-oracion").text("¡No te preocupes! Pasamos a la siguiente");
             $("#sentence-holder").slideToggle(1000, endingSentences);

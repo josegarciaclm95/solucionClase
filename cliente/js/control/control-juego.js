@@ -101,3 +101,21 @@ function finJuego(text,callback){
 function cambiarUsuario(action){
     eval("construirFormulario"+action+"()")
 }
+
+function evaluationDataProcessing(data){
+    $("#table-results").DataTable({ 
+        data: data,
+        columns: [
+            {title: "Usuario"},
+            {title: "Partida"},
+            {title: "Nivel"},
+            {title: "Intentos"},
+            {title: "Cara perdida"},
+            {title: "Tiempo (s)"},
+            {title: "Fallos"},
+            {title: "Pulsaciones"},
+            {title: "Excesivas"},
+            {title: "Affective flags"}
+        ]
+    });
+}

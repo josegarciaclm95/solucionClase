@@ -23,9 +23,7 @@ function proxy() {
         if (accept_affective.keys) {
             self.initializeKeylogger();
         } else {
-            self.keylogger = undefined;
-            document.removeEventListener("keydown", keydownCallback);
-            document.removeEventListener("keyup", keyupCallback);
+            
         }
     }
     this.initializeAffdexDetector = function () {
@@ -42,7 +40,13 @@ function proxy() {
         this.authenticateBV(this.beyondVerbal.options);
     }
     this.initializeKeylogger = function () {
-        this.keylogger = new KeyLogger();
+        this.keylogger = new KeyLogger(self);
+    }
+    this.killKeylogger = function () {
+        if (this.keylogger != undefined){
+            self.keylogger.stop();
+            self.keylogger = undefined;
+        }
     }
     this.actualizarPermisosDeteccion = function () {
         this.user_accept_affective.affectiva = $("#checkAffectiva")[0].checked;
@@ -69,6 +73,8 @@ function proxy() {
     }
     this.stopPlaying = function () {
         console.log(evaluator);
+        console.log(evaluator.startTime);
+        console.log((new Date()) - evaluator.startTime);
         var key_data = evaluator.keylogger.getKeysInformation();
         var callback = function(){
             evaluator.startTime = "";
@@ -107,8 +113,6 @@ function proxy() {
                     evaluator.affective_flags = data.accept_affective;
                     ocultarInformacion();
                     showGameControls();
-                    evaluator.startPlaying();
-                    //self.datosJuego_ID();
                 }
             }
             peticionAjax("POST", "/login/", true, JSON.stringify({
@@ -127,9 +131,7 @@ function proxy() {
                 finJuego("Lo siento, no tenemos más niveles", resetControl);
             } else {
                 infoJuego = data;
-                //self.keylogger = new KeyLogger(infoJuego.nivel);
                 console.log("Datos recibidos correctos: " + (infoJuego.nivel != -1));
-                //siguienteNivel();
                 $("#juegoContainer").load("../assets/recipes_info/" + data.recipe.recipe_info, function () {
                     $("#recipe-name").text(infoJuego.recipe.name);
                     console.log("Info de receta cargado");
@@ -180,24 +182,7 @@ function proxy() {
         var callback = function (datos) {
             console.log("Llegan los datos");
             console.log(datos);
-            $("#table-results").DataTable({
-                data: datos,
-                columns: [
-                    {title: "Usuario"},
-                    {title: "Partida"},
-                    {title: "Nivel"},
-                    {title: "Intentos"},
-                    {title: "Cara perdida"},
-                    {title: "Tiempo"},
-                    {title: "Fallos"},
-                    {title: "Pulsaciones"},
-                    {title: "Excesivas p"},
-                    {title: "A"},
-                    {title: "B"},
-                    {title: "K"},
-
-                ]
-            });
+            evaluationDataProcessing(datos);
         }
         $.get("/obtenerResultadosEvaluacion/", callback);
         

@@ -214,6 +214,8 @@ function collectFoodElement(player, food) {
         }
     } else {
         mistake.play();
+        proxy.keylogger.mistakes++;
+        evaluator.keylogger.mistakes++;
         mistakes.removeChild(mistakes.getTop())
         if (mistakes.children.length == 0) {
             tiempo = 0;

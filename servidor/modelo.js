@@ -247,6 +247,11 @@ function Juego(){
         console.log(datos.usuario);
         var usuario = self.buscarUsuarioById(datos.usuario);
         console.log(usuario);
+        var aux = 0;
+        for(var key in datos.excessivePressing){
+            aux += datos.excessivePressing[key];
+        }
+        datos.excessivePressing = aux;
         var datos_a_guardar = {
             user: usuario.user_name,
             partida: usuario.id_partida_actual,
@@ -274,7 +279,6 @@ function Juego(){
 
     this.getDatosEvaluacion = function (response) {
         var callback = function (err, data, res) {
-            console.log(res);
             var final_data = [];
             if(err){
                 console.log(err);
@@ -282,9 +286,25 @@ function Juego(){
                 if(data.length != 0){
                     var max = data.length;
                     data.forEach(function(item,i){
-                        final_data.push(item);
+                        var date = new Date(item.partida);
+                        var dia = date.getDate()
+                        var mes = date.getMonth()
+                        var horas = date.getHours()
+                        var minutos = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes()
+                        date = dia+ "/" + mes + "/" + date.getFullYear() + " " + horas + ":" + minutos;
+                        final_data.push([
+                            item.user,
+                            date,
+                            item.nivel,
+                            item.intentos,
+                            item.cara_perdida,
+                            item.tiempo/1000,
+                            item.fallos,
+                            item.pulsaciones,
+                            item.excessivePressing,
+                            "(" + item.affectiva +", " + item.beyond + ", " + item.keys + ")"
+                        ]);
                         if((i + 1 == max) && (response != undefined)){
-                            console.log("Aqui");
                             res.send(final_data);
                         }
                     });
