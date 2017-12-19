@@ -10,7 +10,7 @@ function Affdex() {
     this.detector = new affdex.CameraDetector(this.divRoot, this.width, this.height, this.faceMode);
     this.time = undefined;
     this.FaceInformation = [];
-    //this.detectNow = true;
+    this.have_face = true;
     //Enable detection of all Expressions and Emotion
     this.detector.detectAllEmotions();
     this.detector.detectAllExpressions();
@@ -51,24 +51,29 @@ function Affdex() {
     this.onImageResultsSuccess = function (callback) {
         this.detector.addEventListener("onImageResultsSuccess", function(faces, image, timestamp){
             //console.log(faces);
-            
             if ((faces.length > 0) && (Date.now() - this.time) / 1000 > 2) {
                 console.log("Number of faces found: " + faces.length);
                 this.time = Date.now();
                 evalEmotions(faces[0].expressions);
+                this.have_face = true;
                 self.FaceInformation.push({
                     "time":timestamp,
                     "emotions":faces[0].emotions,
                     "expressions":faces[0].expressions
                 });
+            } else if (faces.length == 0 && this.have_face) {
+                evaluator.faceLost();
+                this.have_face = false;
             }
         });
     }
-    /*
-    this.setDetectionFlag = function(){
-        this.detectNow = true;
+
+    this.onImageResultsFailure = function (callback) {
+        this.detector.addEventListener("onImageResultsFailure", function(faces, image, timestamp){
+            console.log(faces);
+            alert("Fallo en reconocimiento!");
+        });
     }
-    */
 }
 
 function onInitializeSuccessDEMO () {
@@ -89,23 +94,3 @@ function onWebcamConnectFailureDEMO (){
 function onStopSuccessDEMO () {
     console.log("The detector reports stopped");
 }
-
-/*
-function onImageResultsSuccessDEMO (faces, image, timestamp) {
-    console.log("Number of faces found: " + faces.length);
-    if ((faces.length > 0 && (Date.now() - time) / 1000 > 2) || this.detectNow) {
-        console.log(faces[0]);
-        console.log((Date.now() - time) / 1000);
-        this.time = Date.now();
-        evalEmotions(faces[0].expressions);
-        console.log(timestamp);
-        console.log(faces[0].emotions);
-        console.log(faces[0].expressions);
-        self.FaceInformation.push({
-            "time":timestamp,
-            "emotions":faces[0].emotions,
-            "expressions":faces[0].expressions
-        });
-    }
-}
-*/

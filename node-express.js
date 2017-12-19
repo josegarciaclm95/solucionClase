@@ -13,10 +13,6 @@ var juegofm = new modelo.JuegoFM('./servidor/prueba.json');
 var juego = juegofm.makeJuego();
 juego.connectMongo();
 
-/*
-var persistencia = require("./servidor/persistencia.js");
-persistencia.mongoConnect();
-*/
 var ObjectID = require("mongodb").ObjectID;
 var bodyParser = require("body-parser");
 
@@ -52,6 +48,17 @@ app.use(exp.static(__dirname + "/cliente/"));
 app.use(bodyParser());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+
+app.post("/registerEvaluationData/", function(request, response){
+	console.log("REGISTRO EVALUACION!!!");
+	console.log(request.body);
+	juego.guardarDatosEvaluacion(request.body, response);
+});
+
+app.get("/obtenerResultadosEvaluacion/", function(request, response){
+	console.log("obtenerResultadosEvaluacion");
+	juego.getDatosEvaluacion(response);
+})
 
 app.get("/datosJuego/:id", function (request, response) {
 	console.log("Datos juego");
@@ -251,13 +258,10 @@ app.post('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
 	var vidas = parseInt(request.params.vidas);
 	var usuario = juego.buscarUsuarioById(id);
 	var affectiva_data = request.body;
-	console.log(request.body);
 	var affectiva = affectiva_data.affectiva;
 	var beyond = affectiva_data.beyond;
 	var keys = affectiva_data.keys;
 	var dificulty_increment = 1;
-	//console.log(keys);
-	//console.log(affectiva);
 	var change_difficulty = {
 		keys: "none",
 		affectiva: "none",
@@ -270,13 +274,11 @@ app.post('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
 		if(keys.hasOwnProperty(property)){
 			switch(property){
 				case "mistakes":
-				console.log(keys[property]);
 					if(keys[property]>12){
 						key_hit = true;
 					}
 					break;
 				case "excessivePressing":
-					console.log(keys[property]);
 					var number = 0;
 					for(var exc_property in keys[property]){
 						if(keys[property].hasOwnProperty(exc_property)){
@@ -300,8 +302,6 @@ app.post('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
 		var number = 0;
 		for(var property in affectiva[i]){
 			if(affectiva[i].hasOwnProperty(property)){
-				//console.log(affectiva[i]);
-				console.log(property);
 				switch(property){
 					case "emotions":
 						if ((affectiva[i][property].valence < -10) || 
@@ -323,8 +323,6 @@ app.post('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
 				}
 			}
 		}
-		console.log(number);
-		console.log(affectiva.length*2);
 		if((number / affectiva.length*2) > 0.5){
 			console.log("Nivel complejo - bajamos dificultad");
 			change_difficulty["affectiva"] = "down";

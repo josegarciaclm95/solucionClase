@@ -242,6 +242,59 @@ function Juego(){
             this.gestorPartidas.adaptarPartida(id, partidas[i]);
         }
     }
+
+    this.guardarDatosEvaluacion = function (datos, response) {
+        console.log(datos.usuario);
+        var usuario = self.buscarUsuarioById(datos.usuario);
+        console.log(usuario);
+        var datos_a_guardar = {
+            user: usuario.user_name,
+            partida: usuario.id_partida_actual,
+            nivel: datos.nivel,
+            intentos: datos.intentos,
+            cara_perdida: datos.cara_perdida,
+            tiempo: datos.tiempo,
+            fallos: datos.fallos,
+            pulsaciones: datos.pulsaciones,
+            excessivePressing: datos.excessivePressing,
+            affectiva: usuario.accept_affective.affectiva,
+            beyond: usuario.accept_affective.beyond,
+            keys: usuario.accept_affective.keys,
+        }
+        persistencia.insertOn("evaluacion", datos_a_guardar, function(err, doc){
+            if(err){
+                console.log(err);
+                response.send(err);
+            } else {
+                console.log("\t Evaluación -> Datos guardados")
+                response.send({result: "Correcto"})
+            }
+        });
+    }
+
+    this.getDatosEvaluacion = function (response) {
+        var callback = function (err, data, res) {
+            console.log(res);
+            var final_data = [];
+            if(err){
+                console.log(err);
+            } else {
+                if(data.length != 0){
+                    var max = data.length;
+                    data.forEach(function(item,i){
+                        final_data.push(item);
+                        if((i + 1 == max) && (response != undefined)){
+                            console.log("Aqui");
+                            res.send(final_data);
+                        }
+                    });
+                } else {
+                    if(response != undefined) response.send({});
+                }
+            }
+        }
+        persistencia.findOn("evaluacion", {}, callback, response);
+    }
 }
     
 function Nivel(num, recipe, platforms){
@@ -275,10 +328,10 @@ function Usuario(user_name, email, pass, time_register, activo, accept_affective
         } else {
             this.dificultad+= number;
         }
-        var C = this.dificultad % 3;
-        var B = Math.floor(this.dificultad / 3) % 3;
-        var A = Math.floor(this.dificultad / 9) % 3;
-        console.log("\t Modelo -> \t Nueva dificultad -> \t (" + A + ", " + B + ", " + C + ")");
+        //var C = this.dificultad % 3;
+        //var B = Math.floor(this.dificultad / 3) % 3;
+        //var A = Math.floor(this.dificultad / 9) % 3;
+        //console.log("\t Modelo -> \t Nueva dificultad -> \t (" + A + ", " + B + ", " + C + ")");
     }
     Usuario.prototype.toString = function(){
         var r = "Usuario " + user_name + " con email " +  this.email + " - Id " + this.id + "\n";

@@ -207,6 +207,7 @@ function showGameControls() {
     var nombre = $.cookie("user_name");
     var nivel = $.cookie("nivel");
     var percen = Math.floor(((nivel - 1) / $.cookie("maxNivel")) * 100);
+    $("#control, #juegoContainer").empty();
     $('#datos, #cabeceraP, #cabecera, #prog').remove();
     $('#control').append('<div id="datos"><h4>Usuario: ' + nombre + '<br />Nivel: ' + nivel + '</h4></div>');
     $('#control').append('<div class="progress" id="prog"><div class="progress-bar progress-bar-success progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width:' + percen + '%">' + percen + '%</div></div>');

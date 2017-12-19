@@ -28,6 +28,7 @@ var jump;
 var collect;
 
 function crearNivel() {
+    evaluator.newTry();
     setScoreCounters(infoJuego.recipe);
     game = new Phaser.Game(800, 450, Phaser.AUTO, 'juegoId', { preload: preload, create: create, update: update });
     proxy.startKeylogger();

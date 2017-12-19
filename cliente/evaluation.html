@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>emoCook</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="css/propios/estilosPropios.css">
+    <link rel="stylesheet" href="css/propios/colors.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+    <script src="js/interfaz/modernizr.min.js"></script>
+    <script src="lib/jquery/jquery-3.1.1.min.js"></script>
+    <script src="lib/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="lib/phaser/phaser.min.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery.cookie.js"></script>
+    <script src="lib/jquery/jquery.loading.block.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/jquery.validate.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon.png">
+</head>
+
+<body>
+    <!--
+    <audio id="backMusic" src="assets/audio/dearlyBeloved.mp3" autoplay="true" loop="true"></audio>
+    -->
+    <nav class="navbar navbar-default navbar-fixed-top" id="barra-sup">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+                    aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="./evaluation.html">emoCook</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul id="barNav" class="nav navbar-nav">
+                    <li id="inicio" class="active">
+                        <a href="#inicio" onclick="location.reload()">
+                            <span class="glyphicon glyphicon-home" aria-hidden="true"></span> Inicio
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+    </div>
+    <div class="container-fluid">
+        <table id="table-results" class="display" width="100%"></table>
+    </div>
+    <script type="text/javascript" src="js/control/proxy.js"></script>
+    <script type="text/javascript" src="js/control/evaluator.js"></script>
+    <script type="text/javascript" src="js/control/keylog.js"></script>
+
+    <script type="text/javascript">        
+        var proxy = new proxy();
+        proxy.obtenerResultadosEvaluacion();
+    </script>
+</body>
+
+</html>

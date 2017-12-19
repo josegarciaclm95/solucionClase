@@ -15,7 +15,6 @@
     <script type="text/javascript" src="lib/jquery/jquery.cookie.js"></script>
     <script src="lib/jquery/jquery.loading.block.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/jquery.validate.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="16x16" href="./favicon.png">
 </head>
@@ -34,7 +33,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="./index_juego.html">emoCook</a>
+                    <a class="navbar-brand" href="#home" onclick="inicio()">emoCook</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -211,11 +210,13 @@
     <script type="text/javascript" src="js/tool/audiorecord/recorder.js"></script>
     <script type="text/javascript" src="js/tool/audiorecord/recorderWorker.js"></script>
     <script type="text/javascript" src="js/tool/beyondVerbal.js"></script>
+    <script type="text/javascript" src="js/control/evaluator.js"></script>
+    
     <script type="text/javascript">        
         var proxy = new proxy();
+        var evaluator = new Evaluator();
         inicio();
         window.onhashchange = function (e) {
-            //console.log(e)
             var newPage = e.newURL.split('#')[1]
             var oldPage = e.oldURL.split('#')[1]
             if (!oldPage) oldPage = "inicio";
@@ -226,24 +227,12 @@
         setModal('myModal', 'myBtn', construirLogin);
         setModal('myModal', 'help', construirAyuda);
         var recognition = new _SpeechRecognition();
-        recognition.setGrammar(["apple","banana","pear","pineapple","orange","lemon"],"fruits","fruit");
         recognition.onResult(onResultDemo);
         recognition.onSpeechEnd(onSpeechEndDemo);
         recognition.onNoMatch(onNoMatchDemo);
         recognition.onError(onErrorDemo);
-        var synthesis = new _SpeechSynthesis("en-GB", "Female", 1.2, 1);        
         initAudio();
-        var prueba = new KeyLogger();
     </script>
-    <!--
-        <footer id="footer">
-        
-        </footer>
-    -->
-    <script type="text/javascript">
-        window.loop11_key = "f5b090caf624aa5017ac3203f4d383a549089924";
-      </script>
-      <script src="//cdn.loop11.com/my/loop11.js" type="text/javascript" async="async"></script>
 </body>
 
 </html>

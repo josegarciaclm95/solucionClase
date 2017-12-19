@@ -60,10 +60,11 @@ module.exports.addNuevoResultado = function (usuario, tiempo, vidas, affectiva_d
 		})
 }
 
-function findSomething(collection,criteria,callback){
-	dbM.collection(collection).find(criteria,callback);
+module.exports.findOn = function(collection, criteria, callback, response) {
+	dbM.collection(collection).find(criteria).toArray(function(err,data){
+		callback(err,data,response);
+	});
 }
-module.exports.findSomething = findSomething;
 
 function insertOn(collection,object,callback){
 	dbM.collection(collection).insert(object,callback);

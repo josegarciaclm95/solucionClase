@@ -4,6 +4,8 @@
 //************************//
 
 function inicio() {
+    proxy.stopKeylogger();
+    proxy.stopAffectivaDetection();
     if ($.cookie('email') != undefined) {
         proxy.comprobarUsuarioMongo($.cookie('email'), undefined, true)
     } else if (typeof $.cookie('visitado') === 'undefined') {
@@ -30,6 +32,7 @@ function nivelCompletado(tiempo,vidas) {
     $('#juegoId').append("<div id='loading' class='center'><img src='./assets/loading.gif'><h3 id='load-info'></h3></div>");
     $("#load-info").text("Procesando datos...").delay(1000).fadeOut(1000, function(){
         $("#load-info").text("Analizando emociones...").fadeIn(1000, function(){
+            proxy.stopPlaying();            
             proxy.nivelCompletado(tiempo,vidas);
         }).delay(2000).fadeOut(1000, function(){
             $("#load-info").text("Extrayendo resultados...").fadeIn(1000, function(){
@@ -52,7 +55,6 @@ function crearUsuario(user_name, email, pass) {
         user_name = "jugador";
     }
     var url = '';
-    //url = "http://localhost:1338"
     url = "https://emocook.herokuapp.com";
     proxy.crearUsuario(user_name, email, pass, url);
     
