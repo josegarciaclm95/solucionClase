@@ -177,7 +177,9 @@ ul.no-list li{
 #scores span{
     padding-left: 10px;
 }
-
+#scores li{
+    padding-right: 20px;
+}
 .law-warn {
     text-align: justify;
     text-justify: inter-word; 

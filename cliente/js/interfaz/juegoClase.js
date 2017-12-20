@@ -214,7 +214,7 @@ function collectFoodElement(player, food) {
         }
     } else {
         mistake.play();
-        proxy.keylogger.mistakes++;
+        proxy.keyloggerMistakes();
         evaluator.keylogger.mistakes++;
         mistakes.removeChild(mistakes.getTop())
         if (mistakes.children.length == 0) {
@@ -261,7 +261,8 @@ function nextLevel() {
             html += "<li>";
             html += "<img width='50' src='assets/food/";
             html += infoJuego.recipe.ingredients[i].name + ".png'>"
-            html += '<h2> ' + infoJuego.recipe.ingredients[i].name.charAt(0).toUpperCase() + infoJuego.recipe.ingredients[i].name.slice(1);
+            var name = infoJuego.recipe.ingredients[i].name.replace("_", " ");
+            html += '<h2> ' + name.charAt(0).toUpperCase() + name.slice(1);
             html += " X " + infoJuego.recipe.ingredients[i].goal + "</h2></li>";
         }
         html += "</ul>";

@@ -21,6 +21,7 @@ function createScores(ScoreObject){
     for (i in ingredients){
         ScoreObject[ingredients[i].name] = new Score(ingredients[i].goal);
     }
+    console.log(ScoreObject);
 }
 
 function Score(goal){

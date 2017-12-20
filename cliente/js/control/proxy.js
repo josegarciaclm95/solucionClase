@@ -48,6 +48,11 @@ function proxy() {
             self.keylogger = undefined;
         }
     }
+    this.keyloggerMistakes = function () {
+        if (this.keylogger != undefined){
+            self.keylogger.mistakes++;            
+        }
+    }
     this.actualizarPermisosDeteccion = function () {
         this.user_accept_affective.affectiva = $("#checkAffectiva")[0].checked;
         this.user_accept_affective.beyond = $("#checkBeyond")[0].checked;
@@ -71,10 +76,7 @@ function proxy() {
         }), callback);
 
     }
-    this.stopPlaying = function () {
-        console.log(evaluator);
-        console.log(evaluator.startTime);
-        console.log((new Date()) - evaluator.startTime);
+    this.stopPlaying = function (abandon) {
         var key_data = evaluator.keylogger.getKeysInformation();
         var callback = function(){
             evaluator.startTime = "";
@@ -85,7 +87,7 @@ function proxy() {
             usuario: $.cookie("id"),
             nivel: $.cookie("nivel"),
             intentos: evaluator.tries,
-            tiempo: (new Date()) - evaluator.startTime,
+            tiempo: abandon ? -1 : (new Date()) - evaluator.startTime,
             cara_perdida: evaluator.face_lost,
             fallos: key_data.mistakes,
             pulsaciones: key_data.keysPressed,

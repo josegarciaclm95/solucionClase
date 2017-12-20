@@ -179,6 +179,7 @@ function construirAyuda(){
     //$("#myModal").css("display","none");
     $("#myModal").css("display","block");
     $(".modal").css("display","block");
+    if(game != undefined) game.paused = true;
     $("#modal-login").load('../html/ayuda.html', function () {
         console.log("AYUDA CARGADA");
     });
@@ -194,7 +195,7 @@ function construirFinJuego(){
     $('#control').append('<div class="progress" id="prog"><div class="progress-bar progress-bar-success progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width:' + percen + '%">' + percen + '%</div></div>');
     $("#juegoContainer").load("../html/fin.html", function(){
         $("#volverBtn").on("click", showGameControls);
-        $("#cerrarSBtn").on("click", resetControl);
+        $("#cerrarSBtn").on("click", evaluator.leave);
     });
 
 
@@ -212,10 +213,7 @@ function showGameControls() {
     $('#control').append('<div id="datos"><h4>Usuario: ' + nombre + '<br />Nivel: ' + nivel + '</h4></div>');
     $('#control').append('<div class="progress" id="prog"><div class="progress-bar progress-bar-success progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width:' + percen + '%">' + percen + '%</div></div>');
     $("#registerGroup").remove();
-    $("#modificar").show();
-    $("#eliminar").show();
-    $("#ajustes").show();
-    //setModal('myModal', 'help', construirAyuda);
+    $("#modificar, #eliminar, #ajustes").show();
     proxy.datosJuego_ID();
     siguienteNivel();
 }
@@ -237,7 +235,7 @@ function siguienteNivel() {
         console.log("Llamamos a crear nivel sin parametros en siguienteNivel()");
         crearNivel();
     })
-    $("#cerrarSesBtn").on("click", resetControl);
+    $("#cerrarSesBtn").on("click", evaluator.leave);
 }
 
 function resetControl() {
@@ -346,7 +344,6 @@ var stopListening = function(){
 };
 
 function setDictation(sentences, tiempo, vidas){
-    console.log("LLAMADA A SETDICTARION");
     $("#juegoContainer").empty();
     $("#juegoContainer").append('<div style="display: block; margin: 0 auto; width:50%;" id="sentences" class="dotstyle dotstyle-hop center">');
     $("#juegoContainer").append('<div style="display: block; margin: 0 auto; width:75%" id="sentence-holder">');
@@ -426,15 +423,12 @@ function setModal(modal_id, element_id, callback){
         callback();
     }
     // When the user clicks on <span> (x), close the modal
-    /*
-    span.onclick = function() {
-        modal.style.display = "none";
-    }
-    */
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";
+            if(game != undefined) game.paused = false;
+            
         }
     }
 }
@@ -446,7 +440,8 @@ function setScoreCounters(recipe){
     console.log(ingredients);
     for(var i = 0; i < ingredients.length; i++){
         console.log(ingredients[i]);
-        html += '<li> ' + ingredients[i].name.charAt(0).toUpperCase() + ingredients[i].name.slice(1);
+        var name = ingredients[i].name.replace("_", " ");
+        html += '<li> ' + name.charAt(0).toUpperCase() + name.slice(1);
         html += '<span id="' +ingredients[i].name + 'Score">0</span> / '+ ingredients[i].goal + '</li>';
     }
     html+= '</ul>';

@@ -242,7 +242,7 @@ app.post('/modificarDificultad/:id/', function (request, response) {
 	var id = request.params.id;
 	var dificulty_increment = parseInt(request.body.variacion);
 	var usuario = juego.buscarUsuarioById(id);
-	if(usuario != undefined){
+	if(usuario != undefined && (usuario.accept_affective.affectiva || usuario.accept_affective.beyond || usuario.accept_affective.keys)){
 		usuario.modificarDificultad(dificulty_increment);
 		console.log("\t Nueva dificultad ->" + usuario.dificultad);
 		response.send({"result":"ok"});
@@ -261,7 +261,7 @@ app.post('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
 	var affectiva = affectiva_data.affectiva;
 	var beyond = affectiva_data.beyond;
 	var keys = affectiva_data.keys;
-	var dificulty_increment = 1;
+	var dificulty_increment = 0;
 	var change_difficulty = {
 		keys: "none",
 		affectiva: "none",
@@ -274,7 +274,7 @@ app.post('/nivelCompletado/:id/:tiempo/:vidas', function (request, response) {
 		if(keys.hasOwnProperty(property)){
 			switch(property){
 				case "mistakes":
-					if(keys[property]>12){
+					if(keys[property]>5){
 						key_hit = true;
 					}
 					break;

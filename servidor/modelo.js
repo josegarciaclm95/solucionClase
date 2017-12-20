@@ -287,11 +287,12 @@ function Juego(){
                     var max = data.length;
                     data.forEach(function(item,i){
                         var date = new Date(item.partida);
-                        var dia = date.getDate()
-                        var mes = date.getMonth()
-                        var horas = date.getHours()
-                        var minutos = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes()
-                        date = dia+ "/" + mes + "/" + date.getFullYear() + " " + horas + ":" + minutos;
+                        var dia = date.getDate();
+                        var mes = date.getMonth();
+                        var horas = date.getHours();
+                        var minutos = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes();
+                        var segundos = (date.getSeconds() < 10) ? "0" + date.getSeconds() : date.getSeconds();
+                        date = dia+ "/" + mes + "/" + date.getFullYear() + " " + horas + ":" + minutos + ":" + segundos;
                         final_data.push([
                             item.user,
                             date,
@@ -341,6 +342,7 @@ function Usuario(user_name, email, pass, time_register, activo, accept_affective
     this.accept_affective = accept_affective;
     this.dificultad = -1;
     this.modificarDificultad = function(number){
+        console.log(number);
         if (this.dificultad + number > 26){
             this.dificultad = 26;
         } else if (this.dificultad + number < 0) {
@@ -351,7 +353,7 @@ function Usuario(user_name, email, pass, time_register, activo, accept_affective
         //var C = this.dificultad % 3;
         //var B = Math.floor(this.dificultad / 3) % 3;
         //var A = Math.floor(this.dificultad / 9) % 3;
-        //console.log("\t Modelo -> \t Nueva dificultad -> \t (" + A + ", " + B + ", " + C + ")");
+        console.log("\t Modelo -> \t Nueva dificultad -> \t" + this.dificultad);
     }
     Usuario.prototype.toString = function(){
         var r = "Usuario " + user_name + " con email " +  this.email + " - Id " + this.id + "\n";

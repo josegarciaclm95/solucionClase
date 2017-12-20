@@ -72,6 +72,189 @@
     },
     "nivel3": {
         "recipe": {
+            "name": "Classic burger",
+            "recipe_info": "burger.html",
+            "ingredients": [
+                {
+                    "name": "bun",
+                    "goal": 1
+                },
+                {
+                    "name": "burger_meat",
+                    "goal": 1
+                },
+                {
+                    "name": "lettuce",
+                    "goal": 2
+                },
+                {
+                    "name": "tomato",
+                    "goal": 2
+                },
+                {
+                    "name": "ketchup",
+                    "goal": 2
+                }
+            ],
+            "sentences":[
+                ["Burgers are my favourite food", "/Ái lof burguers/"],
+                ["We are going to have burgers for lunch","/Sugar is very suit/"],
+                ["I don't like lettuce on my burgers", "Ái alérgic tu nats"],
+                ["Don't use too much keptuch", "Yu can ius flaua tu beik a queik"],
+                ["Can I have my burger with meat only?", "/Du yu wont tu trái dis bráuni?/"]
+            ]
+        },
+        "platforms": [
+            {
+                "asset": "ground",
+                "x": 200,
+                "y": 250
+            },
+            {
+                "asset": "ground2",
+                "x": 330,
+                "y": 100
+            }
+        ]
+    },
+    "nivel4": {
+        "recipe": {
+            "name": "Espaguetis a la boloñesa",
+            "recipe_info": "espaguetis.html",
+            "ingredients": [
+                {
+                    "name": "spaghetti",
+                    "goal": 10
+                },
+                {
+                    "name": "tomato_sauce",
+                    "goal": 2
+                },
+                {
+                    "name": "meatball",
+                    "goal": 5
+                }
+            ],
+            "sentences":[
+                ["My favourite pasta is spaghetti", "/Ái laik chocoleit/"],
+                ["Meatballs with sauce are delicious for meal","/Sugar is very suit/"],
+                ["I prefer hot tomato sauce with pasta", "Ái alérgic tu nats"],
+                ["Would you like more meatballs on your plate?", "Yu can ius flaua tu beik a queik"],
+                ["I wish we could have spaghetti for lunch everyday", "/Du yu wont tu trái dis bráuni?/"]
+            ]
+        },
+        "platforms": [
+            {
+                "asset": "ground2",
+                "x": 100,
+                "y": 100
+            },
+            {
+                "asset": "ground2",
+                "x": 250,
+                "y": 280
+            },
+            {
+                "asset": "ground2",
+                "x": 400,
+                "y": 100
+            },
+            {
+                "asset": "ground2",
+                "x": 550,
+                "y": 280
+            }
+        ]
+    },
+    "nivel5": {
+        "recipe": {
+            "name": "Cacao caliente",
+            "recipe_info": "cacao.html",
+            "ingredients": [
+                {
+                    "name": "chocolate",
+                    "goal": 4
+                },
+                {
+                    "name": "milk",
+                    "goal": 2
+                },
+                {
+                    "name": "marshmallow",
+                    "goal": 6
+                }
+            ],
+            "sentences":[
+                ["Hot chocolate is the best way to keep yourself warm", "/Ái laik chocoleit/"],
+                ["I leave hot chocolate for Santa Clause every christmas","/Sugar is very suit/"],
+                ["Christmas holidays are not the same without hot chocolate", "Ái alérgic tu nats"],
+                ["I prefer cream on my chocolate, instead of marshmallows", "Yu can ius flaua tu beik a queik"],
+                ["I love holding a cup of hot chocolate with my hands", "/Du yu wont tu trái dis bráuni?/"]
+            ]
+        },
+        "platforms": [
+            {
+                "asset": "ground2",
+                "x": 100,
+                "y": 280
+            },
+            {
+                "asset": "ground2",
+                "x": 300,
+                "y": 180
+            },
+            {
+                "asset": "ground2",
+                "x": 500,
+                "y": 80
+            }
+        ]
+    },
+    "nivel6": {
+        "recipe": {
+            "name": "Ensalada mediterranea",
+            "recipe_info": "salad.html",
+            "ingredients": [
+                {
+                    "name": "lettuce",
+                    "goal": 5
+                },
+                {
+                    "name": "tomato",
+                    "goal": 2
+                },
+                {
+                    "name": "oil",
+                    "goal": 2
+                },
+                {
+                    "name": "salt",
+                    "goal": 1
+                }
+            ],
+            "sentences":[
+                ["I hate salad, but I like lettuce", "/Ái laik chocoleit/"],
+                ["I prefer cucumber to tomato on a salad","/Sugar is very suit/"],
+                ["My dad use too much oil on salads", "Ái alérgic tu nats"],
+                ["I tried appled salad once and it's very tasty", "Yu can ius flaua tu beik a queik"],
+                ["If we don't eat the salad, we can't have dessert", "/Du yu wont tu trái dis bráuni?/"]
+            ]
+        },
+        "platforms": [
+            {
+                "asset": "ground2",
+                "x": 300,
+                "y": 80
+            },
+            {
+                "asset": "ground2",
+                "x": 300,
+                "y": 260
+            }
+        ]
+    },
+    "nivel7": {
+        "recipe": {
             "name": "Brownies",
             "recipe_info": "brownies.html",
             "ingredients": [
