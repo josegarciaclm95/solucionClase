@@ -100,7 +100,7 @@
                 ["Burgers are my favourite food", "/Ái lof burguers/"],
                 ["We are going to have burgers for lunch","/Sugar is very suit/"],
                 ["I don't like lettuce on my burgers", "Ái alérgic tu nats"],
-                ["Don't use too much keptuch", "Yu can ius flaua tu beik a queik"],
+                ["Don't use too much ketchup", "Yu can ius flaua tu beik a queik"],
                 ["Can I have my burger with meat only?", "/Du yu wont tu trái dis bráuni?/"]
             ]
         },
@@ -140,7 +140,6 @@
                 ["Meatballs with sauce are delicious for meal","/Sugar is very suit/"],
                 ["I prefer hot tomato sauce with pasta", "Ái alérgic tu nats"],
                 ["Would you like more meatballs on your plate?", "Yu can ius flaua tu beik a queik"],
-                ["I wish we could have spaghetti for lunch everyday", "/Du yu wont tu trái dis bráuni?/"]
             ]
         },
         "platforms": [
@@ -186,7 +185,6 @@
             ],
             "sentences":[
                 ["Hot chocolate is the best way to keep yourself warm", "/Ái laik chocoleit/"],
-                ["I leave hot chocolate for Santa Clause every christmas","/Sugar is very suit/"],
                 ["Christmas holidays are not the same without hot chocolate", "Ái alérgic tu nats"],
                 ["I prefer cream on my chocolate, instead of marshmallows", "Yu can ius flaua tu beik a queik"],
                 ["I love holding a cup of hot chocolate with my hands", "/Du yu wont tu trái dis bráuni?/"]
@@ -236,7 +234,7 @@
                 ["I hate salad, but I like lettuce", "/Ái laik chocoleit/"],
                 ["I prefer cucumber to tomato on a salad","/Sugar is very suit/"],
                 ["My dad use too much oil on salads", "Ái alérgic tu nats"],
-                ["I tried appled salad once and it's very tasty", "Yu can ius flaua tu beik a queik"],
+                ["I tried apple salad once and it's very tasty", "Yu can ius flaua tu beik a queik"],
                 ["If we don't eat the salad, we can't have dessert", "/Du yu wont tu trái dis bráuni?/"]
             ]
         },
