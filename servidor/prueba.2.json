@@ -17,7 +17,9 @@
                 ["I like apples", "/Ái lof ápols/"],
                 ["I like bananas","/Ái láik banánas/"],
                 ["I want an apple", "Ái wont an ápol"],
-                ["Do you like smoothies?", "/Du yu láik smucis?/"]
+                ["I don't like bananas", "Ái dont láik banánas"],
+                ["Do you like smoothies?", "/Du yu láik smucis?/"],
+                ["She doesn't like apples", "/She dásent láik ápols/"]
             ]
         },
         "platforms": [
@@ -49,7 +51,10 @@
             "sentences":[
                 ["I like ice-cream", "/Ái laik aiscrim/"],
                 ["This ice-cream is very sweet","/Dis aiscrim is beri suit/"],
-                ["My favourite ice-cream is vanilla ice-cream", "Mai feivorite aiscrim is baníla aiscrim"]
+                ["My favourite ice-cream is vanilla ice-cream", "Mai feivorite aiscrim is baníla aiscrim"],
+                ["I want ice-cream for dessert", "Ái wont aiscrim for disert"],
+                ["Ice-cream is the best food for summer", "/Aiscrim is de best fud for samer/"],
+                ["I love eating ice-cream after dinner", "/Ái lof itin aiscrim after diner/"]
             ]
         },
         "platforms": [
@@ -94,7 +99,9 @@
             "sentences":[
                 ["Burgers are my favourite food", "/Ái lof burguers/"],
                 ["We are going to have burgers for lunch","/Sugar is very suit/"],
-                ["Don't use too much ketchup", "Yu can ius flaua tu beik a queik"]
+                ["I don't like lettuce on my burgers", "Ái alérgic tu nats"],
+                ["Don't use too much ketchup", "Yu can ius flaua tu beik a queik"],
+                ["Can I have my burger with meat only?", "/Du yu wont tu trái dis bráuni?/"]
             ]
         },
         "platforms": [
@@ -131,7 +138,8 @@
             "sentences":[
                 ["My favourite pasta is spaghetti", "/Ái laik chocoleit/"],
                 ["Meatballs with sauce are delicious for meal","/Sugar is very suit/"],
-                ["I prefer hot tomato sauce with pasta", "Ái alérgic tu nats"]
+                ["I prefer hot tomato sauce with pasta", "Ái alérgic tu nats"],
+                ["Would you like more meatballs on your plate?", "Yu can ius flaua tu beik a queik"],
             ]
         },
         "platforms": [
@@ -178,6 +186,7 @@
             "sentences":[
                 ["Hot chocolate is the best way to keep yourself warm", "/Ái laik chocoleit/"],
                 ["Christmas holidays are not the same without hot chocolate", "Ái alérgic tu nats"],
+                ["I prefer cream on my chocolate, instead of marshmallows", "Yu can ius flaua tu beik a queik"],
                 ["I love holding a cup of hot chocolate with my hands", "/Du yu wont tu trái dis bráuni?/"]
             ]
         },
@@ -224,7 +233,9 @@
             "sentences":[
                 ["I hate salad, but I like lettuce", "/Ái laik chocoleit/"],
                 ["I prefer cucumber to tomato on a salad","/Sugar is very suit/"],
-                ["My dad use too much oil on salads", "Ái alérgic tu nats"]
+                ["My dad use too much oil on salads", "Ái alérgic tu nats"],
+                ["I tried apple salad once and it's very tasty", "Yu can ius flaua tu beik a queik"],
+                ["If we don't eat the salad, we can't have dessert", "/Du yu wont tu trái dis bráuni?/"]
             ]
         },
         "platforms": [
@@ -263,9 +274,12 @@
                 }
             ],
             "sentences":[
+                ["I like chocolate", "/Ái laik chocoleit/"],
+                ["Sugar is very sweet","/Sugar is very suit/"],
                 ["I'm allergic to nuts", "Ái alérgic tu nats"],
                 ["You can use flour to bake a cake", "Yu can ius flaua tu beik a queik"],
-                ["Do you want to try this brownie?", "/Du yu wont tu trái dis bráuni?/"]
+                ["Do you want to try this brownie?", "/Du yu wont tu trái dis bráuni?/"],
+                ["I want some chocolate for dessert", "/Ái wont sam chocoleit for disert/"]
             ]
         },
         "platforms": [
