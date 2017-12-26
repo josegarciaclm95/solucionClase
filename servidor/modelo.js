@@ -286,16 +286,16 @@ function Juego(){
                 if(data.length != 0){
                     var max = data.length;
                     data.forEach(function(item,i){
-                        var date = new Date(item.partida);
-                        var dia = date.getDate();
-                        var mes = date.getMonth();
-                        var horas = date.getHours();
-                        var minutos = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes();
-                        var segundos = (date.getSeconds() < 10) ? "0" + date.getSeconds() : date.getSeconds();
-                        date = dia+ "/" + mes + "/" + date.getFullYear() + " " + horas + ":" + minutos + ":" + segundos;
+                        //var date = new Date(item.partida);
+                        //var dia = date.getDate();
+                        //var mes = date.getMonth();
+                        //var horas = date.getHours();
+                        //var minutos = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes();
+                        //var segundos = (date.getSeconds() < 10) ? "0" + date.getSeconds() : date.getSeconds();
+                        //date = dia+ "/" + mes + "/" + date.getFullYear() + " " + horas + ":" + minutos + ":" + segundos;
                         final_data.push([
                             item.user,
-                            date,
+                            item.partida,
                             item.nivel,
                             item.intentos,
                             item.cara_perdida,
@@ -305,12 +305,12 @@ function Juego(){
                             item.excessivePressing,
                             "(" + item.affectiva +", " + item.beyond + ", " + item.keys + ")"
                         ]);
-                        if((i + 1 == max) && (response != undefined)){
+                        if((i + 1 == max) && (res != undefined)){
                             res.send(final_data);
                         }
                     });
                 } else {
-                    if(response != undefined) response.send({});
+                    if(res != undefined) res.send({});
                 }
             }
         }

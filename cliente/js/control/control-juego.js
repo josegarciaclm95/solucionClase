@@ -103,6 +103,71 @@ function cambiarUsuario(action){
 }
 
 function evaluationDataProcessing(data){
+    /*var ord_data = data.sort(function(a, b){
+        if(a[1] <= b[1]){
+            return -1;
+        } else {
+            return 1;
+        }
+        return 0;
+    });
+    console.log(ord_data);
+    */
+    var ar = Array.from(new Set(Array.from(data, function(x){return x[0]})));
+    console.log(ar);
+    append_str = "";
+    for(var i = 0; i < ar.length; i++){
+        console.log("Iteracion - " + i);
+        append_str += "<h3>" + ar[i] + "</h3>";
+        append_str += "<div class='player-data'><div class='player-header'>" + 
+            "<div class='player-eval-cell'>Fecha</div>" + 
+            "<div class='player-eval-cell'>Nivel</div>" + 
+            "<div class='player-eval-cell'>Intentos</div>" + 
+            "<div class='player-eval-cell'>Cara perdida</div>" + 
+            "<div class='player-eval-cell'>Tiempo</div>" + 
+            "<div class='player-eval-cell'>Fallos</div>" + 
+            "<div class='player-eval-cell'>Pulsaciones</div>" + 
+            "<div class='player-eval-cell'>Excesivas</div>" + 
+            "<div class='player-eval-cell'>Afectivo</div></div>";
+
+        player_data = data.filter(function(eval_data){return eval_data[0] == ar[i]});
+        console.log(player_data)
+        var level_data = player_data.sort(function(a,b){
+            if(a[2] <= b[2]){
+                return -1;
+            } else {
+                return 1;
+            }
+            return 0;
+        });
+        console.log(level_data);
+        for(var j = 0; j < level_data.length; j++){
+            console.log("Iteracion - " + i + " | Datos de " + level_data[j][0] + ", nivel " + level_data[j][2]);
+            console.log(level_data[j]);
+            var eval_date =level_data[j][1];
+            //var eval_date = moment(level_data[j][1]).format("DD/MM/YYYY - HH:mm:ss");
+            var time = Math.floor(level_data[j][5])
+            append_str += "<div class='player-eval-row'>";//Abre fila
+            append_str += "<div class='player-eval-cell'>" + eval_date + "</div>" + 
+                            "<div class='player-eval-cell'>" + level_data[j][2] + "</div>" + 
+                            "<div class='player-eval-cell'>" + level_data[j][3] + "</div>" + 
+                            "<div class='player-eval-cell'>" + level_data[j][4] + "</div>" + 
+                            "<div class='player-eval-cell'>" + time + "</div>" + 
+                            "<div class='player-eval-cell'>" + level_data[j][6] + "</div>" + 
+                            "<div class='player-eval-cell'>" + level_data[j][7] + "</div>" + 
+                            "<div class='player-eval-cell'>" + level_data[j][8] + "</div>" + 
+                            "<div class='player-eval-cell'>" + level_data[j][9] + "</div>";
+            append_str += "</div>"; //Cierra fila
+        }
+        append_str += "</div>"; //Cierra tabla
+    }
+    $("#table-results").append(append_str); //Anade tabla a div
+
+    /*
+    for(var i = 0; i < ord_data.length ; i++) {
+        append_str += "<p>Partida " + moment(ord_data[i][1]).format("DD/MM/YYYY - HH:mm:ss") + " de " + ord_data[i][0] + " </p>";
+    }
+    /*
     $("#table-results").DataTable({ 
         data: data,
         columns: [
@@ -118,4 +183,5 @@ function evaluationDataProcessing(data){
             {title: "Affective flags"}
         ]
     });
+    */
 }

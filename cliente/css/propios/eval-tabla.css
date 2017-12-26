@@ -1,0 +1,22 @@
+.player-data
+{
+    display: table;
+}
+.player-header
+{
+    display: table-row;
+    font-weight: bold;
+    text-align: center;
+}
+.player-eval-row
+{
+    display: table-row;
+}
+.player-eval-cell
+{
+    display: table-cell;
+    border: solid;
+    border-width: thin;
+    padding-left: 5px;
+    padding-right: 5px;
+}

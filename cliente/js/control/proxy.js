@@ -183,7 +183,6 @@ function proxy() {
     this.obtenerResultadosEvaluacion = function() {
         var callback = function (datos) {
             console.log("Llegan los datos");
-            console.log(datos);
             evaluationDataProcessing(datos);
         }
         $.get("/obtenerResultadosEvaluacion/", callback);
