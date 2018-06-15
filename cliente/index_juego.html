@@ -233,13 +233,18 @@
         recognition.onError(onErrorDemo);
         initAudio();
 
-        if(mobilecheck()){
-            var sensor = new Accelerometer();
-            sensor.addEventListener('reading', function(event){
-                alert("Acelerometro funcionando!");
-            });
-            sensor.start();
-        }
+        /*if(mobilecheck()){
+            try {
+                var sensor = new Accelerometer();
+                sensor.addEventListener('reading', function(event){
+                    alert("Acelerometro funcionando!");
+                });
+                sensor.start();
+            } catch (error) {
+                alert(error);
+            }
+            
+        }*/
     </script>
 </body>
 
