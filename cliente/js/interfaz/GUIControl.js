@@ -226,7 +226,7 @@ function siguienteNivel() {
     $("#control").append('<button type="button" id="siguienteBtn" class="btn btn-primary btn-md" style="margin-top:5px; margin-right:5px;">Siguiente nivel</button>');
     $("#control").append('<button type="button" id="cerrarSesBtn" class="btn btn-primary btn-md" style="margin-top:5px">Cerrar sesión</button>');
     $("#siguienteBtn").on("click", function () {
-        evaluator.startPlaying();
+        //evaluator.startPlaying();
         $(this).remove();
         $("#hearMe").remove();
         //$("#cerrarSesBtn").remove();
